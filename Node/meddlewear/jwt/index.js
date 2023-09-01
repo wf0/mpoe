@@ -1,0 +1,41 @@
+// jwt
+const { sign, verify } = require("jsonwebtoken");
+const { promisify } = require("util");
+const { JSON_WEB_TOKEN_SECRET } = require("../../base.config");
+
+// 加密
+const jwt_sign = (data) => promisify(sign)(data, JSON_WEB_TOKEN_SECRET);
+
+// 解密 verify
+const jwt_verify = (token) => promisify(verify)(token, JSON_WEB_TOKEN_SECRET);
+
+// jwt 初始化中间件
+const initJWT = async (req, res, next) => {
+  console.log("请求的路由", req.url);
+  // 路由白名单
+  const whitePath = ["/user/login", "/user/register", "/favicon.ico"];
+  if (
+    whitePath.find((i) => i === req.url) ||
+    req.url.includes("static") ||
+    req.url.includes("assets")
+  )
+    return next(); // 白名单路由放行
+
+  if (!req.headers?.authorization)
+    return res.status(403).json({ code: 403, msg: "无访问权限" });
+  // 不然校验 token 【从 headers 中 获取 authorization: Bearer <token>】
+  const token = req.headers?.authorization?.split(" ")[1]; // 一个空格实现分割
+  try {
+    const verifyRes = await jwt_verify(token);
+    if (verifyRes && verifyRes.userid) return next();
+    res.status(403).json({ code: 403, msg: "Token已失效" });
+  } catch (error) {
+    res.status(403).json({ code: 403, msg: "无访问权限" });
+  }
+};
+
+module.exports = {
+  jwt_sign,
+  jwt_verify,
+  initJWT,
+};

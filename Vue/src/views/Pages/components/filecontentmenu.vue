@@ -1,0 +1,152 @@
+// 针对文件及文件夹的右键菜单
+<template>
+  <div>
+    <div
+      @contextmenu.stop
+      class="contentmenu"
+      :style="{
+        left: position.x + 'px',
+        top: position.y + 'px',
+        display: position.display,
+      }"
+    >
+      <div
+        v-for="(item, index) in menuList"
+        :key="index"
+        @click="contentmenuClick(item.command)"
+      >
+        <i class="iconfont" :style="{ color: item.color }" :class="item.icon" />
+        <span>{{ item.name }}</span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { reactive, defineExpose, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { createShearUrl } from "@/util/shear";
+import { execcontent } from "@/util/execcontent";
+const emit = defineEmits(["createFolder"]);
+
+let menuList = reactive([
+  {
+    name: "分享",
+    icon: "icon-shujugongxiang",
+    command: "shear",
+  },
+  {
+    name: "删除",
+    icon: "icon-huishouzhan",
+  },
+  {
+    name: "重命名",
+    icon: "icon-zhongmingming",
+  },
+  {
+    name: "移动至",
+    icon: "icon-yidong",
+  },
+  {
+    name: "360压缩",
+    icon: "icon-yasuobao",
+    color: "#51BDF4",
+  },
+]);
+// 标记是否是文件
+let isFile = ref(true);
+let shear = reactive({});
+const position = reactive({
+  x: 0,
+  y: 0,
+  display: "none", // 默认不显示
+});
+
+const contentmenuClick = (command) => {
+  let { username } = JSON.parse(sessionStorage.getItem("user"));
+  if (command === "shear") {
+    // 获取当前文件的信息  username, fileid, filename
+    let url = createShearUrl(
+      username,
+      shear.fileid,
+      shear.filename + "." + shear.filesuffix
+    );
+    execcontent(url);
+    ElMessage.success("分享链接已复制到粘贴板");
+  }
+};
+
+const handleFileInfo = (target) => {
+  isFile.value = !target.className.includes("icon-24gf-folderOpen");
+  let { fileid, filename, filesuffix } = target.dataset;
+
+  shear.fileid = fileid;
+  shear.filename = filename;
+  shear.filesuffix = filesuffix;
+
+  let open = {
+    name: "打开",
+    icon: "icon-24gf-folderOpen",
+    color: "#FFD153",
+  };
+  // 动态决定是否显示打开文件夹
+  let ishave = menuList.find((i) => i.icon === "icon-24gf-folderOpen");
+
+  if (isFile.value) {
+    // 是文件状态，并且有，则删除
+    ishave ? menuList.shift() : "";
+  } else {
+    // 是文件夹，但是有
+    ishave ? "" : menuList.unshift(open);
+  }
+};
+
+// 位置计算函数，供外部调用，不然很多地方都需要自己写
+const showContentMenu = (e) => {
+  // 一定是基于某一个文件或文件夹的相对定位，因此，需要获取当前元素的位置 在加上偏移量
+  let { target } = e;
+  handleFileInfo(target);
+  position.x = target.offsetLeft + e.offsetX;
+  position.y = target.offsetTop + e.offsetY;
+  position.display = "block";
+};
+
+// 隐藏位置
+const hiddenContentMenu = () => (position.display = "none");
+
+// setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量
+defineExpose({ showContentMenu, hiddenContentMenu });
+</script>
+
+<style lang="less" scoped>
+.contentmenu {
+  z-index: 99;
+  background-color: #fff;
+  width: 150px;
+  height: 200px;
+  position: absolute;
+  display: none;
+  box-shadow: 0px 0px 20px 0px #ccc;
+
+  & > div {
+    cursor: pointer;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    &:hover {
+      background-color: #f3f5f6;
+    }
+
+    i {
+      width: 16px;
+    }
+
+    span {
+      margin-left: 10px;
+      font-size: 12px;
+    }
+  }
+}
+</style>

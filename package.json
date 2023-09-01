@@ -1,0 +1,16 @@
+{
+  "name": "mpoe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "node": "cd node && node app.js",
+    "dev": "cd vue && yarn dev",
+    "installVue": "cd vue && npm install",
+    "installNode": "cd node && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
