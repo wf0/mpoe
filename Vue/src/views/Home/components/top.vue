@@ -116,6 +116,7 @@ const commandhandle = (command) => {
       break;
 
     case "gitee":
+      window.open("https://gitee.com/wfeng0/mpoe");
       break;
     case "setting":
       settingsOption.show = true;
