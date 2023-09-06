@@ -165,8 +165,14 @@ const hiddenContentMenu = () => (position.display = "none");
 
 // 新建文件夹
 const createFolder = async (userid, foldername) => {
+  // 这里需要判断是不是有父级问价夹id
+  let { folderid } = router.currentRoute.value.query;
   // 创建文件夹参数【还需要判断有没有 parentFolderId 】
-  let res = await createFolder_API({ userid, foldername });
+  let res = await createFolder_API({
+    userid,
+    foldername,
+    parentfolderid: folderid,
+  });
   if (res.code !== 200) return ElMessage.error(res.msg);
   ElMessage.success(res.msg);
   return res.data;
