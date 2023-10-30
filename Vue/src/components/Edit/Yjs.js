@@ -18,12 +18,15 @@ export class myYjs {
      * WebrtcProvider 第一个参数是房间名，需要动态传递，通过该变量区分不同的文档协同，因此初始化的时候需要传递参数
      *
      */
-
-    this.provider = new WebsocketProvider(
-      "ws://localhost:9000",
-      roomName,
-      this.ydoc
-    );
+    // 20231030  ** 新增 y-webrtc 方式
+    this.provider = new WebrtcProvider(roomName, this.ydoc, {
+      signaling: ["wss://y-webrtc-ckynwnzncc.now.sh", "ws://localhost:4444"],
+    });
+    // this.provider = new WebsocketProvider(
+    //   "ws://localhost:9000",
+    //   roomName,
+    //   this.ydoc
+    // );
 
     this.provider.on("status", (event) => {
       console.log("WebsocketProvider Status ", event.status); // logs "connected" or "disconnected"
