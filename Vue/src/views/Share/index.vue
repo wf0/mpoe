@@ -71,11 +71,18 @@ const iconMap = {
 };
 
 const handleSelectionChange = () => {};
-const toEdit = (item) =>
+const toEdit = (item) => {
+  if (item.filesuffix === "xlsx")
+    return router.push({
+      path: `/excel/${item.fileid}`,
+      query: item,
+    });
   router.push({
     path: `/edit/${item.fileid}`,
     query: item,
   });
+};
+
 const shear = (item) => {
   let { username } = JSON.parse(sessionStorage.getItem("user"));
   //  username, fileid, filename

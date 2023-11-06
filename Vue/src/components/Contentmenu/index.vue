@@ -87,6 +87,11 @@ const contentmenuClick = (command) => {
 
     // 新建在线表格
     case "excel":
+      createDialog.type = command;
+      createDialog.show = true;
+      createDialog.title = "新建Excel";
+      createDialog.warning = "文件名称不能为空";
+      createDialog.placeholder = "请输入文件名称";
       break;
 
     // 新建在线文本
@@ -202,6 +207,7 @@ const dialogConfirm = async () => {
       txt: "txt",
       markdown: "md",
       word: "dox",
+      excel: "xlsx",
     };
     let filesuffix = suffixMap[createDialog.type];
     let fileownerfolderid = router.currentRoute.value.query.folderid;
@@ -218,6 +224,7 @@ const dialogConfirm = async () => {
     callbackData.name = filename;
     callbackData.suffix = filesuffix;
   }
+
   createDialog.show = false;
   createDialog.input = "";
   emit("create", callbackData);

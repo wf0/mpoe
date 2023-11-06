@@ -89,7 +89,7 @@ let pagelistbread = reactive([]);
 // 文档类型动态颜色
 const getFileIconColor = (suffix, type) => {
   if (suffix === "word") return "#0f90e3";
-  if (suffix === "excel") return "#01a408";
+  if (suffix === "xlsx") return "#01a408";
   if (suffix === "pdf") return "#ea5454";
   if (suffix === "txt") return "rgba(0, 0, 0, 0.6)";
   if (suffix === "md") return "#5A96DB";
@@ -111,7 +111,14 @@ const gotoEdit = (i, item) => {
       },
     });
   }
+  // 如果是 excel 则跳转到 excel 页面
+  if (item.filesuffix === "xlsx")
+    return router.push({
+      path: `/excel/${item.fileid}`,
+      query: item,
+    });
 
+  // 其他文本、word
   router.push({
     path: `/edit/${item.fileid}`,
     query: item,
@@ -190,6 +197,7 @@ const createHandle = ({ name, id, type, suffix }) => {
   let iconmap = {
     md: "icon-file-markdown1",
     txt: "icon-wenben1",
+    xlsx: "icon-excel",
   };
   // 添加文件类型
   pagelist.push({
@@ -214,6 +222,11 @@ const getFileTypeAndIcon = (i) => {
   if (i.filesuffix === "txt") {
     i.type = "txt";
     i.icon = "icon-wenben1";
+  }
+
+  if (i.filesuffix === "xlsx") {
+    i.type = "excel";
+    i.icon = "icon-excel";
   }
 
   i.suffix = i.filesuffix;

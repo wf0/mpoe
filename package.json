@@ -13,5 +13,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5"
+  }
 }
