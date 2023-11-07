@@ -44,4 +44,7 @@ gitee: https://gitee.com/wfeng0/mpoe
 ## 文章地址
 
 yjs+quill协同: http://t.csdn.cn/x7xhk
+
 luckysheet协同：https://blog.csdn.net/weixin_47746452/article/details/134240905?spm=1001.2014.3001.5501
+
+掘金：https://juejin.cn/post/7298170736480485376
