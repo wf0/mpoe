@@ -74,7 +74,8 @@ onMounted(async () => {
      * 配置了 updateUrl
      */
     allowUpdate: true,
-    loadUrl: "/baseURL/excel",
+    loadUrl:
+      import.meta.env.MODE === "development" ? "/baseURL/excel" : "/excel",
     updateUrl:
       "ws://localhost:9000?fileid=" + router.currentRoute.value.params.fileid, // 实现传参,
     // showinfobar: false,

@@ -31,7 +31,11 @@
 >
 >    6. 文件上传的路径问题，mvc -> controller -> file -> uploadFile 中有一个mv()方法，传入的是当前执行命令的根路径，如果在协同编辑中文件上传出现问题，可以看看这里；
 >
->    7. node采用较强的模块化思想，每个单独的模块都会独立导出 index.js ，因此，node有很多的 index.js，注意区分。
+>    7. node采用较强的模块化思想，每个单独的模块都会独立导出 index.js ，因此，node有很多的 index.js，注意区分;
+>
+>    8. 重新打包后（vue项目包、luckysheet二开包），luckysheet 文件的处理：
+>
+>       1. 将luckysheet的dist放到node项目下，确保 index.html 引用正确的 luckysheet 即可。
 
 ## 项目地址
 
