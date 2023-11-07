@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "5387613",
+      "name": "向左",
+      "font_class": "xiangzuo",
+      "unicode": "eb15",
+      "unicode_decimal": 60181
+    },
+    {
       "icon_id": "4512042",
       "name": "移动",
       "font_class": "yidong",
