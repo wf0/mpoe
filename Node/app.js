@@ -24,6 +24,7 @@ require("./socket")(io);
 
 // 初始化 WS 服务
 require("./ws")();
+require("./ws/yjsServer")();
 
 // 引入路由模块注册函数，实现 router/index.js 导入注册，不需在 index.js 中写过多路由函数
 require("./router")(app);

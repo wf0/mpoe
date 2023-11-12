@@ -219,7 +219,7 @@ onMounted(() => {
   let yjs = new myYjs(quill, fileid, username);
 
   // 实现 Ctrl+S 保存
-  window.addEventListener("keydown", winEvent);
+  // window.addEventListener("keydown", winEvent);
 });
 </script>
 

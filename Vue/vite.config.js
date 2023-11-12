@@ -6,6 +6,7 @@ const path = require("path");
 export default defineConfig({
   plugins: [vue()],
   server: {
+    host: "0.0.0.0",
     port: 3000,
     // 生产不需要开启代理
     proxy: {
