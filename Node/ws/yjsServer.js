@@ -9,6 +9,8 @@ module.exports = () => {
   yjsws.on("connection", (conn, req) => {
     /**
      * 这里要控制相同文件的用户才广播事件 ,不给自己发送数据
+     *  1. 参数 fileid 在req.url 中，
+     *  2. 需要给用户添加自定义参数，需要与用户id绑定
      */
     console.log("yjs 客户端连接");
     conn.onmessage = (event) => {
