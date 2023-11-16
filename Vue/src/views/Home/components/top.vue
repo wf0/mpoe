@@ -59,6 +59,7 @@
     <contentmenu
       v-if="showContentMenuInCurrent"
       ref="contentmenuRef"
+      @create="createHandle"
       @close="close"
     />
 
@@ -74,9 +75,10 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, nextTick } from "vue";
+import { reactive, ref, onMounted, nextTick, provide } from "vue";
 import dropdown from "@el/DropdownPageTop/index.vue";
 import router from "@/router";
+import store from "@/store";
 // import settings from "./components/settings.vue";
 import contentmenu from "@compo/Contentmenu/index.vue";
 
@@ -146,6 +148,8 @@ const showContentMenu = async () => {
 };
 
 const close = () => (showContentMenuInCurrent.value = false);
+// 创建文件回调 通过 vuex 传递数据
+const createHandle = (e) => store.commit("setTopCreateData", e);
 
 // 导入文件
 let inputRef = ref(null);

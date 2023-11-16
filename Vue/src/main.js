@@ -4,6 +4,7 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import { setTheme } from "./util/theme";
 import router from "./router";
+import store from "./store";
 // 引入 socket.io
 import VueSocketIO from "vue-socket.io";
 setTheme("bjl");
@@ -22,4 +23,5 @@ createApp(App)
   .use(ElementPlus)
   .provide("socket", socket) // 传递 socket 对象
   .use(router)
+  .use(store)
   .mount("#app");

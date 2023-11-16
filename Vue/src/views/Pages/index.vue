@@ -76,6 +76,7 @@ import fileContentMenu from "./components/filecontentmenu.vue";
 import router from "@/router";
 import { getAllFiles_API } from "@/api/file";
 import { nextTick, onMounted, reactive, ref, watch } from "vue";
+import store from "@/store";
 import { ElMessage } from "element-plus";
 import { ArrowLeftBold } from "@element-plus/icons-vue";
 // 文档列表
@@ -90,6 +91,13 @@ let filecontentmenuRef = ref(null);
 
 // 定义文件夹的面包屑
 let pagelistbread = reactive([]);
+
+// 头部创建文件回调
+watch(
+  () => store.state.topCreateData,
+  (e) => createHandle(e),
+  { immediate: false, deep: true }
+);
 
 // 文档类型动态颜色
 const getFileIconColor = (suffix, type) => {
