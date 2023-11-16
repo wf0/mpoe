@@ -1,5 +1,5 @@
 <template>
-  <div class="box" @click.stop="hiddenContentMenu">
+  <div class="box" @click.stop.self="hiddenContentMenu">
     <div
       @contextmenu.stop
       class="contentmenu"
@@ -35,7 +35,11 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button
-            @click="(createDialog.show = false), (createDialog.input = '')"
+            @click="
+              (createDialog.show = false),
+                emit('close'),
+                (createDialog.input = '')
+            "
           >
             取消
           </el-button>
@@ -148,7 +152,6 @@ const showContentMenu = (e, customflag) => {
   // 因此替换 查找 className= contentmenu 的div，确保一定是该元素
   const childrenWidth = e.target.childNodes[0].clientWidth || 150;
   const childrenHeight = e.target.childNodes[0].clientHeight || 200;
-  console.log(e);
   // 取当前偏移量
   const { offsetX, offsetY } = e;
 
@@ -228,12 +231,12 @@ const dialogConfirm = async () => {
   createDialog.show = false;
   createDialog.input = "";
   emit("create", callbackData);
+  emit("close");
 };
 
 onMounted(() => {
   // 将该组件放置到 body下
   document.querySelector("body").append(getCurrentInstance().ctx.$el);
-  console.log();
 });
 
 // setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量

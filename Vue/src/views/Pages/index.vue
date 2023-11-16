@@ -186,14 +186,14 @@ const close = () => {
 
 // 隐藏菜单
 const hiddenContentMenu = () => {
-  contentmenuRef.value.hiddenContentMenu();
+  contentmenuRef.value && contentmenuRef.value.hiddenContentMenu();
   filecontentmenuRef.value.hiddenContentMenu();
 };
 
 // 显示文件及文件夹右键菜单
 const showFileContentMenu = (e) => (
   filecontentmenuRef.value.showContentMenu(e),
-  contentmenuRef.value.hiddenContentMenu()
+  contentmenuRef.value && contentmenuRef.value.hiddenContentMenu()
 );
 
 // 创建文件夹回调

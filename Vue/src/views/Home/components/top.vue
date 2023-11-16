@@ -149,9 +149,13 @@ const close = () => (showContentMenuInCurrent.value = false);
 
 // 导入文件
 let inputRef = ref(null);
+
 const fileChange = (e) => {
   const { files } = e.target;
   console.log("filechange", files);
+  /**
+   * 根据文件类型进行文件读取
+   */
 };
 
 // mounted
