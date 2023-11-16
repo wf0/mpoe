@@ -290,7 +290,6 @@ watch(
         getFileTypeAndIcon(i);
         pagelist.push(i);
       });
-    console.log(pagelist);
   },
   { immediate: true, deep: true }
 );
