@@ -5,7 +5,7 @@
       <span title="多人协作编辑器"> 多人协作编辑器 </span>
     </div>
     <div class="aside-search">
-      <el-input placeholder="搜索" v-model="searchKeyWord">
+      <el-input placeholder="搜索" v-model="searchKeyWord" clearable>
         <template #prefix>
           <el-icon><Search /></el-icon>
         </template>
@@ -56,9 +56,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { provide, ref, watch } from "vue";
 import router from "@/router";
 import { Search } from "@element-plus/icons-vue";
+import store from "../../../store";
 
 const searchKeyWord = ref("");
 /**
@@ -67,6 +68,8 @@ const searchKeyWord = ref("");
  * /home/share: 共享
  * /home/favor: 收藏
  */
+
+watch(searchKeyWord, (val) => store.commit("setSearchKeyWord", val));
 
 let { activeMenu } = defineProps({
   activeMenu: {

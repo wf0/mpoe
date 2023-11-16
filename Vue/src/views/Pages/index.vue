@@ -34,7 +34,11 @@
           @dblclick="gotoEdit(index, item)"
           @contextmenu.prevent.stop="showFileContentMenu"
           class="pages-list-files-item"
-          v-for="(item, index) in pagelist"
+          v-for="(item, index) in pagelist.filter(
+            (i) =>
+              !searchKeyWord ||
+              (i.filename || i.foldername).includes(searchKeyWord)
+          )"
           :key="index"
         >
           <!-- 通过 data- 自定义属性实现底层元素拿到数据 -->
@@ -75,7 +79,7 @@ import Contentmenu from "@compo/Contentmenu/index.vue";
 import fileContentMenu from "./components/filecontentmenu.vue";
 import router from "@/router";
 import { getAllFiles_API } from "@/api/file";
-import { nextTick, onMounted, reactive, ref, watch } from "vue";
+import { inject, nextTick, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
 import { ElMessage } from "element-plus";
 import { ArrowLeftBold } from "@element-plus/icons-vue";
@@ -91,6 +95,13 @@ let filecontentmenuRef = ref(null);
 
 // 定义文件夹的面包屑
 let pagelistbread = reactive([]);
+let searchKeyWord = ref("");
+/** 监听 搜索关键字 */
+watch(
+  () => store.state.searchKeyWord,
+  (e) => (searchKeyWord.value = e),
+  { immediate: false, deep: true }
+);
 
 // 头部创建文件回调
 watch(
@@ -258,12 +269,12 @@ watch(
   router.currentRoute,
   async (val) => {
     if (val.path != "/home/pages") return;
-    pagelist = reactive([]);
+    pagelist.length = 0;
     let { userid } = JSON.parse(sessionStorage.getItem("user"));
     let { folderid } = val.query;
     if (!folderid) {
       // 清空文件面包屑
-      pagelistbread = reactive([]);
+      pagelistbread.length = 0;
       sessionStorage.setItem("pagelistbread", []);
     }
     /**
@@ -279,6 +290,7 @@ watch(
         getFileTypeAndIcon(i);
         pagelist.push(i);
       });
+    console.log(pagelist);
   },
   { immediate: true, deep: true }
 );

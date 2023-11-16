@@ -4,10 +4,14 @@ export default createStore({
   name: "inedx",
   state: {
     topCreateData: {},
+    searchKeyWord: "",
   },
   mutations: {
     setTopCreateData(state, data) {
       state.topCreateData = data;
+    },
+    setSearchKeyWord(state, data) {
+      state.searchKeyWord = data;
     },
   },
   actions: {},
