@@ -20,4 +20,8 @@ module.exports = () => {
       });
     };
   });
+
+  yjsws.on("close", (conn) => {
+    console.log("用户关闭连接");
+  });
 };

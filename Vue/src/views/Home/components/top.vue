@@ -1,7 +1,7 @@
 <template>
-  <div class="top" @click.stop>
+  <div class="top" @click.stop="hiddenContentMenu">
     <div class="top-left">
-      <el-button type="primary" @click.stop>
+      <el-button type="primary" @click.stop="showContentMenu">
         <i class="iconfont icon-xinjian"></i>
         <span>新建</span>
       </el-button>
@@ -56,7 +56,11 @@
     /> -->
 
     <!-- 右键菜单 -->
-    <!-- <contentmenu ref="contentmenuRef" /> -->
+    <contentmenu
+      v-if="showContentMenuInCurrent"
+      ref="contentmenuRef"
+      @close="close"
+    />
 
     <!-- 定义 隐藏 input -->
     <input
@@ -70,11 +74,11 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, nextTick } from "vue";
 import dropdown from "@el/DropdownPageTop/index.vue";
 import router from "@/router";
 // import settings from "./components/settings.vue";
-import contentmenu from "@compo/contentmenu/index.vue";
+import contentmenu from "@compo/Contentmenu/index.vue";
 
 const advertisement = ref("【双十一】超值活动，会员低至0.5元/天！");
 
@@ -131,12 +135,17 @@ const toTemplate = () => router.push("/template");
 
 // 菜单Ref
 let contentmenuRef = ref(null);
+// 是否显示菜单
+let showContentMenuInCurrent = ref(false);
 
 // 显示菜单
-const showContentMenu = () =>
-  contentmenuRef.value.showContentMenu({ x: 20, y: 50 }, true);
+const showContentMenu = async () => {
+  showContentMenuInCurrent.value = true;
+  await nextTick();
+  contentmenuRef.value.showContentMenu({ x: 320, y: 50 }, true);
+};
 
-const hiddenContentMenu = () => contentmenuRef.value.hiddenContentMenu();
+const close = () => (showContentMenuInCurrent.value = false);
 
 // 导入文件
 let inputRef = ref(null);

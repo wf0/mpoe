@@ -5,7 +5,12 @@
     @contextmenu.prevent.stop="contextmenuHandle"
   >
     <!-- 右键菜单 -->
-    <contentmenu ref="contentmenuRef" @create="createHandle" />
+    <contentmenu
+      v-if="showContentMenuInCurrent"
+      ref="contentmenuRef"
+      @create="createHandle"
+      @close="close"
+    />
     <!-- 文件及文件夹右键菜单 -->
     <fileContentMenu ref="filecontentmenuRef" />
     <!-- 文档列表 -->
@@ -164,10 +169,19 @@ const confirmChangeFileName = () => {
 };
 const inputEnterHandle = () => inputRef.value[0].blur();
 
+// 是否显示右键菜单
+let showContentMenuInCurrent = ref(false);
 // 显示右键菜单
-const contextmenuHandle = (e) => {
+const contextmenuHandle = async (e) => {
+  showContentMenuInCurrent.value = true;
+  await nextTick();
   contentmenuRef.value.showContentMenu(e);
   filecontentmenuRef.value.hiddenContentMenu();
+};
+
+// 官博右键菜单
+const close = () => {
+  showContentMenuInCurrent.value = false;
 };
 
 // 隐藏菜单

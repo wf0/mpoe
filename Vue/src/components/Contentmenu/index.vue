@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="box" @click.stop="hiddenContentMenu">
     <div
       @contextmenu.stop
       class="contentmenu"
@@ -48,12 +48,12 @@
 
 <script setup>
 import { menuList } from "./config";
-import { reactive, defineExpose, ref } from "vue";
+import { reactive, defineExpose, onMounted, getCurrentInstance } from "vue";
 import { createFolder_API } from "@/api/folder";
 import { createFile_API } from "@/api/file";
 import { ElMessage } from "element-plus";
 import router from "@/router";
-const emit = defineEmits(["create"]);
+const emit = defineEmits(["create", "close"]);
 
 let createDialog = reactive({
   show: false, // 是否显示弹窗
@@ -148,7 +148,7 @@ const showContentMenu = (e, customflag) => {
   // 因此替换 查找 className= contentmenu 的div，确保一定是该元素
   const childrenWidth = e.target.childNodes[0].clientWidth || 150;
   const childrenHeight = e.target.childNodes[0].clientHeight || 200;
-
+  console.log(e);
   // 取当前偏移量
   const { offsetX, offsetY } = e;
 
@@ -160,13 +160,13 @@ const showContentMenu = (e, customflag) => {
       ? offsetY - childrenHeight
       : offsetY;
 
-  position.x = x;
-  position.y = y;
+  position.x = x + 325;
+  position.y = y + 95;
   position.display = "block";
 };
 
 // 隐藏位置
-const hiddenContentMenu = () => (position.display = "none");
+const hiddenContentMenu = () => ((position.display = "none"), emit("close"));
 
 // 新建文件夹
 const createFolder = async (userid, foldername) => {
@@ -230,11 +230,26 @@ const dialogConfirm = async () => {
   emit("create", callbackData);
 };
 
+onMounted(() => {
+  // 将该组件放置到 body下
+  document.querySelector("body").append(getCurrentInstance().ctx.$el);
+  console.log();
+});
+
 // setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量
 defineExpose({ showContentMenu, hiddenContentMenu });
 </script>
 
 <style lang="less" scoped>
+.box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(2px);
+}
 .contentmenu {
   z-index: 99;
   background-color: #fff;
