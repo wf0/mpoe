@@ -45,7 +45,7 @@ axios.interceptors.response.use(
   function (res) {
     // 对响应数据进行操作
     // token失效处理
-    if (res.data.code === 403) {
+    if (res?.data?.code === 403) {
       ElMessage.error(res.data.msg);
       return router.push("/login");
     }

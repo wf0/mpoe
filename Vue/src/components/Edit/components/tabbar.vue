@@ -208,7 +208,7 @@ onMounted(() => {
   let { username } = JSON.parse(sessionStorage.getItem("user"));
   // 获取dom需要在mounted后
   quill = new myQuill("#edit");
-
+  if (import.meta.env.MODE === "development") window.quill = quill;
   // 获取焦点
   quill.focus();
 

@@ -136,15 +136,11 @@ const gotoEdit = (i, item) => {
     });
   }
   // 如果是 excel 则跳转到 excel 页面
-  if (item.filesuffix === "xlsx")
-    return router.push({
-      path: `/excel/${item.fileid}`,
-      query: item,
-    });
-
-  // 其他文本、word
   router.push({
-    path: `/edit/${item.fileid}`,
+    path:
+      item.filesuffix === "xlsx"
+        ? `/excel/${item.fileid}`
+        : `/edit/${item.fileid}`,
     query: item,
   });
 };
@@ -283,6 +279,7 @@ watch(
      * 不然则取执行父级的问价夹及文件
      */
     let res = await getAllFiles_API({ userid, folderid });
+    console.log("getAllFiles_API", res);
     if (res.code !== 200) return ElMessage.error(res.msg);
 
     res.data.length &&

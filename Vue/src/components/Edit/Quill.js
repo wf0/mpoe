@@ -3,7 +3,7 @@ import Quill from "quill";
 import QuillCursors from "quill-cursors";
 import "quill/dist/quill.snow.css"; // 使用了 snow 主题色
 import { entitiestoUtf16 } from "@/util/utf16";
-
+import { ElMessage } from "element-plus";
 export class myQuill {
   constructor(selector) {
     // 使用 cursors 插件
@@ -13,8 +13,6 @@ export class myQuill {
     this.quill = new Quill(selector, {
       modules: {
         cursors: true, // 开启插件
-        // 配置菜单栏* 项目中没有配置，自己写了一个，通过API调用实现富文本编辑
-        // toolbar: [],
       },
       // theme: "snow", // 是否启用工具栏
       placeholder: "请输入内容...",
@@ -94,17 +92,28 @@ export class myQuill {
   // 获取当前编辑器的 detail 数据格式
   getDetail() {
     // 检索编辑器的内容，格式化返回一个Delta对象。
-    return this.quill.getContents();
+    // 20231119 单引号会引起数据库插入失败，因此，需要处理单引号问题
+    let detail = this.quill.getContents();
+    detail.ops.forEach((i) => (i.insert = i.insert.replace(/[']/g, "#[d]#")));
+    return detail;
   }
 
   // 初始化文本编辑器
   init(data) {
+    let detail = "";
     // 处理数据(最大程度还原数据)
+    // 20231119 双引号JSON识别失败
     let _T = data
       .replace(/[\r]/g, "#r#")
       .replace(/[\n]/g, "#n#")
       .replace(/[\t]/g, "#t#");
-    let detail = JSON.parse(_T);
+
+    try {
+      detail = JSON.parse(_T);
+      console.log(detail);
+    } catch (error) {
+      return ElMessage.error("文档格式解析失败！");
+    }
     /**
      * 需要先处理特殊字符，不然转不了JSON
      * 然后再根据特性，转回来，不然该换行的地方没有换行
@@ -114,9 +123,13 @@ export class myQuill {
       i.insert = entitiestoUtf16(
         i.insert
           .toString()
+          .trim()
           .replace(/#n#/g, "\n")
           .replace(/#r#/g, "\r")
           .replace(/#t#/g, "\t")
+          // 处理单引号 双引号 JSON 解析报错问题
+          .replace(/#[d]#/g, "'")
+          .replace(/#[s]#/g, '"')
       );
     });
     this.quill.setContents(detail);
