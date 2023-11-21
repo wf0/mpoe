@@ -78,7 +78,7 @@
 import Contentmenu from "@compo/Contentmenu/index.vue";
 import fileContentMenu from "./components/filecontentmenu.vue";
 import router from "@/router";
-import { getAllFiles_API } from "@/api/file";
+import { getAllFiles_API, updateFile_API } from "@/api/file";
 import { inject, nextTick, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
 import { ElMessage } from "element-plus";
@@ -168,17 +168,33 @@ const changefilename = async (item) => {
   item.changeflag = true;
   await nextTick();
   inputRef.value[0].focus();
+  // 执行 onblur 事件  confirmChangeFileName
 };
 
-const confirmChangeFileName = () => {
+// 输入框离开焦点
+const confirmChangeFileName = async () => {
+  let fileid = "";
+  let folderid = "";
   // 两件事，先隐藏输入框，然后发送请求，最后清空 newfilename
   pagelist.forEach((i) => {
     // i.changeflag =true 通过该变量找到修改文件名的文件，还需要将新的文件名赋给该文件
     if (i.changeflag) {
-      i.filename = newfilename.value;
+      fileid = i.fileid;
+      folderid = i.folderid;
+      i.filename = newfilename.value || i.filename; // 如果没有输入内容，则继续使用原来的文件名
       i.changeflag = false;
     }
   });
+
+  // 发送请求修改文件名
+  if (newfilename.value) {
+    // 根据文件类型执行更新
+    let res = fileid
+      ? await updateFile_API({ fileid, newfilename: newfilename.value })
+      : { code: 0, msg: "暂未实现文件夹更新" };
+    if (res.code === 200) ElMessage.success(res.msg);
+    else ElMessage.error(res.msg);
+  }
 
   newfilename.value = "";
 };

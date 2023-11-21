@@ -56,6 +56,8 @@ exports.findFolder = async (req, res, next) => {
   return httpCode(res, 200, "查找成功", [...result, ...mapResMap]);
 };
 
+// 更新文件夹
+
 // 辅助函数（查找用户下的指定文件名）
 const findFolderByName = async (userid, foldername) => {
   let mapRes = await folderImpl.findFolderByNameImpl(userid, foldername);

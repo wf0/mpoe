@@ -54,6 +54,13 @@ export const favorOrTopFile_API = (data) => {
 };
 
 // 更新文件信息（文件名、文件所属文件夹）
+export const updateFile_API = (data) => {
+  return fetch({
+    url: "/file/updateFile",
+    method: "post",
+    data,
+  });
+};
 
 // 保存文件
 export const saveFile_API = (data) => {

@@ -55,7 +55,10 @@ let menuList = reactive([
 ]);
 // 标记是否是文件
 let isFile = ref(true);
-let shear = reactive({});
+
+// 右键选中的文件信息
+let chooseFile = reactive({});
+
 const position = reactive({
   x: 0,
   y: 0,
@@ -68,11 +71,17 @@ const contentmenuClick = (command) => {
     // 获取当前文件的信息  username, fileid, filename
     let url = createShearUrl(
       username,
-      shear.fileid,
-      shear.filename + "." + shear.filesuffix
+      chooseFile.fileid,
+      chooseFile.filename + "." + chooseFile.filesuffix
     );
     execcontent(url);
     ElMessage.success("分享链接已复制到粘贴板");
+  }
+  // 实现删除功能
+  if (command === "icon-huishouzhan") {
+  }
+  // 重命名
+  if (command === "icon-zhongmingming") {
   }
 };
 
@@ -80,9 +89,9 @@ const handleFileInfo = (target) => {
   isFile.value = !target.className.includes("icon-24gf-folderOpen");
   let { fileid, filename, filesuffix } = target.dataset;
 
-  shear.fileid = fileid;
-  shear.filename = filename;
-  shear.filesuffix = filesuffix;
+  chooseFile.fileid = fileid;
+  chooseFile.filename = filename;
+  chooseFile.filesuffix = filesuffix;
 
   let open = {
     name: "打开",
