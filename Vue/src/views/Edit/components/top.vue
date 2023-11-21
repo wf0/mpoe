@@ -3,11 +3,7 @@
     <!-- 头部 -->
     <div class="header-left">
       <!-- home -->
-      <div
-        class="header-left-home"
-        title="返回首页"
-        @click="router.push('/home/pages')"
-      >
+      <div class="header-left-home" title="返回首页" @click="toBack">
         <i class="iconfont icon-shouye1" style="color: var(--main-color)"></i>
       </div>
 
@@ -80,9 +76,11 @@ import { ElMessage } from "element-plus";
 import userListVue from "./userList.vue";
 import { userListConf } from "./config";
 import router from "@/router";
+import store from "@/store";
 
 const emit = defineEmits(["open"]);
 const open = () => emit("open");
+// 解析 websocket provider
 
 let { socketuserlist, unread } = defineProps({
   socketuserlist: {
@@ -113,6 +111,14 @@ const favorClick = () => {
   favor.value = !favor.value;
   if (favor.value) ElMessage.success("已收藏");
   else ElMessage.success("已取消");
+};
+
+// 返回首页
+const toBack = () => {
+  // 实现关闭 websocket
+  store.state.WebsocketProvider.disconnect();
+  store.commit("setWebsocketProvider", null);
+  router.push("/home/pages");
 };
 
 onMounted(() => {

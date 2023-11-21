@@ -5,6 +5,7 @@ export default createStore({
   state: {
     topCreateData: {},
     searchKeyWord: "",
+    WebsocketProvider: null,
   },
   mutations: {
     setTopCreateData(state, data) {
@@ -12,6 +13,10 @@ export default createStore({
     },
     setSearchKeyWord(state, data) {
       state.searchKeyWord = data;
+    },
+
+    setWebsocketProvider(state, data) {
+      state.WebsocketProvider = data;
     },
   },
   actions: {},

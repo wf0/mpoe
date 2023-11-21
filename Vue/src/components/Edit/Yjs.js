@@ -1,3 +1,5 @@
+// 引入 store 实现传参
+import store from "@/store";
 /** Yjs 主函数 */
 import * as Y from "yjs";
 /** Yjs Quill 光标信息 */
@@ -38,6 +40,9 @@ export class myYjs {
       roomName,
       this.ydoc
     );
+
+    // 需要实现关闭协同连接
+    store.commit("setWebsocketProvider", provider);
 
     /**
      * 【方案三】 组合式API实现

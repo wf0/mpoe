@@ -15,13 +15,12 @@ module.exports = () => {
     console.log("yjs 客户端连接");
     conn.onmessage = (event) => {
       yjsws.clients.forEach((conn) => {
-        console.log("yjsws", event.data);
         conn.send(event.data);
       });
     };
-  });
 
-  yjsws.on("close", (conn) => {
-    console.log("用户关闭连接");
+    conn.on("close", (conn) => {
+      console.log("yjs 用户关闭连接");
+    });
   });
 };

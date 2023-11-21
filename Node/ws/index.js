@@ -19,7 +19,7 @@ module.exports = () => {
     ws.wid = id;
     ws.fileid = fileid; // 标记 fileid  还
     ws.wname = "user_" + id;
-
+    console.log("luckysheet 用户连接");
     ws.on("message", (data) => {
       // _this.websocket.send("rub"); 处理 rub 心跳包的数据
       try {
@@ -37,6 +37,8 @@ module.exports = () => {
 
     ws.on("close", () => {
       try {
+        console.log("luckysheet 协同用户关闭连接");
+
         // 实现用户退出
         wss.clients.forEach((conn) => {
           if (conn.wid === ws.wid) return;

@@ -81,6 +81,10 @@ import router from "@/router";
 import store from "@/store";
 // import settings from "./components/settings.vue";
 import contentmenu from "@compo/Contentmenu/index.vue";
+// 文件导入
+import { fileImport } from "@/util/FileImport";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { createFile_API } from "@/api/file";
 
 const advertisement = ref("【双十一】超值活动，会员低至0.5元/天！");
 
@@ -154,12 +158,86 @@ const createHandle = (e) => store.commit("setTopCreateData", e);
 // 导入文件
 let inputRef = ref(null);
 
-const fileChange = (e) => {
-  const { files } = e.target;
-  console.log("filechange", files);
-  /**
-   * 根据文件类型进行文件读取
-   */
+const fileChange = async (e) => {
+  const file = e.target.files[0];
+  // 需要给弹窗确认
+  try {
+    await ElMessageBox.confirm(
+      `确认上传 ${file.name} 进行协同吗？`,
+      "文件上传",
+      {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      }
+    );
+    elMessageConfirmHandle(file);
+  } catch (error) {
+    ElMessage.info("已取消");
+  }
+
+  // 清空数据
+  inputRef.value.value = "";
+};
+
+// 点击确认回调
+const elMessageConfirmHandle = async (file) => {
+  let userid = JSON.parse(localStorage.getItem("user")).userid;
+  // 解析文件名称及类型 目前支持 markdow、excel
+  let filename = file.name.split(".")[0];
+  // filesuffix filetype fileownerfolderid
+  let filesuffix = file.name.split(".")[1];
+  let filetype = filesuffix === "md" ? "markdown" : "excel";
+  // 根据当前路由参数获取 fileownerfolderid
+  let fileownerfolderid = router.currentRoute.value.query.folderid;
+  let demoname = Math.random().toString().split(".")[1].slice(0, 3); // 测试用
+  let createRes = await createFile_API({
+    userid,
+    // filename,
+    filename: demoname, // 测试用
+    filesuffix,
+    filetype,
+    fileownerfolderid,
+  });
+  if (createRes.code !== 200)
+    return ElMessage.error("导入失败，" + createRes.msg);
+
+  ElMessage.success("文件导入成功！");
+
+  let callback = {
+    id: createRes.data,
+    name: demoname,
+    suffix: filesuffix,
+    type: filetype,
+  };
+
+  // 发送数据到 page 页面
+  store.commit("setTopCreateData", callback);
+
+  // 然后执行文件导入模块，后续需要更新文件内容，因此，需要直接传入fileid
+  let saveRes = await fileImport(file, createRes.data, "Typora");
+  if (saveRes.code !== 200) return ElMessage.error(saveRes.msg);
+  ElMessage.success(saveRes.msg);
+  // 后续执行打开操作
+  try {
+    await ElMessageBox.confirm(`是否立即打开文件？`, "打开文件", {
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+    let query = { filename, filesuffix, filetype, owner: userid };
+    // 如果是 excel 则跳转到 excel 页面
+
+    router.push({
+      path:
+        filesuffix === "xlsx"
+          ? `/excel/${createRes.data}`
+          : `/edit/${createRes.data}`,
+      query,
+    });
+  } catch (error) {
+    ElMessage.info("已取消");
+  }
 };
 
 // mounted
