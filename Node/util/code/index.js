@@ -54,6 +54,14 @@ exports.httpCode = (res, code, msg, data) => {
       code: 6003,
       msg: "版本内容查找失败或未创建版本信息",
     },
+    {
+      code: 7001,
+      msg: "无删除权限",
+    },
+    {
+      code: 7002,
+      msg: "操作失败",
+    },
   ];
   if (!code) return res.status(500).json({ code: 500, msg: "参数缺失" });
   return res.json(codeMap.find((i) => i.code === code));

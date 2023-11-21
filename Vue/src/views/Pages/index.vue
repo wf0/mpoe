@@ -12,7 +12,10 @@
       @close="close"
     />
     <!-- 文件及文件夹右键菜单 -->
-    <fileContentMenu ref="filecontentmenuRef" />
+    <fileContentMenu
+      ref="filecontentmenuRef"
+      @putFileToRecycle="putFileToRecycleHandle"
+    />
     <!-- 文档列表 -->
     <div class="pages-list">
       <!-- 文件夹面包屑 -->
@@ -252,6 +255,14 @@ const createHandle = ({ name, id, type, suffix }) => {
     suffix,
     icon: iconmap[suffix],
   });
+};
+
+// 删除文件回调
+const putFileToRecycleHandle = (fileid) => {
+  pagelist.splice(
+    pagelist.findIndex((i) => i.fileid === fileid),
+    1
+  );
 };
 
 const getFileTypeAndIcon = (i) => {

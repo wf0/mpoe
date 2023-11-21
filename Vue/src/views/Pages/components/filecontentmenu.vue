@@ -24,10 +24,11 @@
 
 <script setup>
 import { reactive, defineExpose, ref } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { createShearUrl } from "@/util/shear";
 import { execcontent } from "@/util/execcontent";
-const emit = defineEmits(["createFolder"]);
+import { putFileToRecycle_API } from "@/api/file";
+const emit = defineEmits(["putFileToRecycle"]);
 
 let menuList = reactive([
   {
@@ -38,6 +39,7 @@ let menuList = reactive([
   {
     name: "删除",
     icon: "icon-huishouzhan",
+    command: "delete",
   },
   {
     name: "重命名",
@@ -65,8 +67,8 @@ const position = reactive({
   display: "none", // 默认不显示
 });
 
-const contentmenuClick = (command) => {
-  let { username } = JSON.parse(sessionStorage.getItem("user"));
+const contentmenuClick = async (command) => {
+  let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
   if (command === "shear") {
     // 获取当前文件的信息  username, fileid, filename
     let url = createShearUrl(
@@ -78,7 +80,29 @@ const contentmenuClick = (command) => {
     ElMessage.success("分享链接已复制到粘贴板");
   }
   // 实现删除功能
-  if (command === "icon-huishouzhan") {
+  if (command === "delete") {
+    if (!chooseFile.fileid) return;
+    // 给弹窗提示
+    try {
+      await ElMessageBox.confirm(
+        `确认删除 ${chooseFile.filename + "." + chooseFile.filesuffix} 吗？`,
+        "删除文件",
+        {
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      );
+      let { code, msg } = await putFileToRecycle_API({
+        fileid: chooseFile.fileid,
+        userid,
+      });
+      if (code !== 200) return ElMessage.error(msg);
+      ElMessage.success(msg);
+      emit("putFileToRecycle", chooseFile.fileid);
+    } catch (error) {
+      ElMessage.info("已取消");
+    }
   }
   // 重命名
   if (command === "icon-zhongmingming") {
@@ -87,9 +111,10 @@ const contentmenuClick = (command) => {
 
 const handleFileInfo = (target) => {
   isFile.value = !target.className.includes("icon-24gf-folderOpen");
-  let { fileid, filename, filesuffix } = target.dataset;
+  let { fileid, filename, filesuffix, folderid } = target.dataset;
 
   chooseFile.fileid = fileid;
+  chooseFile.folderid = folderid;
   chooseFile.filename = filename;
   chooseFile.filesuffix = filesuffix;
 

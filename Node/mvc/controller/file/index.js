@@ -56,6 +56,30 @@ exports.updateFiles = async (req, res, next) => {
     return httpCode(res, 200, "文件更新成功");
 };
 
+// 放入回收站
+exports.putFileToRecycle = async (req, res, next) => {
+  let { fileid, userid } = req.body;
+  if (!fileid || !userid) return httpCode(req); // 参数缺失
+  if (!(await isOwnerFile(fileid, userid))) return httpCode(res, 7001); // 无权限删除
+  // 执行更新操作
+  let stateRes = await fileImpl.updateFilesImpl(fileid, null, null, null, 2); // 设置 files 基础信息表 state 为 2
+  if (stateRes.affectedRows === 1) return httpCode(res, 200, "已放入回收站");
+  httpCode(res, 7002);
+};
+
+// 删除文件
+exports.deleteFile = async (req, res, next) => {
+  /**
+   * 1. 先确认文件所属是否本人，不允许删除非本人的文件
+   * 2. 先删除 versions
+   * 3. 再删除 filestate
+   * 4. 最后删除基础表 files
+   */
+  let { fileid, userid } = req.body;
+  if (!fileid || !userid) return httpCode(req); // 参数缺失
+  if (!isOwnerFile(fileid, userid)) return httpCode(res, 7001); // 无权限删除
+};
+
 // 导出查找文件
 exports.findFiles = async (req, res, next) => {
   /**
@@ -64,12 +88,12 @@ exports.findFiles = async (req, res, next) => {
    * 不然就是查找 fileownerfolderid = folderid 的文件
    * 将结果放在 body 上，往后还需要找文件夹使用一起返回
    */
-  let { userid, folderid } = req.body;
+  let { userid, folderid, state } = req.body;
   if (!userid) return httpCode(res); // 参数缺失
   let result = [];
 
   //   处理查找文件逻辑
-  let mapRes = await fileImpl.findFilesImpl(userid, folderid);
+  let mapRes = await fileImpl.findFilesImpl(userid, folderid, state);
   let _res = JSON.parse(JSON.stringify(mapRes));
   _res.forEach((i) => delete i.index);
   result = _res.map((i) => i);
@@ -185,4 +209,8 @@ const findEditorByFileid = async (userid, fileid) => {
   let mapRes = await fileImpl.findEditorByFileidImpl(userid, fileid);
   if (!mapRes.length) return null;
   return mapRes[0];
+};
+const isOwnerFile = async (fileid, userid) => {
+  let findRes = await fileImpl.findFilesByFileidImpl(fileid);
+  return findRes[0].owner == userid;
 };

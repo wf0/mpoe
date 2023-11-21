@@ -77,6 +77,13 @@ const routes = [
     component: () => import("@views/User/index.vue"),
   },
   {
+    path: "/recycle",
+    meta: {
+      title: "回收站",
+    },
+    component: () => import("@views/Recycle/index.vue"),
+  },
+  {
     path: "/invited/:fileid",
     meta: {
       title: "邀请加入",

@@ -29,4 +29,10 @@ router.post("/updateFileState", fileCtrl.updateFileState);
 // 获取文件内容
 router.post("/getFileContent", fileCtrl.getFileContent);
 
+// 放置回收站
+router.post("/putFileToRecycle", fileCtrl.putFileToRecycle);
+
+// 删除文件
+router.post("/deleteFile", fileCtrl.deleteFile);
+
 exports.fileRouter = router;

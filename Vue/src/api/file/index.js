@@ -79,3 +79,13 @@ export const getFileContent_API = (data) => {
     data,
   });
 };
+
+// 放入回收站
+export const putFileToRecycle_API = (data) => {
+  return fetch({
+    url: "/file/putFileToRecycle",
+    method: "post",
+    data,
+  });
+};
+// 删除文件

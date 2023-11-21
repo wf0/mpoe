@@ -1,13 +1,14 @@
 // 数据持久层；引入 sql
 const { query } = require("../../../mysql");
 
-exports.findFilesMap = async (userid, folderid) =>
+// 限制条件，当前状态下，只能搜索正常状态的文件  回收站、作废的不允许搜索
+exports.findFilesMap = async (userid, folderid, state = 1) =>
   folderid
     ? await query(
-        `SELECT * FROM files WHERE OWNER ='${userid}' AND fileownerfolderid='${folderid}'`
+        `SELECT * FROM files WHERE OWNER ='${userid}' AND fileownerfolderid='${folderid}' AND state='${state}'`
       )
     : await query(
-        `SELECT * FROM files WHERE OWNER ='${userid}' AND ISNULL(fileownerfolderid)`
+        `SELECT * FROM files WHERE OWNER ='${userid}' AND ISNULL(fileownerfolderid) AND state='${state}'`
       );
 
 exports.createFileMap = async (
@@ -69,7 +70,13 @@ exports.updateFileStateMap = async (data) =>
 exports.findFilesByFileidMap = async (fileid) =>
   await query(`SELECT * FROM files WHERE fileid='${fileid}'`);
 
-exports.updateFilesMap = async (fileid, vid, newfilename, newfolderid) => {
+exports.updateFilesMap = async (
+  fileid,
+  vid,
+  newfilename,
+  newfolderid,
+  state
+) => {
   if (vid)
     return await query(
       `UPDATE files SET currenthead='${vid}' WHERE fileid='${fileid}'`
@@ -81,6 +88,10 @@ exports.updateFilesMap = async (fileid, vid, newfilename, newfolderid) => {
   if (newfolderid)
     return await query(
       `UPDATE files SET fileownerfolderid='${newfolderid}' WHERE fileid='${fileid}'`
+    );
+  if (state)
+    return await query(
+      `UPDATE files SET state='${state}' WHERE fileid='${fileid}'`
     );
 };
 

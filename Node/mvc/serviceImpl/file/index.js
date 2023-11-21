@@ -1,8 +1,8 @@
 // 引入mapper数据持久层类
 const { fileMap } = require("../../mapper");
 
-exports.findFilesImpl = async (userid, folderid) =>
-  await fileMap.findFilesMap(userid, folderid);
+exports.findFilesImpl = async (userid, folderid, state) =>
+  await fileMap.findFilesMap(userid, folderid, state);
 
 exports.createFileImpl = async (
   userid,
@@ -51,8 +51,16 @@ exports.findFilesByFileidImpl = async (fileid) =>
   await fileMap.findFilesByFileidMap(fileid);
 
 // 更新信息
-exports.updateFilesImpl = async (fileid, vid, newfilename, newfolderid) =>
-  await fileMap.updateFilesMap(fileid, vid, newfilename, newfolderid);
+exports.updateFilesImpl = async (
+  fileid,
+  vid,
+  newfilename,
+  newfolderid,
+  state
+) => await fileMap.updateFilesMap(fileid, vid, newfilename, newfolderid, state);
 
 exports.getFileContentImpl = async (fileid) =>
   await fileMap.getFileContentMap(fileid);
+
+// 删除文件
+// 1. 确认文件是否本人
