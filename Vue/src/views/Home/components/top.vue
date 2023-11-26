@@ -1,7 +1,7 @@
 <template>
   <div class="top" @click.stop="hiddenContentMenu">
     <div class="top-left">
-      <el-button type="primary" @click.stop="showContentMenu">
+      <el-button type="primary" @click.stop="(e) => showContentMenu(e)">
         <i class="iconfont icon-xinjian"></i>
         <span>新建</span>
       </el-button>
@@ -145,10 +145,10 @@ let contentmenuRef = ref(null);
 let showContentMenuInCurrent = ref(false);
 
 // 显示菜单
-const showContentMenu = async () => {
+const showContentMenu = async (e) => {
   showContentMenuInCurrent.value = true;
   await nextTick();
-  contentmenuRef.value.showContentMenu({ x: 320, y: 50 }, true);
+  contentmenuRef.value.showContentMenu(e, true);
 };
 
 const close = () => (showContentMenuInCurrent.value = false);

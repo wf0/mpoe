@@ -12,13 +12,14 @@
 >    2. npm run installNode ：下载 node 相关依赖
 > 6. 启动方式：
 
->    1.  y-webrtc 协同服务：
+>    1. 协同服务：
 >
->       ​	1. npm run startServer** 必须启动该服务，才能在不同浏览器协同。
+>       ​	1. npm run startServer y-webrtc（如果了解rtc的，外网是需要stun服务器做转发的，本应用不支持，因此，推荐使用 y-websocket的协同方式）
+           2. 正常启动 node即可支持 y-websocket 协同服务，**推荐使用此方式**
 >
 >    2. （方式一）npm run node 
 >
->       1.  上述方式启动的是Node服务器，端口为 http://localhost:5000 ，同时运行的是Vue打包后的dist文件
+>       1.  上述方式启动的是Node服务器，端口为 http://localhost:5000 ，同时**运行的是Vue打包后的dist文件**
 >
 >    3. （方式二）npm run dev
 >

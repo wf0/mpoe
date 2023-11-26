@@ -138,33 +138,18 @@ const contentmenuClick = (command) => {
 // 位置计算函数，供外部调用，不然很多地方都需要自己写
 const showContentMenu = (e, customflag) => {
   if (customflag) {
-    position.x = e.x;
-    position.y = e.y;
+    console.log(e);
+    // 获取相对于按钮的位置坐标
+    position.x = e.pageX - e.offsetX;
+    position.y = e.pageY - e.offsetY;
     position.display = "block";
     return;
   }
-
-  // 取元素的实际宽高
-  const currentWidth = e.target.clientWidth;
-  const currentHeight = e.target.clientHeight;
-
-  // 取下级元素的实际宽高(如果还没加载的状态下，会导致其没有值，因为使用了display=none 属性，同时，还需要考虑是否是第一个元素)
-  // 因此替换 查找 className= contentmenu 的div，确保一定是该元素
-  const childrenWidth = e.target.childNodes[0].clientWidth || 150;
-  const childrenHeight = e.target.childNodes[0].clientHeight || 200;
-  // 取当前偏移量
-  const { offsetX, offsetY } = e;
-
-  // 需要处理是否超出右侧边界，超出后，需要向后减掉本身宽度，使其右上角激活
-  const x =
-    offsetX + childrenWidth >= currentWidth ? offsetX - childrenWidth : offsetX;
-  const y =
-    offsetY + childrenHeight >= currentHeight
-      ? offsetY - childrenHeight
-      : offsetY;
-
-  position.x = x + 325;
-  position.y = y + 95;
+  // 获取 e 相对于视口的位置
+  let x = e.pageX;
+  let y = e.pageY;
+  position.x = x;
+  position.y = y;
   position.display = "block";
 };
 
