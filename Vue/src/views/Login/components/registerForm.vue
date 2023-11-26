@@ -110,7 +110,7 @@ const submitForm = async (registerFormRef) => {
 
 // 注册请求
 const registerHadnle = async () => {
-  console.log(registerForm);
+  // console.log(registerForm);
   // API
   const res = await register_API({
     userid: registerForm.userid,

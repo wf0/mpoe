@@ -138,7 +138,6 @@ const contentmenuClick = (command) => {
 // 位置计算函数，供外部调用，不然很多地方都需要自己写
 const showContentMenu = (e, customflag) => {
   if (customflag) {
-    console.log(e);
     // 获取相对于按钮的位置坐标
     position.x = e.pageX - e.offsetX;
     position.y = e.pageY - e.offsetY;

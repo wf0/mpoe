@@ -103,7 +103,7 @@ const editType = ref("text"); // 标记编辑器类型 text 或者 markdown
 
 // 点击选项回调
 const commandhandle = (command) => {
-  console.log("点击了", command);
+  // console.log("点击了", command);
 };
 
 // 收藏点击

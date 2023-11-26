@@ -306,7 +306,7 @@ watch(
      * 不然则取执行父级的问价夹及文件
      */
     let res = await getAllFiles_API({ userid, folderid });
-    console.log("getAllFiles_API", res);
+    // console.log("getAllFiles_API", res);
     if (res.code !== 200) return ElMessage.error(res.msg);
 
     res.data.length &&

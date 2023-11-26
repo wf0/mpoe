@@ -49,7 +49,7 @@ onMounted(() => {
   fileid.value = router.currentRoute.value.params.fileid;
   filename.value = router.currentRoute.value.query.filename;
   username.value = router.currentRoute.value.query.username;
-  console.log(router);
+  // console.log(router);
 });
 </script>
 

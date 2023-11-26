@@ -74,13 +74,13 @@ let sockets = {
 
   message: (content) => {
     // 用户发送消息： 同步数据
-    console.log("# message #", content);
+    // console.log("# message #", content);
     message.push(content);
     // 还要处理未读消息
     if (!messageDialog.value) unread.value++;
     else unread.value = 0;
 
-    console.log(unread.value);
+    // console.log(unread.value);
   },
 };
 
