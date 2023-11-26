@@ -11,20 +11,21 @@
 >    1. npm run installVue ：下载Vue相关依赖
 >    2. npm run installNode ：下载 node 相关依赖
 > 6. 启动方式：
-
 >    1. 协同服务：
 >
->       ​	1. npm run startServer y-webrtc（如果了解rtc的，外网是需要stun服务器做转发的，本应用不支持，因此，推荐使用 y-websocket的协同方式）
-           2. 正常启动 node即可支持 y-websocket 协同服务，**推荐使用此方式**
+>       ```javascript
+>       1. npm run startServer y-webrtc
+>       （了解rtc的都知道，外网是需要stun服务器做转发的，本应用不支持，因此，推荐使用 y-websocket的协同方式）
+>       
+>       2. 正常启动 node即可支持 y-websocket 协同服务，但是本应用没有关联文件，**推荐使用此方式**
+>       ```
 >
->    2. （方式一）npm run node 
->
->       1.  上述方式启动的是Node服务器，端口为 http://localhost:5000 ，同时**运行的是Vue打包后的dist文件**
+>    2. （方式一）npm run node
+>       1. 上述方式启动的是Node服务器，地址为 [http://localhost:5000] ，同时**运行的是Vue打包后的dist文件**
 >
 >    3. （方式二）npm run dev
->
->       1.  上述启动的是vue的开发环境，也可以使用
->       2.  调试后，请重新打包放在 node服务上
+>       1. 上述启动的是vue的开发环境，也可以使用
+>       2. 调试后，请重新打包放在 node服务上
 >
 >    4. 几个注意事项：
 >
@@ -40,12 +41,16 @@
 
 ## 项目地址
 
-gitee: https://gitee.com/wfeng0/mpoe
+gitee: [https://gitee.com/wfeng0/mpoe]
 
 ## 文章地址
 
-yjs+quill协同: http://t.csdn.cn/x7xhk
+yjs+quill协同: [http://t.csdn.cn/x7xhk]
 
-luckysheet协同：https://blog.csdn.net/weixin_47746452/article/details/134240905?spm=1001.2014.3001.5501
+luckysheet协同：[https://blog.csdn.net/weixin_47746452/article/details/134240905?spm=1001.2014.3001.5501]
 
-掘金：https://juejin.cn/post/7298170736480485376
+掘金：[https://juejin.cn/post/7298170736480485376]
+
+## B站视频
+
+B站：[https://www.bilibili.com/video/BV1Sj41117v4/?spm_id_from=333.999.0.0&vd_source=604a25c77e296b4ce29b1e6e6cf03ea6]
