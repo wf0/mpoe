@@ -19,7 +19,7 @@ const initSQL = () => {
     // 导出连接对象
     console.log("连接数据库成功！");
   } catch (error) {
-    console.log("连接数据库失败！", error);
+    console.error("连接数据库失败！", error);
   }
 };
 

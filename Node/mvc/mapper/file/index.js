@@ -46,7 +46,7 @@ exports.findFilesByFilenameMap = async (
 
 exports.shearFileMap = async (userid) =>
   await query(`SELECT *  FROM filestates AS fs,files AS fl 
-    WHERE fs.state='1' AND fs.editor='${userid}' AND fl.fileid=fs.fileid`);
+    WHERE fs.editor='${userid}' AND fl.fileid=fs.fileid`);
 
 exports.joinFileMap = async (fsid, userid, fileid) =>
   await query(

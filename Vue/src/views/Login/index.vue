@@ -129,7 +129,7 @@ onMounted(() => sessionStorage.clear());
 }
 @keyframes login {
   from {
-    transform: translateX(-355px);
+    transform: translateX(calc(-100% - 5px));
   }
   to {
     transform: translateX(-5px);
@@ -141,7 +141,7 @@ onMounted(() => sessionStorage.clear());
     transform: translateX(-5px);
   }
   to {
-    transform: translateX(-355px);
+    transform: translateX(calc(-100% - 5px));
   }
 }
 </style>

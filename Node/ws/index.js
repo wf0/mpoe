@@ -26,7 +26,7 @@ module.exports = () => {
       // _this.websocket.send("rub"); 处理 rub 心跳包的数据
       try {
         // 用户每次编辑，都会触发 data 事件，因此，在这里实现协同数据存储
-        dataBaseHandle(unzip(data));
+        dataBaseHandle(unzip(data), ws.fileid);
         // wss.clients 所有的客户端
         wss.clients.forEach((conn) => {
           if (conn.fileid !== ws.fileid) return; // 如果与我当前操作文件不一致，则不发送消息给你

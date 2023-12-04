@@ -3,21 +3,13 @@ const { univerImpl } = require("../mvc/serviceImpl");
 const { getNanoid } = require("../util/nanoid");
 
 /**
- * 解析 t 操作类型：
- * v 单个单元格刷新
- * rv 范围单元格刷新
- * cg config操作
- * all 通用保存
- * fc 函数链操作
- * drc 删除行或列
- * sha 新建sheet
- * shc 复制sheet
- * shd 删除sheet
- * na 修改工作簿名称
  * ... 更多操作请参考： [https://dream-num.github.io/LuckysheetDocs/zh/guide/operate.html#%E5%8D%95%E5%85%83%E6%A0%BC%E5%88%B7%E6%96%B0]
  */
 let that = null;
 
+let wsfileid = "";
+
+// 定义操作映射
 let _vmap = {
   v: () => v.call(that),
   rv: () => rv.call(that),
@@ -31,10 +23,13 @@ let _vmap = {
   na: () => na.call(that),
 };
 
-exports.dataBaseHandle = (opts) => (
-  (that = JSON.parse(opts)), _vmap[that.t] && _vmap[that.t]()
+exports.dataBaseHandle = (opts, fileid) => (
+  (that = JSON.parse(opts)),
+  (wsfileid = fileid),
+  _vmap[that.t] && _vmap[that.t]()
 );
 
+// * v 单个单元格刷新
 async function v() {
   // 获取cdid
   let cdid = await getNanoid();
@@ -46,12 +41,49 @@ async function v() {
     : // 3. 有则更新、没有则新增
       await univerImpl.insertCellDataImpl(this, cdid);
 }
-async function rv() {}
-async function cg() {}
-async function all() {}
-async function fc() {}
-async function drc() {}
-async function sha() {}
-async function shc() {}
-async function shd() {}
-async function na() {}
+
+// * rv 范围单元格刷新
+async function rv() {
+  console.log("rv", this);
+}
+
+// * cg config操作
+async function cg() {
+  console.log("cg", this);
+}
+
+// * all 通用保存
+async function all() {
+  console.log("all", this);
+}
+
+// * fc 函数链操作
+async function fc() {
+  console.log("fc", this);
+}
+
+// * drc 删除行或列
+async function drc() {
+  console.log("drc", this);
+}
+
+// * sha 新建sheet
+async function sha() {
+  console.log("sha", this);
+}
+
+// * shc 复制sheet
+async function shc() {
+  console.log("shc", this);
+}
+
+// * shd 删除sheet
+async function shd() {
+  console.log("shd", this);
+}
+
+// * na 修改工作簿名称(其实就是 files 表的filename)
+async function na() {
+  // 通过 wsfileid 修改 filename 即可
+  console.log("fileid", wsfileid);
+}
