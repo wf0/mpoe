@@ -34,7 +34,9 @@ exports.createFile = async (req, res, next) => {
     fileownerfolderid
   );
   if (!mapRes.affectedRows) return httpCode(res, 4001); // w文件创建失败
-  return httpCode(res, 200, "文件创建成功", fileid);
+  if (filetype !== "excel") return httpCode(res, 200, "文件创建成功", fileid);
+  req.body.fileid = fileid;
+  next(); // next 是需要添加 excel 的 workbook
 };
 
 // 更新文件信息

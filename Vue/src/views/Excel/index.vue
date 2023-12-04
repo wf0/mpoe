@@ -17,13 +17,14 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-
+import { getExcelInfo_API } from "@/api/univer";
 import router from "@/router";
 // 做文件导入
 import LuckyExcel from "luckyexcel";
-
 // 文件导出
 import { exportExcel } from "./downloadFile";
+import { ElMessage } from "element-plus";
+
 const importFileRef = ref(null);
 
 // 文件导入
@@ -64,21 +65,21 @@ const back = () => {
 };
 
 onMounted(async () => {
+  let fileid = router.currentRoute.value.params.fileid;
+  // 解析luckysheet的workbook基础信息
+  let { code, data } = await getExcelInfo_API({ fileid });
+  if (code !== 200 || !data || !data.length)
+    return ElMessage.error("文件信息获取失败"), router.back();
   // 初始化表格
   var options = {
     container: "luckysheet", //luckysheet为容器id
-    /**
-     * 有个注意点，要想开启共享编辑，必须满足以下3个条件：
-     * allowUpdate 为true
-     * 配置了 loadUrl
-     * 配置了 updateUrl
-     */
+    ...data[0],
     allowUpdate: true,
     loadUrl:
-      import.meta.env.MODE === "development" ? "/baseURL/excel" : "/excel",
-    updateUrl:
-      "ws://localhost:9000?fileid=" + router.currentRoute.value.params.fileid, // 实现传参,
-    // showinfobar: false,
+      import.meta.env.MODE === "development"
+        ? "/baseURL/excel?fileid=" + fileid
+        : "/excel?fileid=" + fileid,
+    updateUrl: "ws://localhost:9000?fileid=" + fileid, // 实现传参,
   };
   luckysheet.create(options);
 });

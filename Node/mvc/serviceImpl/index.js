@@ -3,4 +3,5 @@ const userImpl = require("./user");
 const fileImpl = require("./file");
 const folderImpl = require("./folder");
 const versionImpl = require("./version");
-module.exports = { userImpl, folderImpl, fileImpl, versionImpl };
+const univerImpl = require("./univer");
+module.exports = { userImpl, folderImpl, fileImpl, versionImpl, univerImpl };

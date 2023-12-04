@@ -9,6 +9,8 @@ module.exports = () => {
 
   const { wshandle, exit } = require("./eventHandle");
 
+  const { dataBaseHandle } = require("./dataBaseHandle");
+
   console.log(" WS 服务初始化成功，连接地址：ws://localhost:9000");
 
   wss.on("connection", (ws, req) => {
@@ -23,6 +25,8 @@ module.exports = () => {
     ws.on("message", (data) => {
       // _this.websocket.send("rub"); 处理 rub 心跳包的数据
       try {
+        // 用户每次编辑，都会触发 data 事件，因此，在这里实现协同数据存储
+        dataBaseHandle(unzip(data));
         // wss.clients 所有的客户端
         wss.clients.forEach((conn) => {
           if (conn.fileid !== ws.fileid) return; // 如果与我当前操作文件不一致，则不发送消息给你

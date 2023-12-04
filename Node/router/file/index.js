@@ -1,9 +1,9 @@
 //  文件相关操作
 const router = require("express").Router();
-const { fileCtrl, folderCtrl } = require("../../mvc/controller");
+const { fileCtrl, folderCtrl, univerCtrl } = require("../../mvc/controller");
 
 // 新建文件
-router.post("/createFile", fileCtrl.createFile);
+router.post("/createFile", fileCtrl.createFile, univerCtrl.createWorkBook);
 
 // 删除文件
 router.post("/deleteFile");
