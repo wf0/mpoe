@@ -16,10 +16,10 @@ module.exports = () => {
   wss.on("connection", (ws, req) => {
     let id = Math.random().toString().split(".")[1].slice(0, 3);
     // 解析当前绑定的文件
-    let fileid = req.url.toString().split("?")[1].split("?")[0].split("=")[1];
+    let fileid = req.url.toString().split("?")[1].split("&")[0].split("=")[1];
     // 需要添加自定义属性
     ws.wid = id;
-    ws.fileid = fileid; // 标记 fileid  还
+    ws.fileid = fileid; // 标记 fileid
     ws.wname = "user_" + id;
     console.log("luckysheet 用户连接");
     ws.on("message", (data) => {

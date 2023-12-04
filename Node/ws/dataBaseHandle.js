@@ -1,5 +1,5 @@
 // 协同数据存储
-const { univerImpl } = require("../mvc/serviceImpl");
+const { univerImpl, fileImpl } = require("../mvc/serviceImpl");
 const { getNanoid } = require("../util/nanoid");
 
 /**
@@ -84,6 +84,6 @@ async function shd() {
 
 // * na 修改工作簿名称(其实就是 files 表的filename)
 async function na() {
-  // 通过 wsfileid 修改 filename 即可
-  console.log("fileid", wsfileid);
+  // 通过 wsfileid 修改 filename 即可 fileid, vid, newfilename, newfolderid, state
+  await fileImpl.updateFilesImpl(wsfileid, null, this.v, null, null);
 }

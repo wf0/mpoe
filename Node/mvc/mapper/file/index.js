@@ -70,30 +70,15 @@ exports.updateFileStateMap = async (data) =>
 exports.findFilesByFileidMap = async (fileid) =>
   await query(`SELECT * FROM files WHERE fileid='${fileid}'`);
 
-exports.updateFilesMap = async (
-  fileid,
-  vid,
-  newfilename,
-  newfolderid,
-  state
-) => {
-  if (vid)
-    return await query(
-      `UPDATE files SET currenthead='${vid}' WHERE fileid='${fileid}'`
-    );
-  if (newfilename)
-    return await query(
-      `UPDATE files SET filename='${newfilename}' WHERE fileid='${fileid}'`
-    );
-  if (newfolderid)
-    return await query(
-      `UPDATE files SET fileownerfolderid='${newfolderid}' WHERE fileid='${fileid}'`
-    );
-  if (state)
-    return await query(
-      `UPDATE files SET state='${state}' WHERE fileid='${fileid}'`
-    );
-};
+exports.updateFilesMap = async (fileid, vid, newfilename, newfolderid, state) =>
+  await query(
+    `UPDATE files 
+    ${vid ? `SET currenthead='${vid}'` : ""} 
+    ${newfilename ? `SET filename='${newfilename}'` : ""} 
+    ${newfolderid ? `SET fileownerfolderid='${newfolderid}'` : ""} 
+    ${state ? `SET state='${state}'` : ""} 
+    WHERE fileid='${fileid}'`
+  );
 
 // 只取内容
 exports.getFileContentMap = async (fileid) =>

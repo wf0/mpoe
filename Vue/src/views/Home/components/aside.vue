@@ -132,6 +132,7 @@ const menuClick = (path) => router.push(`/home/${path}`);
     position: absolute;
     left: 10px;
     bottom: 20px;
+    background-color: #FAFBFC;
     i {
       margin-right: 10px;
     }
