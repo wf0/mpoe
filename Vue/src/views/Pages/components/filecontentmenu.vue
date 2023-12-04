@@ -28,7 +28,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { createShearUrl } from "@/util/shear";
 import { execcontent } from "@/util/execcontent";
 import { putFileToRecycle_API } from "@/api/file";
-const emit = defineEmits(["putFileToRecycle"]);
+const emit = defineEmits(["putFileToRecycle", "rename"]);
 
 let menuList = reactive([
   {
@@ -44,6 +44,7 @@ let menuList = reactive([
   {
     name: "重命名",
     icon: "icon-zhongmingming",
+    command: "rename",
   },
   {
     name: "移动至",
@@ -55,6 +56,7 @@ let menuList = reactive([
     color: "#51BDF4",
   },
 ]);
+
 // 标记是否是文件
 let isFile = ref(true);
 
@@ -67,45 +69,56 @@ const position = reactive({
   display: "none", // 默认不显示
 });
 
+// 标记文件或文件夹激活，用于回传参数实现更多功能
+let activeItem = ref(0);
+
 const contentmenuClick = async (command) => {
   let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
-  if (command === "shear") {
-    // 获取当前文件的信息  username, fileid, filename
-    let url = createShearUrl(
-      username,
-      chooseFile.fileid,
-      chooseFile.filename + "." + chooseFile.filesuffix
-    );
-    execcontent(url);
-    ElMessage.success("分享链接已复制到粘贴板");
-  }
-  // 实现删除功能
-  if (command === "delete") {
-    if (!chooseFile.fileid) return;
-    // 给弹窗提示
-    try {
-      await ElMessageBox.confirm(
-        `确认删除 ${chooseFile.filename + "." + chooseFile.filesuffix} 吗？`,
-        "删除文件",
-        {
-          confirmButtonText: "确认",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
+
+  switch (command) {
+    case "shear":
+      // 获取当前文件的信息  username, fileid, filename
+      let url = createShearUrl(
+        username,
+        chooseFile.fileid,
+        chooseFile.filename + "." + chooseFile.filesuffix
       );
-      let { code, msg } = await putFileToRecycle_API({
-        fileid: chooseFile.fileid,
-        userid,
-      });
-      if (code !== 200) return ElMessage.error(msg);
-      ElMessage.success(msg);
-      emit("putFileToRecycle", chooseFile.fileid);
-    } catch (error) {
-      ElMessage.info("已取消");
-    }
-  }
-  // 重命名
-  if (command === "icon-zhongmingming") {
+      execcontent(url);
+      return ElMessage.success("分享链接已复制到粘贴板");
+
+    // 实现删除功能
+    case "delete":
+      if (!chooseFile.fileid) return;
+      // 给弹窗提示
+      try {
+        await ElMessageBox.confirm(
+          `确认删除 ${chooseFile.filename + "." + chooseFile.filesuffix} 吗？`,
+          "删除文件",
+          {
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+        );
+        let { code, msg } = await putFileToRecycle_API({
+          fileid: chooseFile.fileid,
+          userid,
+        });
+        if (code !== 200) return ElMessage.error(msg);
+        ElMessage.success(msg);
+        emit("putFileToRecycle", chooseFile.fileid);
+      } catch (error) {
+        ElMessage.info("已取消");
+      }
+
+      return;
+
+    // 重命名
+    case "rename":
+      return emit("rename", activeItem.value);
+
+    default:
+      break;
   }
 };
 
@@ -136,7 +149,8 @@ const handleFileInfo = (target) => {
 };
 
 // 位置计算函数，供外部调用，不然很多地方都需要自己写
-const showContentMenu = (e) => {
+const showContentMenu = (e, index) => {
+  activeItem.value = index;
   // 一定是基于某一个文件或文件夹的相对定位，因此，需要获取当前元素的位置 在加上偏移量
   let { target } = e;
   handleFileInfo(target);
@@ -146,7 +160,9 @@ const showContentMenu = (e) => {
 };
 
 // 隐藏位置
-const hiddenContentMenu = () => (position.display = "none");
+const hiddenContentMenu = () => (
+  (position.display = "none"), (activeItem.value = 0)
+);
 
 // setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量
 defineExpose({ showContentMenu, hiddenContentMenu });

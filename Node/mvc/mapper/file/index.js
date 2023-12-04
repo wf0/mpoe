@@ -38,10 +38,10 @@ exports.findFilesByFilenameMap = async (
 ) =>
   fileownerfolderid
     ? await query(
-        `SELECT * FROM files WHERE filename='${filename}' AND filetype='${filetype}' AND filesuffix='${filesuffix}' AND owner='${userid}' AND fileownerfolderid="${fileownerfolderid}" `
+        `SELECT * FROM files WHERE state=1 AND  filename='${filename}' AND filetype='${filetype}' AND filesuffix='${filesuffix}' AND owner='${userid}' AND fileownerfolderid="${fileownerfolderid}" `
       )
     : await query(
-        `SELECT * FROM files WHERE filename='${filename}' AND filetype='${filetype}' AND filesuffix='${filesuffix}' AND owner='${userid}'`
+        `SELECT * FROM files WHERE state=1 AND  filename='${filename}' AND filetype='${filetype}' AND filesuffix='${filesuffix}' AND owner='${userid}'`
       );
 
 exports.shearFileMap = async (userid) =>

@@ -15,6 +15,7 @@
     <fileContentMenu
       ref="filecontentmenuRef"
       @putFileToRecycle="putFileToRecycleHandle"
+      @rename="renameHandle"
     />
     <!-- 文档列表 -->
     <div class="pages-list">
@@ -35,7 +36,7 @@
       <div class="pages-list-files">
         <div
           @dblclick="gotoEdit(index, item)"
-          @contextmenu.prevent.stop="showFileContentMenu"
+          @contextmenu.prevent.stop="(e) => showFileContentMenu(e, index)"
           class="pages-list-files-item"
           v-for="(item, index) in pagelist.filter(
             (i) =>
@@ -122,6 +123,11 @@ const getFileIconColor = (suffix, type) => {
   if (suffix === "md") return "#5A96DB";
   if (type === "folder") return "#ffd153";
   return "";
+};
+
+// 文件重命名
+const renameHandle = (index) => {
+  changefilename(pagelist[index]);
 };
 
 // 双击前往编辑页，需要传参
@@ -225,8 +231,8 @@ const hiddenContentMenu = () => {
 };
 
 // 显示文件及文件夹右键菜单
-const showFileContentMenu = (e) => (
-  filecontentmenuRef.value.showContentMenu(e),
+const showFileContentMenu = (e, index) => (
+  filecontentmenuRef.value.showContentMenu(e, index),
   contentmenuRef.value && contentmenuRef.value.hiddenContentMenu()
 );
 
