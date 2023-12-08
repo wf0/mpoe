@@ -94,12 +94,19 @@ export class myQuill {
     // 检索编辑器的内容，格式化返回一个Delta对象。
     // 20231119 单引号会引起数据库插入失败，因此，需要处理单引号问题
     let detail = this.quill.getContents();
-    detail.ops.forEach((i) => (i.insert = i.insert.replace(/[']/g, "#[d]#")));
+
+    console.log(detail);
+    detail.ops.forEach((i) => {
+      // 兼容图片 视频等流媒体内容
+      if (i.insert.image) i.insert = "#image#" + i.insert.image;
+      else i.insert = i.insert.replace(/[']/g, "#[d]#");
+    });
     return detail;
   }
 
   // 初始化文本编辑器
   init(data) {
+    console.log(data);
     let detail = "";
     // 处理数据(最大程度还原数据)
     // 20231119 双引号JSON识别失败
@@ -120,17 +127,20 @@ export class myQuill {
      * emoji 转码
      */
     detail.forEach((i, index) => {
-      i.insert = entitiestoUtf16(
-        i.insert
-          .toString()
-          .trim()
-          .replace(/#n#/g, "\n")
-          .replace(/#r#/g, "\r")
-          .replace(/#t#/g, "\t")
-          // 处理单引号 双引号 JSON 解析报错问题
-          .replace(/#[d]#/g, "'")
-          .replace(/#[s]#/g, '"')
-      );
+      if (i.insert.includes("#image#"))
+        i.insert = { image: i.insert.replace("#image#", "") };
+      else
+        i.insert = entitiestoUtf16(
+          i.insert
+            .toString()
+            .trim()
+            .replace(/#n#/g, "\n")
+            .replace(/#r#/g, "\r")
+            .replace(/#t#/g, "\t")
+            // 处理单引号 双引号 JSON 解析报错问题
+            .replace(/#[d]#/g, "'")
+            .replace(/#[s]#/g, '"')
+        );
     });
     this.quill.setContents(detail);
   }

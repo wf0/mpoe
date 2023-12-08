@@ -15,7 +15,7 @@ exports.getSheetDataByGridKeyMap = async (gridKey) =>
 
 exports.createWorkSheetMap = async (data) =>
   await query(
-    `INSERT INTO worksheets VALUES('${data.gridKey}','${data.name}',${data.index},${data.status},${data.order},0,36,26,19,73)`
+    `INSERT INTO worksheets VALUES('${data.index}','${data.gridKey}','${data.name}',${data.status},${data.order},0,36,26,19,73)`
   );
 
 exports.getCellDataByIndexImpl = async (index) =>

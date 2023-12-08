@@ -74,7 +74,7 @@ const position = reactive({
 });
 
 // 点击事件
-const contentmenuClick = (command) => {
+function contentmenuClick(command) {
   switch (command) {
     // 新建文件夹
     case "folder":
@@ -133,10 +133,10 @@ const contentmenuClick = (command) => {
     default:
       break;
   }
-};
+}
 
 // 位置计算函数，供外部调用，不然很多地方都需要自己写
-const showContentMenu = (e, customflag) => {
+function showContentMenu(e, customflag) {
   if (customflag) {
     // 获取相对于按钮的位置坐标
     position.x = e.pageX - e.offsetX;
@@ -150,13 +150,16 @@ const showContentMenu = (e, customflag) => {
   position.x = x;
   position.y = y;
   position.display = "block";
-};
+}
 
 // 隐藏位置
-const hiddenContentMenu = () => ((position.display = "none"), emit("close"));
+function hiddenContentMenu() {
+  position.display = "none";
+  emit("close");
+}
 
 // 新建文件夹
-const createFolder = async (userid, foldername) => {
+async function createFolder(userid, foldername) {
   // 这里需要判断是不是有父级问价夹id
   let { folderid } = router.currentRoute.value.query;
   // 创建文件夹参数【还需要判断有没有 parentFolderId 】
@@ -168,10 +171,10 @@ const createFolder = async (userid, foldername) => {
   if (res.code !== 200) return ElMessage.error(res.msg);
   ElMessage.success(res.msg);
   return res.data;
-};
+}
 
 // 弹窗点击事件
-const dialogConfirm = async () => {
+async function dialogConfirm() {
   if (!createDialog.input) return ElMessage.warning(createDialog.warning);
   let { userid } = JSON.parse(sessionStorage.getItem("user"));
   let callbackData = {
@@ -216,7 +219,7 @@ const dialogConfirm = async () => {
   createDialog.input = "";
   emit("create", callbackData);
   emit("close");
-};
+}
 
 onMounted(() => {
   // 将该组件放置到 body下
