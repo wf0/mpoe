@@ -22,7 +22,7 @@ import router from "@/router";
 // 做文件导入
 import LuckyExcel from "luckyexcel";
 // 文件导出
-import { exportExcel } from "./downloadFile";
+import { exportExcel } from "../../util/downloadFile";
 import { ElMessage } from "element-plus";
 
 const importFileRef = ref(null);
@@ -92,6 +92,17 @@ onMounted(async () => {
           },
         },
       ],
+    },
+    hook: {
+      sheetActivate(index) {
+        // console.log("sheetActivate", index);
+        // 将点击的这个事件发送给服务端
+        luckysheet.sendMessage({
+          t: "shs",
+          i: null,
+          v: index, // 要切换到的sheet页索引
+        });
+      },
     },
   };
   luckysheet.create(options);
