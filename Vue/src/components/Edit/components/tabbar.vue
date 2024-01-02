@@ -77,6 +77,8 @@ import {
 } from "@/api/file";
 import { utf16toEntities } from "@/util/utf16";
 import { ElMessage } from "element-plus";
+
+import { server_port } from "@/default.config";
 // 定义Quill对象
 let quill = reactive({});
 
@@ -175,7 +177,7 @@ const upload = async (e) => {
   // 创建的本地浏览文件，无法实现 quill 中的url请求，需要借助服务器
   // let url = window.URL.createObjectURL(files[0]);
   // quill.insertEmbed(0, "image", url);
-  let baseURL = "http://localhost:5000";
+  let baseURL = `http://localhost:${server_port}`;
   let { files } = e.target;
   let form = new FormData();
   form.append("file", files[0]);

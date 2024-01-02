@@ -1,9 +1,11 @@
+const { Luckysheet_port } = require("../base.config");
+
 module.exports = () => {
   console.log("等待初始化 WS 服务...");
   // 搭建ws服务器
   const { WebSocketServer } = require("ws");
 
-  const wss = new WebSocketServer({ port: 9000 });
+  const wss = new WebSocketServer({ port: Luckysheet_port });
 
   const { unzip } = require("../util/pako");
 
@@ -11,17 +13,23 @@ module.exports = () => {
 
   const { dataBaseHandle } = require("./dataBaseHandle");
 
-  console.log(" WS 服务初始化成功，连接地址：ws://localhost:9000");
+  console.log(`WS 服务初始化成功，连接地址：ws://localhost:${Luckysheet_port}`);
 
   wss.on("connection", (ws, req) => {
-    let id = Math.random().toString().split(".")[1].slice(0, 3);
+    let id = getWID();
+
     // 解析当前绑定的文件
-    let fileid = req.url.toString().split("?")[1].split("&")[0].split("=")[1];
+    let fileid = getFileID(req.url);
+
     // 需要添加自定义属性
     ws.wid = id;
+
     ws.fileid = fileid; // 标记 fileid
+
     ws.wname = "user_" + id;
+
     console.log("luckysheet 用户连接");
+
     ws.on("message", (data) => {
       // _this.websocket.send("rub"); 处理 rub 心跳包的数据
       try {
@@ -55,3 +63,10 @@ module.exports = () => {
     });
   });
 };
+
+// 获取id
+const getWID = () => Math.random().toString().split(".")[1].slice(0, 3);
+
+// 解析路径
+const getFileID = (url) =>
+  url.toString().split("?")[1].split("&")[0].split("=")[1];

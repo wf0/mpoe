@@ -12,6 +12,8 @@ import { WebsocketProvider } from "y-websocket";
 import { createAwareness } from "@/util/awareness";
 /** 如果不用网络协同方案，则需要自己创建光标 */
 import * as awarenessProtocol from "y-protocols/awareness.js";
+// 引入 yjs 端口
+import { yjs_port } from "@/default.config";
 
 /**
  * 导出封装的 Yjs 类
@@ -36,7 +38,7 @@ export class myYjs {
 
     // 【方案二】 websocket 方式实现协同（已自己搭建 websocket 服务）
     const provider = new WebsocketProvider(
-      "ws://localhost:8000",
+      `ws://localhost:${yjs_port}`,
       roomName,
       this.ydoc
     );

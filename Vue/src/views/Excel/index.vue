@@ -22,9 +22,9 @@ import router from "@/router";
 // 做文件导入
 import LuckyExcel from "luckyexcel";
 // 文件导出
-import { exportExcel } from "../../util/downloadFile";
+import { exportExcel } from "@/util/downloadFile";
 import { ElMessage } from "element-plus";
-
+import { Luckysheet_port } from "@/default.config.js";
 const importFileRef = ref(null);
 
 // 文件导入
@@ -82,7 +82,7 @@ onMounted(async () => {
       import.meta.env.MODE === "development"
         ? "/baseURL/excel?fileid=" + fileid
         : "/excel?fileid=" + fileid,
-    updateUrl: "ws://localhost:9000?fileid=" + fileid, // 实现传参,
+    updateUrl: `ws://localhost:${Luckysheet_port}?fileid=${fileid}`, // 实现传参,
     cellRightClickConfig: {
       customs: [
         {

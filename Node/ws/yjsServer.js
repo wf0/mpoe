@@ -1,10 +1,12 @@
+const { yjs_port } = require("../base.config");
+
 module.exports = () => {
   const { WebSocketServer } = require("ws");
 
-  console.log("Yjs-WS 服务初始化成功，连接地址：ws://localhost:8000");
-
   // 创建 yjs ws 服务
-  const yjsws = new WebSocketServer({ port: 8000 });
+  const yjsws = new WebSocketServer({ port: yjs_port });
+
+  console.log(`Yjs-WS 服务初始化成功，连接地址：ws://localhost:${yjs_port}`);
 
   yjsws.on("connection", (conn, req) => {
     /**

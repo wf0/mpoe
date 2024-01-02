@@ -1,7 +1,13 @@
 // node 服务器 基础配置
 
-// server PORT
+// 业务端口
 const server_port = 5000;
+
+// yjs 协同 ws 服务端口
+const yjs_port = 8000;
+
+// lucky sheet 协同 ws 服务端口
+const Luckysheet_port = 9000;
 
 // mysql
 const sql_config = {
@@ -18,15 +24,15 @@ const JSON_WEB_TOKEN_SECRET =
 
 // 方法监听函数
 const initServeListen = (http) => {
-  http.listen(server_port || 5000, () => {
-    console.log(
-      `Node Serve is running at http://localhost:${server_port || 5000}.`
-    );
+  http.listen(server_port, () => {
+    console.log(`Node Serve is running at http://localhost:${server_port}.`);
   });
 };
 
 module.exports = {
   server_port,
+  yjs_port,
+  Luckysheet_port,
   sql_config,
   JSON_WEB_TOKEN_SECRET,
   initServeListen,
