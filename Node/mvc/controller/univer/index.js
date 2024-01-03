@@ -121,7 +121,10 @@ exports.uploadFile = async (req, res, next) => {
        *  2. 需要循环实现匹配，按照 luckysheet 数据格式添加到 celldata中
        *  3. 使用 xml2json 库进行 xml转 接送 parser.toJson(xml)
        */
+      if (!data.comments) return httpCode(res, 200, "文件解析成功", data); // 不存在该属性，则表示没有处理批注，直接返回
+
       let { sheets, comments } = data;
+
       let xmllist = await xmlToJSON(comments);
 
       // 然后根据数据解析luckysheet数据结构
@@ -132,8 +135,7 @@ exports.uploadFile = async (req, res, next) => {
           // 解析 r c 坐标
           let iRC = getCellRC(i.r_c);
 
-          i.c = iRC.c;
-          i.r = iRC.r;
+          (i.c = iRC.c), (i.r = iRC.r);
 
           if (i.r === r && i.c === c) {
             // 将 value 赋给该cell
@@ -212,14 +214,15 @@ function getCellRC(pos) {
   let r = 0,
     c = 0;
   arr.forEach((s) => {
-    if (!!Number(s)) {
-      // 解析的是数字 表示的是 c
-      r += s;
-    } else {
-      // 解析的是非数字（DE12） 非数字表示是 r
-      let index = str.findIndex((i) => i === s);
-      c === 0 ? (c = index) : (c = 25 + index);
-    }
+    // Number('D') ==> NaN Number('3') ==> 3
+    // Boolean(NaN) == false  Boolean(3) == true
+
+    // 解析的是数字 表示的是 r
+    if (!!Number(s)) return (r += s);
+
+    // 解析的是非数字（DE12） 非数字表示是 c
+    let index = str.findIndex((i) => i === s);
+    c === 0 ? (c = index) : (c = 25 + index);
   });
 
   return { r: Number(r) - 1, c };
