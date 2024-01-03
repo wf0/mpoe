@@ -89,3 +89,13 @@ export const putFileToRecycle_API = (data) => {
   });
 };
 // 删除文件
+
+// 文件的导入
+export const exportFile_API = (data) => {
+  return fetch({
+    url: "/excel/uploadFile",
+    method: "post",
+    "Content-Type": "multipart/form-data",
+    data,
+  });
+};

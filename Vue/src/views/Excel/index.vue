@@ -20,7 +20,7 @@ import { onMounted, ref } from "vue";
 import { getExcelInfo_API } from "@/api/univer";
 import router from "@/router";
 // 做文件导入
-import LuckyExcel from "luckyexcel";
+import { exportFile_API } from "@/api/file";
 // 文件导出
 import { exportExcel } from "@/util/downloadFile";
 import { ElMessage } from "element-plus";
@@ -29,20 +29,13 @@ const importFileRef = ref(null);
 
 // 文件导入
 const importFileHandle = (e) => {
-  let { files } = e.target;
-  LuckyExcel.transformExcelToLucky(files[0], (exportJson, luckysheetfile) => {
-    // 【会丢失协同性】
-    // luckysheet.create({
-    //   container: "luckysheet", // luckysheet is the container id
-    //   data: exportJson.sheets,
-    //   title: exportJson.info.name,
-    //   userInfo: exportJson.info.name.creator,
-    // });
-
-    let { info, sheets } = exportJson;
-
-    luckysheet.setWorkbookName(info.name);
-
+  console.log("文件导入");
+  let formData = new FormData();
+  formData.append("file", e.target.files[0]);
+  exportFile_API(formData).then(({ data }) => {
+    let { info, sheets } = data;
+    console.log(info.name);
+    // luckysheet.setWorkbookName(info.name.toString());
     sheets.forEach((sheet) => {
       // sheet 便是每一个 sheet 页，需要根据实际的数量动态创建
       luckysheet.setSheetAdd({
@@ -55,6 +48,30 @@ const importFileHandle = (e) => {
     // 清空
     importFileRef.value.value = "";
   });
+  // let { files } = e.target;
+  // LuckyExcel.transformExcelToLucky(files[0], (exportJson, luckysheetfile) => {
+  //   console.log('解析后exportJson',exportJson);
+  //   // 【会丢失协同性】
+  //   // luckysheet.create({
+  //   //   container: "luckysheet", // luckysheet is the container id
+  //   //   data: exportJson.sheets,
+  //   //   title: exportJson.info.name,
+  //   //   userInfo: exportJson.info.name.creator,
+  //   // });
+  //   let { info, sheets } = exportJson;
+  //   luckysheet.setWorkbookName(info.name);
+  //   sheets.forEach((sheet) => {
+  //     // sheet 便是每一个 sheet 页，需要根据实际的数量动态创建
+  //     luckysheet.setSheetAdd({
+  //       sheetObject: sheet,
+  //       success: () => {
+  //         console.log("success");
+  //       },
+  //     });
+  //   });
+  //   // 清空
+  //   importFileRef.value.value = "";
+  // });
 };
 
 // 文件导出

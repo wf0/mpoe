@@ -47,4 +47,7 @@ router.post("/updateCellData", univerCtrl.updateCellData);
 // 删除
 router.post("/deleteCellData", univerCtrl.deleteCellData);
 
+// 后台实现 luckyexcel 文件导入，方便解析批注等实现自定义
+router.post("/uploadFile", univerCtrl.uploadFile);
+
 exports.excelRouter = router;

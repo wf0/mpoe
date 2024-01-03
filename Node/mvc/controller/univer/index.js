@@ -1,98 +1,7 @@
-/**
- * 规划 luckysheet  的数据存储方案
- *  1. 使用协同存储
- *
- *   workbook 表：
- * {
- *     "title": "Demo", //工作簿名称
- *     "lang": "ch", //语言
- *     "gridKey": "z123jjsahdj", //唯一key
- *     "data": "[]", //工作表配置 => 指向 worksheet 表
- *     "plugins": "[]", //插件
- *     "column": 60, //空表格默认的列数量
- *     "row": 84, //空表格默认的行数据量
- * }
- *
- *
- * worksheet 表：
- * {
- *     "worksheetID": "z123jjsahdj", // 表主键
- *     "gridKey": "z123jjsahdj", // 关联 workbook 表【外键】
- *     "name": "Cell", //工作表名称
- *     "index": 0, //工作表索引
- *     "status": 1, //激活状态
- *     "order": 0, //工作表的下标
- *     "hide": 0,//是否隐藏
- *     "row": 36, //行数
- *     "column": 18, //列数
- *     "defaultRowHeight": 19, //自定义行高
- *     "defaultColWidth": 73, //自定义列宽
- *     "celldata": [], //初始化使用的单元格数据  => 指向 celldata 表
- *     "config": {
- *         "merge":{}, //合并单元格
- *         "rowlen":{}, //表格行高
- *         "columnlen":{}, //表格列宽
- *         "rowhidden":{}, //隐藏行
- *         "colhidden":{}, //隐藏列
- *         "borderInfo":{}, //边框
- *         "authority":{}, //工作表保护
- *     },
- *     "scrollLeft": 0, //左右滚动条位置
- *     "scrollTop": 315, //上下滚动条位置
- *     "luckysheet_select_save": [], //选中的区域
- *     "calcChain": [],//公式链
- *     "isPivotTable":false,//是否数据透视表
- *     "pivotTable":{},//数据透视表设置
- *     "filter_select": {},//筛选范围
- *     "filter": null,//筛选配置
- *     "luckysheet_alternateformat_save": [], //交替颜色
- *     "luckysheet_alternateformat_save_modelCustom": [], //自定义交替颜色
- *     "luckysheet_conditionformat_save": {},//条件格式
- *     "frozen": {}, //冻结行列配置
- *     "chart": [], //图表配置
- *     "zoomRatio":1, // 缩放比例
- *     "image":[], //图片
- *     "showGridLines": 1, //是否显示网格线
- *     "dataVerification":{} //数据验证配置
- * }
- *
- *
- * celldata 表：
- * {
- *     "worksheetID": "z123jjsahdj", // 表外键
- *     "ct": { //单元格值格式
- *         "fa": "General",  //格式名称为自动格式
- *         "t": "n" //格式类型为数字类型
- *     },
- *     "v": 233, //内容的原始值为 233
- *     "m": 233, //内容的显示值为 233
- *     "bg": "#f6b26b", //背景为 "#f6b26b"
- *     "ff": 1, // 字体为 "Arial"
- *     "fc": "#990000", //字体颜色为 "#990000"
- *     "bl": 1, //字体加粗
- *     "it": 1, //字体斜体
- *     "fs": 9, //字体大小为 9px
- *     "cl": 1, //启用删除线
- *     "ht": 0, //水平居中
- *     "vt": 0, //垂直居中
- *     "tr": 2, //文字旋转 -45°
- *     "tb": 2, //文本自动换行
- *     "ps": { //批注
- *         "left": 92, //批注框左边距
- *         "top": 10, //批注框上边距
- *         "width": 91, //批注框宽度
- *         "height": 48, //批注框高度
- *         "value": "I am a comment", //批准内容
- *         "isshow": true //批注框为显示状态
- *     },
- *     "f": "=SUM(233)" //单元格是一个求和公式
- * }
- *
- * ### 实现的逻辑  fileid => worksheets(gridKey) =>   worksheets(gridKey/worksheetID) =>  celldatas(worksheetID)
- */
-
 const { httpCode, getNanoid } = require("../../../util");
 const { univerImpl } = require("../../serviceImpl");
+const LuckyExcel = require("luckyexcel");
+var { parseString, parseStringPromise } = require("xml2js");
 
 /** 关键函数： fileid 获取初始化 luckysheet方法 */
 exports.initLuckysheet = async (req, res, next) => {
@@ -198,3 +107,120 @@ exports.updateCellData = async (req, res, next) => {};
 
 // 删除
 exports.deleteCellData = async (req, res, next) => {};
+
+// 后台实现 luckyexcel 文件导入，方便解析批注等实现自定义
+exports.uploadFile = async (req, res, next) => {
+  // 解析文件 进行转存
+  LuckyExcel.transformExcelToLucky(
+    req.files.file.data,
+    async (exportJson, luckysheetfile) => {
+      let data = JSON.parse(JSON.stringify(exportJson));
+      /**
+       * 此处实现批注
+       *  1. 返回的exportJson 中已经将批注解析到 comments 对象中，包含xml index，
+       *  2. 需要循环实现匹配，按照 luckysheet 数据格式添加到 celldata中
+       *  3. 使用 xml2json 库进行 xml转 接送 parser.toJson(xml)
+       */
+      let { sheets, comments } = data;
+      let xmllist = await xmlToJSON(comments);
+
+      // 然后根据数据解析luckysheet数据结构
+      sheets.forEach(({ index, celldata }) => {
+        let i = xmllist.find((i) => i.sheetIndex === index);
+        if (!i) return;
+        celldata.forEach(({ r, c, v }) => {
+          // 解析 r c 坐标
+          let iRC = getCellRC(i.r_c);
+
+          i.c = iRC.c;
+          i.r = iRC.r;
+
+          if (i.r === r && i.c === c) {
+            // 将 value 赋给该cell
+            v.ps = { value: i.value, isshow: false };
+          }
+        });
+      });
+
+      delete data.comments;
+
+      // 返回结果
+      httpCode(res, 200, "文件解析成功", data);
+    }
+  );
+};
+
+// 辅助函数-XML转JSON
+async function xmlToJSON(list) {
+  let data = [];
+  return new Promise(async (resolve, reject) => {
+    try {
+      list.forEach(async ({ sheetIndex, xml }) => {
+        let { comments } = await parseStringPromise(xml);
+        let commentlist = comments.commentList[0].comment;
+        commentlist.forEach((item) => {
+          data.push({
+            sheetIndex,
+            r: 0,
+            c: 0,
+            r_c: item.$.ref,
+            value: item.text[0].r[1].t[0]._,
+          });
+        });
+      });
+      resolve(data);
+    } catch (error) {
+      console.error("文件解析失败");
+      reject();
+    }
+  });
+}
+
+// 辅助函数-D3转 {r:0,c:0}
+function getCellRC(pos) {
+  let str = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+
+  // pos : D3 =>> ["D","3"]
+  let arr = pos.split("");
+  let r = 0,
+    c = 0;
+  arr.forEach((s) => {
+    if (!!Number(s)) {
+      // 解析的是数字 表示的是 c
+      r += s;
+    } else {
+      // 解析的是非数字（DE12） 非数字表示是 r
+      let index = str.findIndex((i) => i === s);
+      c === 0 ? (c = index) : (c = 25 + index);
+    }
+  });
+
+  return { r: Number(r) - 1, c };
+}
