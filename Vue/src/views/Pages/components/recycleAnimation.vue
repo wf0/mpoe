@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { onMounted, getCurrentInstance, watch } from "vue";
+import { onMounted, getCurrentInstance, watch, nextTick } from "vue";
 
 let { recyclePosition } = defineProps({
   recyclePosition: {
@@ -37,8 +37,15 @@ watch(
 //   folder: { icon: '"icon-24gf-folderOpen"', color: "#ffd153" },
 // };
 onMounted(() => {
-  // 将该组件放置到 body下
-  document.querySelector("body").append(getCurrentInstance().ctx.$el);
+  let instance = getCurrentInstance();
+
+  // 将该组件放置到 body下 兼容
+  const body = document.querySelector("body");
+  if (body.append) {
+    body.append(instance.vnode.el);
+  } else {
+    body.appendChild(instance.vnode.el);
+  }
 });
 </script>
 

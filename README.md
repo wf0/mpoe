@@ -101,6 +101,8 @@ export const Luckysheet_port = 9000;
  	<!-- 引入 luck Sheet（下列两个地址需要重新定位，确保文件引入正确） -->
 	<script src="../libs/luckysheet/plugins/js/plugin.js"></script>
   	<script src="../libs/luckysheet/luckysheet.umd.js"></script>
+
+4. 打包后，public 下的libs目录会一起打包到 dist 中，luckysheet 如果没有复制到node中，则引的是当前目录下的 libs 即可
 ```
 
 ## 项目相关截图

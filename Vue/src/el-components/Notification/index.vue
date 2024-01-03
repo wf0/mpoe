@@ -152,14 +152,12 @@ const clickHandle = () => emit("click");
 
 onMounted(() => {
   // 将组件直接放到body下,防止 position: absolute 定位问题;
-  nextTick(() => {
-    const body = document.querySelector("body");
-    if (body.append) {
-      body.append(dom.value);
-    } else {
-      body.appendChild(dom.value);
-    }
-  });
+  const body = document.querySelector("body");
+  if (body.append) {
+    body.append(dom.value);
+  } else {
+    body.appendChild(dom.value);
+  }
 });
 </script>
 

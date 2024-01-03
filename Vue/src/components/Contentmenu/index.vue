@@ -52,7 +52,13 @@
 
 <script setup>
 import { menuList } from "./config";
-import { reactive, defineExpose, onMounted, getCurrentInstance } from "vue";
+import {
+  reactive,
+  defineExpose,
+  onMounted,
+  getCurrentInstance,
+  nextTick,
+} from "vue";
 import { createFolder_API } from "@/api/folder";
 import { createFile_API } from "@/api/file";
 import { ElMessage } from "element-plus";
@@ -222,8 +228,15 @@ async function dialogConfirm() {
 }
 
 onMounted(() => {
-  // 将该组件放置到 body下
-  document.querySelector("body").append(getCurrentInstance().ctx.$el);
+  let instance = getCurrentInstance();
+  // 将该组件放置到 body下 兼容
+  const body = document.querySelector("body");
+  console.log("instance.vnode.el", instance);
+  if (body.append) {
+    body.append(instance.vnode.el);
+  } else {
+    body.appendChild(instance.vnode.el);
+  }
 });
 
 // setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量

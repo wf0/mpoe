@@ -1,11 +1,22 @@
 // 初始化 socket 服务器
-module.exports = (io) => {
+const socketIO = require("socket.io");
+
+module.exports = (http) => {
+  const io = socketIO(http, {
+    allowEIO3: true,
+    cors: {
+      origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
+  });
+
   console.log("Socket Server is running...");
-  let userlist = [];
-  // 闭包环境可提供变量
+
+  let userlist = []; // 闭包环境可提供变量
+
   io.on("connection", (socket) => {
     console.log("用户连接...");
-    console.log();
 
     socket.on("init", ({ user, fileid }) => {
       // 加入群聊
