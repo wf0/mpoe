@@ -1,4 +1,4 @@
-const { httpCode, getNanoid } = require("../../../util");
+const { httpCode, getNanoid, logger } = require("../../../util");
 // 引入文件 impl
 const { fileImpl, versionImpl } = require("../../serviceImpl");
 
@@ -29,7 +29,7 @@ exports.createVersion = async (req, res, next) => {
     let difftime = dayjs().unix() - dayjs(versionRes[0].createtime).unix(); // 差值是秒
     if (difftime > overtime) {
       // 如果超过了这个时长，则需要创建新的版本了，不然就执行更新就行了
-      console.log("超过时长，创建新版本");
+      logger.warn("超过时长，创建新版本");
       let createRes = await versionImpl.createVersionImpl(
         userid,
         fileid,
@@ -42,7 +42,7 @@ exports.createVersion = async (req, res, next) => {
       return next(); // 进入更新文件信息
     }
     // 更新版本内容
-    console.log("未超过时长，更新版本内容");
+    logger.info("未超过时长，更新版本内容");
     let updateRes = await versionImpl.updateVersionImpl(
       findRes[0].currenthead,
       content,

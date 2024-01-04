@@ -1,7 +1,8 @@
 // 引入 mysql
 const mysql = require("mysql");
-
 const { sql_config } = require("../base.config.js");
+const { logger } = require("../util");
+
 let conn = null;
 
 const initSQL = () => {
@@ -15,16 +16,17 @@ const initSQL = () => {
     });
 
     // 连接数据库
-    conn.connect();
-    // 导出连接对象
-    console.log("连接数据库成功！");
+    conn.connect((err) => {
+      if (err) return logger.error("数据库连接失败 ==>", err);
+      logger.info("连接数据库成功！");
+    });
   } catch (error) {
-    console.error("连接数据库失败！", error);
+    logger.error("连接数据库失败 ==>", error);
   }
 };
 
 const query = (sql) => {
-  console.log(sql);
+  logger.info(sql);
   return new Promise((resolve, reject) => {
     try {
       conn.query(sql, (err, result) => {
@@ -33,6 +35,7 @@ const query = (sql) => {
       });
     } catch (err) {
       reject(err);
+      logger.error(err);
     }
   });
 };

@@ -1,4 +1,5 @@
 // node 服务器 基础配置
+const { logger } = require("./util");
 
 // 业务端口
 const server_port = 5000;
@@ -25,7 +26,7 @@ const JSON_WEB_TOKEN_SECRET =
 // 方法监听函数
 const initServeListen = (http) => {
   http.listen(server_port, () => {
-    console.log(`Node Serve is running at http://localhost:${server_port}.`);
+    logger.success(`Node Serve is running at http://localhost:${server_port}.`);
   });
 };
 

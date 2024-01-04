@@ -105,7 +105,6 @@ exports.findFiles = async (req, res, next) => {
 
 // 上传文件
 exports.uploadFile = async (req, res, next) => {
-  console.log(req.files);
   if (req.files === null)
     return res.status(400).json({ code: 400, msg: "no file uploaded" });
   // 不然转存数据

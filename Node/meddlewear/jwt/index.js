@@ -11,7 +11,6 @@ const jwt_verify = (token) => promisify(verify)(token, JSON_WEB_TOKEN_SECRET);
 
 // jwt 初始化中间件
 const initJWT = async (req, res, next) => {
-  console.log("请求的路由", req.url);
   // 路由白名单
   const whitePath = ["/user/login", "/user/register", "/favicon.ico"];
   if (

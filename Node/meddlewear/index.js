@@ -2,6 +2,8 @@
 const jwt = require("./jwt");
 const fileupload = require("express-fileupload");
 const path = require("path");
+const { initLogger } = require("./logger");
+
 module.exports = {
   initExpressMeddleWear: (app, express) => {
     app.use(express.urlencoded({ extended: false }));
@@ -17,6 +19,9 @@ module.exports = {
 
     // JWT 中间件
     // app.use(jwt.initJWT);
+
+    // logger
+    // app.use(initLogger);
 
     // File upload middleware
     app.use(fileupload());

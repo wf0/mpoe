@@ -1,7 +1,7 @@
 const { Luckysheet_port } = require("../base.config");
-
+const { logger } = require("../util");
 module.exports = () => {
-  console.log("等待初始化 WS 服务...");
+  logger.info("等待初始化 WS 服务...");
   // 搭建ws服务器
   const { WebSocketServer } = require("ws");
 
@@ -13,7 +13,9 @@ module.exports = () => {
 
   const { dataBaseHandle } = require("./dataBaseHandle");
 
-  console.log(`WS 服务初始化成功，连接地址：ws://localhost:${Luckysheet_port}`);
+  logger.success(
+    `WS 服务初始化成功，连接地址：ws://localhost:${Luckysheet_port}`
+  );
 
   wss.on("connection", (ws, req) => {
     let id = getWID();
@@ -28,7 +30,7 @@ module.exports = () => {
 
     ws.wname = "user_" + id;
 
-    console.log("luckysheet 用户连接");
+    logger.info("luckysheet 用户连接");
 
     ws.on("message", (data) => {
       // _this.websocket.send("rub"); 处理 rub 心跳包的数据
@@ -43,14 +45,13 @@ module.exports = () => {
           wshandle.call(conn, { id: ws.wid, name: ws.wname }, unzip(data));
         });
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     });
 
     ws.on("close", () => {
       try {
-        console.log("luckysheet 协同用户关闭连接");
-
+        logger.warn("luckysheet 协同用户关闭连接");
         // 实现用户退出
         wss.clients.forEach((conn) => {
           if (conn.wid === ws.wid) return;
@@ -58,7 +59,7 @@ module.exports = () => {
           exit.call(conn, ws.wid);
         });
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     });
   });

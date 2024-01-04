@@ -1,6 +1,6 @@
 // node 采用模块化，接口形式为 SSM 三层结构，controller + serviceImpl + xmlMapper
-
-console.log(" ### 开始初始化 node 方法 ###  ");
+const { logger } = require("./util");
+logger.info("开始初始化 node 方法");
 
 const express = require("express");
 

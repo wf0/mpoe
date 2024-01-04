@@ -1,12 +1,12 @@
 const { yjs_port } = require("../base.config");
-
+const { logger } = require("../util");
 module.exports = () => {
   const { WebSocketServer } = require("ws");
 
   // 创建 yjs ws 服务
   const yjsws = new WebSocketServer({ port: yjs_port });
 
-  console.log(`Yjs-WS 服务初始化成功，连接地址：ws://localhost:${yjs_port}`);
+  logger.success(`Yjs-WS 服务初始化成功，连接地址：ws://localhost:${yjs_port}`);
 
   yjsws.on("connection", (conn, req) => {
     /**
@@ -14,7 +14,7 @@ module.exports = () => {
      *  1. 参数 fileid 在req.url 中，
      *  2. 需要给用户添加自定义参数，需要与用户id绑定
      */
-    console.log("yjs 客户端连接");
+    logger.info("yjs 客户端连接");
     conn.onmessage = (event) => {
       yjsws.clients.forEach((conn) => {
         conn.send(event.data);
@@ -22,7 +22,7 @@ module.exports = () => {
     };
 
     conn.on("close", (conn) => {
-      console.log("yjs 用户关闭连接");
+      logger.warn("yjs 用户关闭连接");
     });
   });
 };
