@@ -61,7 +61,7 @@ exports.updateFiles = async (req, res, next) => {
 // 放入回收站
 exports.putFileToRecycle = async (req, res, next) => {
   let { fileid, userid } = req.body;
-  if (!fileid || !userid) return httpCode(req); // 参数缺失
+  if (!fileid || !userid) return httpCode(res); // 参数缺失
   if (!(await isOwnerFile(fileid, userid))) return httpCode(res, 7001); // 无权限删除
   // 执行更新操作
   let stateRes = await fileImpl.updateFilesImpl(fileid, null, null, null, 2); // 设置 files 基础信息表 state 为 2

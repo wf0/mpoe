@@ -231,7 +231,6 @@ onMounted(() => {
   let instance = getCurrentInstance();
   // 将该组件放置到 body下 兼容
   const body = document.querySelector("body");
-  console.log("instance.vnode.el", instance);
   if (body.append) {
     body.append(instance.vnode.el);
   } else {

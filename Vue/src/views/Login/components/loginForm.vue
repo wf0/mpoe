@@ -40,6 +40,15 @@
       </el-input>
     </el-form-item>
 
+    <!-- 验证码 -->
+    <!-- <el-form-item prop="userid">
+      <el-input placeholder="请输入账号" v-model="loginForm.userid">
+        <template #prefix>
+          <el-icon><User /></el-icon>
+        </template>
+      </el-input>
+    </el-form-item> -->
+
     <el-form-item>
       <el-button
         type="primary"

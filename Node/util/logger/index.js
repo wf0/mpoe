@@ -80,9 +80,4 @@ const writeLogger = (time, message, type) => {
   }
 };
 
-/**
- * 测试 example
- */
-// logger.error("123", "567", "999");
-
 module.exports = { logger };

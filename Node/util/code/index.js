@@ -1,4 +1,7 @@
 // 封装系统返回 code 对象
+
+const { logger } = require("../logger/index");
+
 exports.httpCode = (res, code, msg, data) => {
   const codeMap = [
     {
@@ -63,6 +66,9 @@ exports.httpCode = (res, code, msg, data) => {
       msg: "操作失败",
     },
   ];
+
+  // 用户响应需要记录日志
+  logger.debug("[status]", code || 500, "[msg]", msg || "参数缺失");
   if (!code) return res.status(500).json({ code: 500, msg: "参数缺失" });
   return res.json(codeMap.find((i) => i.code === code));
 };
