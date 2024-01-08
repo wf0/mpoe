@@ -7,9 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "node": "cd node && node app.js",
     "dev": "cd vue && yarn dev",
+    "sheet": "cd luckysheet && yarn dev",
     "build": "cd vue && yarn build",
     "installVue": "cd vue && npm install",
     "installNode": "cd node && npm install",
+    "installSheet": "cd Luckysheet && npm install",
     "startServer": "cd vue/node_modules/y-webrtc/bin && node server.js"
   },
   "keywords": [],

@@ -1,4 +1,24 @@
-# 多人协同编辑器开发 MPOE（Multi person online edit）
+# 多人协同编辑器项目说明
+
+## 项目目录结构
+
+> + Luckysheet
+>   + 本项目使用的Luckysheet二开源码，考虑到大家可能基于项目做luckysheet的二开，因此，将该项目也传git上。【重点：该目录与项目无关哈，只是一个二开的源码，如果大家不用二开，直接删了也不影响项目运行。因此，不会提供太多的方法，如果大家有需要，但是不懂的，可以直接留言】
+>
+> + Mysql
+>   + 数据库 database.sql
+>   + README.md 数据库表结构说明
+> + Node
+>   + 后台服务应用
+> + Vue
+>   + 前端应用
+> + .gitignore
+> + LICENSE
+> + package-lock.json
+> + package.json
+> + README.md
+
+
 
 ## 项目端口说明
 
@@ -63,7 +83,7 @@ export const Luckysheet_port = 9000;
 >       ```javascript
 >       1. npm run startServer y-webrtc
 >       (了解rtc的都知道,外网是需要stun服务器做转发的,本应用不支持,推荐使用 y-websocket的协同方式)
->       
+>
 >       2. 正常启动 node 即可支持 y-websocket 协同服务,但是本应用没有关联文件（更多个性化需要大家自行实现）**推荐使用此方式**
 >       ```
 >
@@ -93,23 +113,25 @@ export const Luckysheet_port = 9000;
 
 ```javascript
 1. 打包命令
-	npm run build
+    npm run build
     
 2. 生成 dist 目录，放置到 node/public 下
 
 3. 检查并调整script引用地址为node结构下的luckysheet地址
- 	<!-- 引入 luck Sheet（下列两个地址需要重新定位，确保文件引入正确） -->
-	<script src="../libs/luckysheet/plugins/js/plugin.js"></script>
-  	<script src="../libs/luckysheet/luckysheet.umd.js"></script>
+    <!-- 引入 luck Sheet（下列两个地址需要重新定位，确保文件引入正确） -->
+    <script src="../libs/luckysheet/plugins/js/plugin.js"></script>
+    <script src="../libs/luckysheet/luckysheet.umd.js"></script>
 
 4. 打包后，public 下的libs目录会一起打包到 dist 中，luckysheet 如果没有复制到node中，则引的是当前目录下的 libs 即可
 ```
 
-## 项目相关截图
+
 
 ## 项目地址
 
 gitee: [https://gitee.com/wfeng0/mpoe](https://gitee.com/wfeng0/mpoe)
+
+
 
 ## 文章地址
 
@@ -118,6 +140,8 @@ yjs+quill协同: [https://blog.csdn.net/weixin_47746452/article/details/13240271
 luckysheet协同：[https://blog.csdn.net/weixin_47746452/article/details/134240905?spm=1001.2014.3001.5501](https://blog.csdn.net/weixin_47746452/article/details/134240905?spm=1001.2014.3001.5501)
 
 掘金：[https://juejin.cn/post/7298170736480485376](https://juejin.cn/post/7298170736480485376)
+
+
 
 ## B站视频
 
