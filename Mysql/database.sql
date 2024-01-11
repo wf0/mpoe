@@ -65,7 +65,7 @@ CREATE TABLE `files` (
   KEY `fileownerfolderid` (`fileownerfolderid`),
   CONSTRAINT `files_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`userid`),
   CONSTRAINT `files_ibfk_2` FOREIGN KEY (`fileownerfolderid`) REFERENCES `folders` (`folderid`)
-) ENGINE=InnoDB AUTO_INCREMENT=178 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=189 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `filestates` */
 
@@ -95,6 +95,7 @@ CREATE TABLE `folders` (
   `foldername` varchar(255) DEFAULT NULL COMMENT '文件夹名称',
   `parentfolderid` varchar(255) DEFAULT NULL COMMENT '父级文件夹id',
   `owner` varchar(255) DEFAULT NULL COMMENT '拥有者',
+  `state` int(255) DEFAULT '1' COMMENT '1：正常、2：回收站、3：作废',
   `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`folderid`),
   KEY `index` (`index`),
@@ -102,7 +103,7 @@ CREATE TABLE `folders` (
   KEY `parentfolderid` (`parentfolderid`),
   CONSTRAINT `folders_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`userid`),
   CONSTRAINT `folders_ibfk_2` FOREIGN KEY (`parentfolderid`) REFERENCES `folders` (`folderid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `users` */
 
@@ -137,7 +138,7 @@ CREATE TABLE `versions` (
   KEY `fileid` (`fileid`),
   CONSTRAINT `versions_ibfk_1` FOREIGN KEY (`lasteditor`) REFERENCES `users` (`userid`),
   CONSTRAINT `versions_ibfk_2` FOREIGN KEY (`fileid`) REFERENCES `files` (`fileid`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `workbooks` */
 
