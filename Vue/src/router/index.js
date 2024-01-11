@@ -100,8 +100,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 考虑是否登录
   const user = JSON.parse(sessionStorage.getItem("user"));
+  const local = JSON.parse(localStorage.getItem("user"));
+
   if (to.path !== "/login") {
-    if (!user) {
+    if (!user && !local) {
       ElMessage.error("请先登录");
       // 进行数据转存
       if (to.matched[0]?.path === "/invited/:fileid") {

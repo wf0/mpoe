@@ -20,7 +20,6 @@
       </div>
     </div>
 
-    <recycleAnimationVue :recyclePosition="recyclePosition" />
   </div>
 </template>
 
@@ -30,7 +29,6 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { createShearUrl } from "@/util/shear";
 import { execcontent } from "@/util/execcontent";
 import { putFileToRecycle_API } from "@/api/file";
-import recycleAnimationVue from "./recycleAnimation.vue";
 
 const emit = defineEmits(["putFileToRecycle", "rename"]);
 
@@ -73,11 +71,7 @@ const position = reactive({
   display: "none", // 默认不显示
 });
 
-let recyclePosition = reactive({
-  x: 0,
-  y: 0,
-  show: false, // 默认不显示
-});
+
 
 // 标记文件或文件夹激活，用于回传参数实现更多功能
 let activeItem = ref(0);
@@ -99,12 +93,7 @@ const contentmenuClick = async (e, command) => {
     // 实现删除功能
     case "delete":
       // 开启动画
-      let { clientX, clientY } = e;
-      recyclePosition.x = clientX;
-      recyclePosition.y = clientY;
-      recyclePosition.show = true;
       // 还需要传递 文件类型
-      return;
       if (!chooseFile.fileid) return;
       // 给弹窗提示
       try {

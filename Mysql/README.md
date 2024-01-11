@@ -26,6 +26,7 @@
     - foldername 文件夹名称
     - parentfolderid 父级文件夹【通过该字段，可以构成树结构】
     - owner 拥有者（文件夹创建者）
+    - state  文件状态 【1：正常、2：回收站、3：作废，回收站可以恢复，作废的可以通过vip恢复，提供云端文件功能】
     - createtime 创建时间
 
 ## 版本历史 versions

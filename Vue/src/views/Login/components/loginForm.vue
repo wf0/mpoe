@@ -61,10 +61,18 @@
 
     <el-form-item>
       <div class="registerTip">
-        还没有账号？请
-        <el-link type="warning" @click="toRegister(loginFormRef)">
-          前往注册
-        </el-link>
+        <span>
+          <el-checkbox
+            v-model="loginForm.remember"
+            size="small"
+          />记住账号</span
+        >
+        <span>
+          还没有账号？请
+          <el-link type="warning" @click="toRegister(loginFormRef)">
+            前往注册
+          </el-link></span
+        >
       </div>
     </el-form-item>
   </el-form>
@@ -83,6 +91,7 @@ const loginForm = reactive({
   userid: "", // 账号
   password: "", // 密码
   checkpass: "", // 密码
+  remember: false, // 记住账号
 });
 
 const loginFormRef = ref(null);
@@ -132,8 +141,13 @@ const loginHandle = async () => {
   let user = JSON.parse(JSON.stringify(res.data));
   let { token } = user;
   delete user.token;
+
   sessionStorage.setItem("token", token);
   sessionStorage.setItem("user", JSON.stringify(user));
+  if (loginForm.remember) {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+  }
   if (router.currentRoute.value.query.fileid) {
     let { fileid, filename, username } = router.currentRoute.value.query;
     return router.push({
@@ -163,6 +177,15 @@ onMounted(() => {
   width: 100%;
   color: #ccc;
   text-align: right;
+  display: flex;
+  justify-content: space-between;
+  span {
+    display: flex;
+    align-items: center;
+  }
+  .el-checkbox {
+    margin-right: 5px;
+  }
 }
 /deep/.el-link.is-underline:hover:after {
   border: 0 none;

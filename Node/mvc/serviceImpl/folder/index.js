@@ -9,8 +9,8 @@ exports.createFolderImpl = async (
 ) =>
   await folderMap.createFolderMap(folderid, foldername, userid, parentfolderid);
 
-exports.findFolderImpl = async (userid, folderid) =>
-  await folderMap.findFolderMap(userid, folderid);
+exports.findFolderImpl = async (userid, folderid, state) =>
+  await folderMap.findFolderMap(userid, folderid, state);
 
 // 辅助函数（查找用户下的指定文件名）
 exports.findFolderByNameImpl = async (userid, foldername) =>

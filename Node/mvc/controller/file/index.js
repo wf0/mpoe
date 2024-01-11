@@ -99,7 +99,9 @@ exports.findFiles = async (req, res, next) => {
   let _res = JSON.parse(JSON.stringify(mapRes));
   _res.forEach((i) => delete i.index);
   result = _res.map((i) => i);
+  // 将参数传递到下一个路由
   req.body.result = result;
+  req.body.state = state;
   next();
 };
 

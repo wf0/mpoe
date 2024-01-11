@@ -49,8 +49,8 @@ exports.findFolder = async (req, res, next) => {
    * 如果 folderid 不存在，则表示查找一级文件夹，指的是 parentfolderid ='' 的文件夹
    * 不然就是查找 parentfolderid = folderid 的文件夹
    */
-  let { userid, folderid, result } = req.body;
-  let mapRes = await folderImpl.findFolderImpl(userid, folderid);
+  let { userid, folderid, result, state } = req.body;
+  let mapRes = await folderImpl.findFolderImpl(userid, folderid, state);
   let mapResMap = JSON.parse(JSON.stringify(mapRes));
   mapResMap.forEach((i) => delete i.index); // 删除不必要属性
   return httpCode(res, 200, "查找成功", [...result, ...mapResMap]);
