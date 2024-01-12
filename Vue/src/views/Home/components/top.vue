@@ -182,7 +182,7 @@ const fileChange = async (e) => {
 
 // 点击确认回调
 const elMessageConfirmHandle = async (file) => {
-  let userid = JSON.parse(localStorage.getItem("user")).userid;
+  let userid = JSON.parse(sessionStorage.getItem("user")).userid;
   // 解析文件名称及类型 目前支持 markdow、excel
   let filename = file.name.split(".")[0];
   // filesuffix filetype fileownerfolderid
