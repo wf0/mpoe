@@ -84,58 +84,10 @@ const back = () => {
   router.back();
 };
 
-// 辅助函数-D3转 {r:0,c:0}
-function getCellRC(pos) {
-  let str = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
-
-  // pos : D3 =>> ["D","3"]
-  let arr = pos.split("");
-  let r = 0,
-    c = 0;
-  arr.forEach((s) => {
-    // Number('D') ==> NaN Number('3') ==> 3
-    // Boolean(NaN) == false  Boolean(3) == true
-
-    // 解析的是数字 表示的是 r
-    if (!!Number(s)) return (r += s);
-
-    // 解析的是非数字（DE12） 非数字表示是 c
-    let index = str.findIndex((i) => i === s);
-    c === 0 ? (c = index) : (c = 25 + index);
-  });
-
-  return { r: Number(r) - 1, c };
-}
-
 onMounted(async () => {
   let fileid = router.currentRoute.value.params.fileid;
+  let env = import.meta.env.MODE === "development";
+
   // 解析luckysheet的workbook基础信息
   let { code, data } = await getExcelInfo_API({ fileid });
   if (code !== 200 || !data || !data.length)
@@ -145,12 +97,8 @@ onMounted(async () => {
     container: "luckysheet", //luckysheet为容器id
     ...data[0],
     allowUpdate: true,
-    loadUrl:
-      import.meta.env.MODE === "development"
-        ? "/baseURL/excel?fileid=" + fileid
-        : "/excel?fileid=" + fileid,
+    loadUrl: `${env ? "/baseURL" : ""}/excel?fileid=${fileid}`,
     updateUrl: `ws://localhost:${Luckysheet_port}?fileid=${fileid}`, // 实现传参,
-
     hook: {
       sheetActivate(index) {
         // 将点击的这个事件发送给服务端
