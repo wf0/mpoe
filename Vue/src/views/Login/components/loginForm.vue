@@ -145,8 +145,9 @@ const loginHandle = async () => {
   sessionStorage.setItem("token", token);
   sessionStorage.setItem("user", JSON.stringify(user));
   if (loginForm.remember) {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    // 目前还有其他逻辑未实现
+    // localStorage.setItem("token", token);
+    // localStorage.setItem("user", JSON.stringify(user));
   }
   if (router.currentRoute.value.query.fileid) {
     let { fileid, filename, username } = router.currentRoute.value.query;

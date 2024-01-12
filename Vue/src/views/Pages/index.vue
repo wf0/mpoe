@@ -253,11 +253,13 @@ const createHandle = ({ name, id, type, suffix }) => {
     txt: "icon-wenben1",
     xlsx: "icon-excel",
   };
+
   // 添加文件类型
   pagelist.push({
     type,
     fileid: id,
     filename: name,
+    filesuffix: suffix,
     suffix,
     icon: iconmap[suffix],
   });

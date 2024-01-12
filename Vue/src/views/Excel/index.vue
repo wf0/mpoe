@@ -150,39 +150,9 @@ onMounted(async () => {
         ? "/baseURL/excel?fileid=" + fileid
         : "/excel?fileid=" + fileid,
     updateUrl: `ws://localhost:${Luckysheet_port}?fileid=${fileid}`, // 实现传参,
-    cellRightClickConfig: {
-      customs: [
-        {
-          title: "自定义右键菜单",
-          onClick: function (clickEvent, event, params) {
-            console.log("function test click", clickEvent, event, params);
-          },
-        },
-      ],
-    },
+
     hook: {
-      cellUpdateBefore(r, c, value) {
-        if (!value.includes("SUM")) return;
-        let map = [];
-        let arr = value.replace("=SUM(", "").replace(")", "").split(",");
-        console.log("当前单元格依赖 ", arr);
-
-        arr.forEach((i) => map.push(getCellRC(i)));
-
-        // map 表示当前单元格所引用的行列
-        map.forEach(({ r, c }) => {
-          // 获取所有数据的函数
-          let { v } = luckysheet
-            .getAllSheets()[0]
-            .celldata.find((v) => v.r == r && v.c === c);
-          if (!v.f) return;
-          // 如果他也有公式，则继续分析它的公式是否具有循环引用
-          console.log("当前单元格依赖", v.f);
-          console.log("继续分析它的依赖，直到没有依赖或构成循环依赖");
-        });
-      },
       sheetActivate(index) {
-        // console.log("sheetActivate", index);
         // 将点击的这个事件发送给服务端
         luckysheet.sendMessage({
           t: "shs",
