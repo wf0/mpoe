@@ -48,30 +48,6 @@ const importFileHandle = (e) => {
     // 清空
     importFileRef.value.value = "";
   });
-  // let { files } = e.target;
-  // LuckyExcel.transformExcelToLucky(files[0], (exportJson, luckysheetfile) => {
-  //   console.log('解析后exportJson',exportJson);
-  //   // 【会丢失协同性】
-  //   // luckysheet.create({
-  //   //   container: "luckysheet", // luckysheet is the container id
-  //   //   data: exportJson.sheets,
-  //   //   title: exportJson.info.name,
-  //   //   userInfo: exportJson.info.name.creator,
-  //   // });
-  //   let { info, sheets } = exportJson;
-  //   luckysheet.setWorkbookName(info.name);
-  //   sheets.forEach((sheet) => {
-  //     // sheet 便是每一个 sheet 页，需要根据实际的数量动态创建
-  //     luckysheet.setSheetAdd({
-  //       sheetObject: sheet,
-  //       success: () => {
-  //         console.log("success");
-  //       },
-  //     });
-  //   });
-  //   // 清空
-  //   importFileRef.value.value = "";
-  // });
 };
 
 // 文件导出
