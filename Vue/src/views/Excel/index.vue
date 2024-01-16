@@ -4,7 +4,7 @@
     <div class="btn">
       <el-button type="info" @click="back()">返回</el-button>
       <el-button @click="importFileRef.click()" type="primary">导入</el-button>
-      <el-button @click="downloadFile">下载</el-button>
+      <el-button @click="downloadFile">导出</el-button>
       <input
         type="file"
         ref="importFileRef"

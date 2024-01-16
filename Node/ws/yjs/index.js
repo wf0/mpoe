@@ -1,5 +1,6 @@
-const { yjs_port } = require("../base.config");
-const { logger } = require("../util");
+const { yjs_port } = require("../../base.config");
+const { logger } = require("../../util");
+
 module.exports = () => {
   const { WebSocketServer } = require("ws");
 

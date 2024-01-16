@@ -1,6 +1,6 @@
 // 协同数据存储
-const { univerImpl, fileImpl } = require("../mvc/serviceImpl");
-const { getNanoid } = require("../util/nanoid");
+const { univerImpl, fileImpl } = require("../../mvc/serviceImpl");
+const { getNanoid } = require("../../util/nanoid");
 
 /**
  * ... 更多操作请参考： [https://dream-num.github.io/LuckysheetDocs/zh/guide/operate.html#%E5%8D%95%E5%85%83%E6%A0%BC%E5%88%B7%E6%96%B0]
