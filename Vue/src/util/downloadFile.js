@@ -122,7 +122,7 @@ var setStyleAndValue = function (cellArr, worksheet) {
       }
       //设置背景色
       let bg = cell.bg || "#FFFFFF"; //默认white
-      bg = bg === "yellow" ? "FFFF00" : bg.replace("#", "");
+      bg = bg === "yellow" ? "FFFF00" : bg?.replace("#", "");
       let fill = {
         type: "pattern",
         pattern: "solid",
@@ -197,9 +197,15 @@ var fontConvert = function (
     },
   };
   // 出现Bug，导入的时候ff为luckyToExcel的val
-
+  ff = 0;
+  fc = "#000000";
+  bl = 0;
+  it = 0;
+  fs = 10;
+  cl = 0;
+  ul = 0;
   //设置字体颜色
-  fc = fc === "red" ? "FFFF0000" : fc.replace("#", "");
+  fc = fc === "red" ? "FFFF0000" : fc?.replace("#", "");
   let font = {
     name: typeof ff === "number" ? luckyToExcel[ff] : ff,
     family: 1,
@@ -292,7 +298,7 @@ var borderConvert = function (borderType, style = 1, color = "#000") {
   };
   let template = {
     style: luckyToExcel.style[style],
-    color: { argb: color.replace("#", "") },
+    color: { argb: color?.replace("#", "") },
   };
   let border = {};
   if (luckyToExcel.type[borderType] === "all") {
@@ -339,7 +345,7 @@ function addborderToCell(borders, row_index, col_index) {
     if (borders[bor].color.indexOf("rgb") === -1) {
       border[luckyExcel.type[bor]] = {
         style: luckyExcel.style[borders[bor].style],
-        color: { argb: borders[bor].color.replace("#", "") },
+        color: { argb: borders[bor].color?.replace("#", "") },
       };
     } else {
       border[luckyExcel.type[bor]] = {
