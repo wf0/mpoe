@@ -46,9 +46,18 @@ exports.initLuckysheet = async (req, res, next) => {
   // 4. 组装数据
   let celldata = [];
 
-  // 注意luckysheet 需要的数据格式
+  /**
+   * 注意luckysheet 需要的数据格式
+   * 这里可能还需要处理 颜色、加粗、等格式问题、函数、合并单元格等
+   */
   cellInfo.forEach((i) =>
-    celldata.push({ r: i.r, c: i.c, v: { ...i, ct: { fa: i.ctfa, t: i.ctt } } })
+    celldata.push({
+      r: i.r,
+      c: i.c,
+      fc: i.fc,
+      bg: i.bg,
+      v: { ...i, ct: { fa: i.ctfa, t: i.ctt } },
+    })
   );
 
   // 5. 返回数据
