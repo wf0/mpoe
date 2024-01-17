@@ -57,3 +57,7 @@ exports.insertCellDataMap = async (data, cdid) =>
     ${data.v.tb || 0},
     ${data.v.f || null})`
   );
+
+// 删除单元格
+exports.deleteCellDataMap = async (data) =>
+  await query(`DELETE FROM celldatas WHERE celldatas.index='${data.v.index}' AND celldatas.cdid='${data.v.cdid}'`);

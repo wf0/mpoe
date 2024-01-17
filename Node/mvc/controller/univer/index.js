@@ -50,15 +50,16 @@ exports.initLuckysheet = async (req, res, next) => {
    * 注意luckysheet 需要的数据格式
    * 这里可能还需要处理 颜色、加粗、等格式问题、函数、合并单元格等
    */
-  cellInfo.forEach((i) =>
+  cellInfo.forEach((i) => {
+    // 可能还要识别undefined null 的情况，但是 m\v\f 不可能同时为空
     celldata.push({
       r: i.r,
       c: i.c,
       fc: i.fc,
       bg: i.bg,
       v: { ...i, ct: { fa: i.ctfa, t: i.ctt } },
-    })
-  );
+    });
+  });
 
   // 5. 返回数据
   return res.json(JSON.stringify([{ ...sheetInfo[0], celldata }]));

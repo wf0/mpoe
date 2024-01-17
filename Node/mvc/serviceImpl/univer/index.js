@@ -25,3 +25,7 @@ exports.updateCellDataImpl = async (data) =>
 
 exports.insertCellDataImpl = async (data, cdid) =>
   await univerMap.insertCellDataMap(data, cdid);
+
+// 删除单元格
+exports.deleteCellDataImpl = async (data) =>
+  await univerMap.deleteCellDataMap(data);

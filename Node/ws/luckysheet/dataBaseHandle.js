@@ -31,10 +31,16 @@ exports.dataBaseHandle = (opts, fileid) => (
 
 // * v 单个单元格刷新
 async function v() {
+  console.log("v", this);
   // 获取cdid
   let cdid = await getNanoid();
   // 1. 先获取行列信息 当前sheet的index值
   let findRes = await univerImpl.findCellDataByRCImpl(this);
+
+  // 2. 需要识别当前操作是否为删除单元格内容
+  let { v, m, f } = this.v;
+  if (!v && !m && !f) return univerImpl.deleteCellDataImpl(this);
+
   // 2. 判断当前行是否已经有数据
   findRes.length
     ? await univerImpl.updateCellDataImpl(this)
