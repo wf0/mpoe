@@ -60,4 +60,36 @@ exports.insertCellDataMap = async (data, cdid) =>
 
 // 删除单元格
 exports.deleteCellDataMap = async (data) =>
-  await query(`DELETE FROM celldatas WHERE celldatas.index='${data.v.index}' AND celldatas.cdid='${data.v.cdid}'`);
+  await query(
+    `DELETE FROM celldatas WHERE celldatas.index='${data.v.index}' AND celldatas.cdid='${data.v.cdid}'`
+  );
+
+// 查询所有的merge配置
+exports.findAllMergeConfigMap = async (index) =>
+  await query(
+    `SELECT * FROM configs WHERE configs.index='${index}' AND configs.type='merge'`
+  );
+
+// 增加新的 merge
+exports.createMergeConfigMap = async (cid, index, merge) =>
+  await query(
+    `INSERT INTO configs(cid,configs.index,configs.type,configs.key,configs.value) VALUES('${cid}','${index}','merge','${
+      merge.key
+    }','${JSON.stringify(merge.value)}')`
+  );
+
+// 更新 merge
+exports.updateMergeConfigMap = async (index, merge) =>
+  await query(
+    `UPDATE configs SET configs.value='${JSON.stringify(
+      merge.value
+    )}' WHERE configs.index='${index}' AND configs.type='merge' AND configs.key='${
+      merge.key
+    }'`
+  );
+
+// 删除 merge 配置
+exports.deleteMergeConfigMap = async (index, key) =>
+  await query(
+    `DELETE FROM configs WHERE configs.index='${index}' AND configs.key='${key}' AND configs.type='merge'`
+  );

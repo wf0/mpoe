@@ -29,3 +29,19 @@ exports.insertCellDataImpl = async (data, cdid) =>
 // 删除单元格
 exports.deleteCellDataImpl = async (data) =>
   await univerMap.deleteCellDataMap(data);
+
+// 查询所有的merge 配置
+exports.findAllMergeConfigImpl = async (index) =>
+  await univerMap.findAllMergeConfigMap(index);
+
+// 新增 merge 配置
+exports.createMergeConfigImpl = async (cid, index, merge) =>
+  await univerMap.createMergeConfigMap(cid, index, merge);
+
+// 更新 merge 配置
+exports.updateMergeConfigImpl = async (index, merge) =>
+  await univerMap.updateMergeConfigMap(index, merge);
+
+// 删除 merge 配置
+exports.deleteMergeConfigImpl = async (index, key) =>
+  await univerMap.deleteMergeConfigMap(index, key);

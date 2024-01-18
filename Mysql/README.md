@@ -91,3 +91,11 @@
     - tb 文本自动换行
     - f 单元格是一个求和公式
     - lasteditor 最后编辑者 可以实现单元格的编辑历史追踪
+  
+## config 配置信息表 configs
+
+    - cid 表主键
+    - index 表外键
+    - type 配置类型 【merge单元格合并、rowlen表格行高、columnlen表格列宽、rowhidden隐藏行、colhidden隐藏列、borderInfo边框、】
+    - key merge key 【merge 专用字段】
+    - value merge value 【merge 专用字段】

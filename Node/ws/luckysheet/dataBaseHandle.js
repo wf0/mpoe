@@ -32,16 +32,17 @@ exports.dataBaseHandle = (opts, fileid) => (
 // * v 单个单元格刷新
 async function v() {
   console.log("v", this);
-  // 获取cdid
-  let cdid = await getNanoid();
-  // 1. 先获取行列信息 当前sheet的index值
-  let findRes = await univerImpl.findCellDataByRCImpl(this);
 
-  // 2. 需要识别当前操作是否为删除单元格内容
+  // 1. 需要识别当前操作是否为删除单元格内容
   let { v, m, f } = this.v;
   if (!v && !m && !f) return univerImpl.deleteCellDataImpl(this);
 
-  // 2. 判断当前行是否已经有数据
+  // 获取cdid
+  let cdid = await getNanoid();
+  // 2. 先获取行列信息 当前sheet的index值
+  let findRes = await univerImpl.findCellDataByRCImpl(this);
+
+  // 3. 判断当前行是否已经有数据
   findRes.length
     ? await univerImpl.updateCellDataImpl(this)
     : // 3. 有则更新、没有则新增
@@ -55,12 +56,65 @@ async function rv() {
 
 // * cg config操作
 async function cg() {
+  // 识别边框
   console.log("cg", this);
 }
 
 // * all 通用保存
 async function all() {
   console.log("all", this);
+  /**
+   * 最好在这里识别 合并单元格操作，因为操作隶属config配置，可以直接去到 merge 的数值
+   * 如何区分是合并还是取消？
+   * 直接全量替换，先查询当前 i 下的所有 数据，进行差异比较，然后进行删除/保留操作
+   * merge:{0_0 : {r: 0, c: 0, rs: 3, cs: 3}}
+   */
+  let { i, v } = this;
+
+  let mergeList = [];
+
+  for (const key in v?.merge) {
+    if (Object.hasOwnProperty.call(v.merge, key)) {
+      let value = v.merge[key];
+      mergeList.push({ key, value });
+    }
+  }
+
+  // 1. 通过index 查询全部
+  let findAll = await univerImpl.findAllMergeConfigImpl(i);
+
+  let result = JSON.parse(JSON.stringify(findAll));
+
+  // 2. 进行数据对比，多了加、少了删、不一致更新
+  mergeList.forEach(async (merge) => {
+    let current = result.find((i) => i.key === merge.key);
+
+    // 如果没有，直接添加
+    if (!current) {
+      let cid = await getNanoid();
+      await univerImpl.createMergeConfigImpl(cid, i, merge);
+    } else {
+      // 有响应的 key 应该删除该key，这样才能知道那个是多余的，需要进行删除
+      result.splice(
+        result.findIndex((i) => i.key === merge.key),
+        1
+      );
+      // {r: 0, c: 0, rs: 3, cs: 3}
+      // { r: 0, c: 0, rs: 3, cs: 3 }
+      let compare = compareMerge(JSON.parse(current.value), merge.value);
+      // 有，对比内容：一致 跳过
+      if (compare) return;
+      // 有，对比内容：不一致 更新
+      await univerImpl.updateMergeConfigImpl(i, merge);
+    }
+  });
+
+  // 3. 有了则删除 result ，最后执行删除剩余result
+  console.log("deleteArr", result);
+  if (!result.length) return;
+
+  // 执行删除操作
+  result.forEach(async (d) => await univerImpl.deleteMergeConfigImpl(i, d.key));
 }
 
 // * fc 函数链操作
@@ -92,4 +146,13 @@ async function shd() {
 async function na() {
   // 通过 wsfileid 修改 filename 即可 fileid, vid, newfilename, newfolderid, state
   await fileImpl.updateFilesImpl(wsfileid, null, this.v, null, null);
+}
+
+// 辅助函数 判断两个merge 是否一致
+function compareMerge(a, b) {
+  let r = a.r === b.r;
+  let c = a.c === b.c;
+  let rs = a.rs === b.rs;
+  let cs = a.cs === b.cs;
+  return r && c && rs && cs;
 }

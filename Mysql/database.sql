@@ -43,6 +43,18 @@ CREATE TABLE `celldatas` (
   `f` longtext COMMENT '单元格是一个求和公式'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*Table structure for table `configs` */
+
+DROP TABLE IF EXISTS `configs`;
+
+CREATE TABLE `configs` (
+  `cid` varchar(255) DEFAULT NULL COMMENT '主键',
+  `index` varchar(255) DEFAULT NULL COMMENT '关联的 index',
+  `type` varchar(255) DEFAULT NULL COMMENT 'config 类型 【merge、】',
+  `key` varchar(255) DEFAULT NULL COMMENT 'merge key 【merge 专用字段】',
+  `value` longtext COMMENT 'merge value 【merge 专用字段】'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 /*Table structure for table `files` */
 
 DROP TABLE IF EXISTS `files`;
@@ -65,7 +77,7 @@ CREATE TABLE `files` (
   KEY `fileownerfolderid` (`fileownerfolderid`),
   CONSTRAINT `files_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`userid`),
   CONSTRAINT `files_ibfk_2` FOREIGN KEY (`fileownerfolderid`) REFERENCES `folders` (`folderid`)
-) ENGINE=InnoDB AUTO_INCREMENT=189 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=206 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `filestates` */
 
@@ -138,7 +150,7 @@ CREATE TABLE `versions` (
   KEY `fileid` (`fileid`),
   CONSTRAINT `versions_ibfk_1` FOREIGN KEY (`lasteditor`) REFERENCES `users` (`userid`),
   CONSTRAINT `versions_ibfk_2` FOREIGN KEY (`fileid`) REFERENCES `files` (`fileid`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `workbooks` */
 

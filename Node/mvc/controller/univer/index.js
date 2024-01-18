@@ -44,7 +44,7 @@ exports.initLuckysheet = async (req, res, next) => {
     return res.json(JSON.stringify([{ ...sheetInfo[0], celldata: [] }]));
 
   // 4. 组装数据
-  let celldata = [];
+  let celldata = []; // 单元格数据
 
   /**
    * 注意luckysheet 需要的数据格式
@@ -60,9 +60,30 @@ exports.initLuckysheet = async (req, res, next) => {
       v: { ...i, ct: { fa: i.ctfa, t: i.ctt } },
     });
   });
+  // config merge
+  let config = {}; // 配置信息
+
+  let mergeInfo = await univerImpl.findAllMergeConfigImpl(index);
+
+  // "config":
+  //  - "merge":{}, //合并单元格
+  //  - "rowlen":{}, //表格行高
+  //  - "columnlen":{}, //表格列宽
+  //  - "rowhidden":{}, //隐藏行
+  //  - "colhidden":{}, //隐藏列
+  //  - "borderInfo":{}, //边框
+  //  - "authority":{}, //工作表保护
+  if (mergeInfo.length) {
+    config.merge = {};
+    mergeInfo.forEach((merge) => {
+      config.merge[merge.key] = JSON.parse(merge.value);
+      // Object.defineProperty(config.merge, merge.key, JSON.parse(merge.value));
+    });
+    console.log("config.merge", config.merge);
+  }
 
   // 5. 返回数据
-  return res.json(JSON.stringify([{ ...sheetInfo[0], celldata }]));
+  return res.json(JSON.stringify([{ ...sheetInfo[0], celldata, config }]));
 };
 
 // ### WorkBook
