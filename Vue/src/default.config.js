@@ -9,8 +9,5 @@ export const vue_port = 3000;
 // server PORT （业务端口）
 export const server_port = 5000;
 
-// YJS PORT (yjs-quill协同的ws服务端口)
-export const yjs_port = 8000;
-
-// Luckysheet PORT （luckysheet 协同 ws 服务端口）
-export const Luckysheet_port = 9000;
+//  YJS PORT (yjs-quill协同的ws服务端口) Luckysheet PORT （luckysheet 协同 ws 服务端口）
+export const ws_port = 9000;

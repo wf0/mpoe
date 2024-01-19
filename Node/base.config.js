@@ -4,11 +4,8 @@ const { logger } = require("./util");
 // 业务端口
 const server_port = 5000;
 
-// yjs 协同 ws 服务端口
-const yjs_port = 8000;
-
-// lucky sheet 协同 ws 服务端口
-const Luckysheet_port = 9000;
+// ws 统一端口
+const ws_port = 9000;
 
 // mysql
 const sql_config = {
@@ -32,8 +29,7 @@ const initServeListen = (http) => {
 
 module.exports = {
   server_port,
-  yjs_port,
-  Luckysheet_port,
+  ws_port,
   sql_config,
   JSON_WEB_TOKEN_SECRET,
   initServeListen,
