@@ -78,7 +78,7 @@ import {
 import { utf16toEntities } from "@/util/utf16";
 import { ElMessage } from "element-plus";
 
-import { server_port } from "@/default.config";
+import { http_server_url } from "/default.config";
 // 定义Quill对象
 let quill = reactive({});
 
@@ -177,14 +177,14 @@ const upload = async (e) => {
   // 创建的本地浏览文件，无法实现 quill 中的url请求，需要借助服务器
   // let url = window.URL.createObjectURL(files[0]);
   // quill.insertEmbed(0, "image", url);
-  let baseURL = `http://localhost:${server_port}`;
+
   let { files } = e.target;
   let form = new FormData();
   form.append("file", files[0]);
   let res = await editUploadFile_API(form);
   // 上传成功后，直接拿到地址，添加到编辑器中
   if (res.code !== 200) return ElMessage.error(res.msg);
-  quill.insertEmbed(null, "image", baseURL + res.data);
+  quill.insertEmbed(null, "image", http_server_url + res.data);
 };
 
 const handleEditContent = async (fileid) => {

@@ -24,7 +24,7 @@ import { exportFile_API } from "@/api/file";
 // 文件导出
 import { exportExcel } from "@/util/downloadFile";
 import { ElMessage } from "element-plus";
-import { ws_port } from "@/default.config.js";
+import { ws_server_url } from "/default.config.js";
 const importFileRef = ref(null);
 
 // 文件导入
@@ -75,7 +75,7 @@ onMounted(async () => {
     ...data[0],
     allowUpdate: true,
     loadUrl: `${env ? "/baseURL" : ""}/excel?fileid=${fileid}`,
-    updateUrl: `ws://localhost:${ws_port}?type=luckysheet&fileid=${fileid}`, // 实现传参,
+    updateUrl: `${ws_server_url}?type=luckysheet&fileid=${fileid}`, // 实现传参,
     hook: {
       sheetActivate(index) {
         // 将点击的这个事件发送给服务端

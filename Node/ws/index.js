@@ -17,24 +17,27 @@ module.exports = () => {
   // 需要在 req.url 中解析 type 识别是 yjs 还是 luckysheet
   wss.on("connection", (conn, req) => {
     // 解析地址 type 参数
+    try {
+      let type = req.url.split("?")[1];
+      // yjs/4pNsgurcA4KkcLEOq0Acu
+      // type=luckysheet&fileid=BCd_smxyZ_OB3DgXAjU34&t=111&g=Z0JWO6f-kpimERR1m9BBz
+      type = type.toString().includes("/")
+        ? type.split("/")[0]
+        : type.split("&")[0].split("=")[1];
 
-    let type = req.url.split("?")[1];
-    // yjs/4pNsgurcA4KkcLEOq0Acu
-    // type=luckysheet&fileid=BCd_smxyZ_OB3DgXAjU34&t=111&g=Z0JWO6f-kpimERR1m9BBz
-    type = type.toString().includes("/")
-      ? type.split("/")[0]
-      : type.split("&")[0].split("=")[1];
+      conn.type = type;
 
-    conn.type = type;
+      switch (type) {
+        case "yjs":
+          return yjsHandle(wss, conn, req);
 
-    switch (type) {
-      case "yjs":
-        return yjsHandle(wss, conn, req);
-
-      case "luckysheet":
-        return luckysheetHandle(wss, conn, req);
-      default:
-        break;
+        case "luckysheet":
+          return luckysheetHandle(wss, conn, req);
+        default:
+          break;
+      }
+    } catch (error) {
+      logger.error("未解析到Type类型");
     }
   });
 

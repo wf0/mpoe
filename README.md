@@ -2,9 +2,6 @@
 
 ## 项目目录结构
 
-> + Luckysheet
->   + 本项目使用的Luckysheet二开源码，考虑到大家可能基于项目做luckysheet的二开，因此，将该项目也传git上。【重点：该目录与项目无关哈，只是一个二开的源码，如果大家不用二开，直接删了也不影响项目运行。因此，不会提供太多的方法，如果大家有需要，但是不懂的，可以直接留言】
->
 > + Mysql
 >   + 数据库 database.sql
 >   + README.md 数据库表结构说明
@@ -30,23 +27,17 @@ const server_port = 5000;
 // ws 统一端口
 const ws_port = 9000;
 
+/** vue项目地址说明 */
+// ws 协同服务地址
+export const ws_server_url = "ws://localhost:9000";
 
-/**
- *  vue/src/default.config.js
- *  IMPORTANT 请保持端口一致性：
- *  node/base.config.js 中也有三个端口，因项目不一致，打包后会导致端口出错，因此，请手动保持一致
- */
+// node http 服务地址
+export const http_server_url = "http://localhost:5000";
 
-// vue 项目端口
-export const vue_port = 3000;
+// socket.io 服务地址
+export const socket_server_url = "http://localhost:5000";
 
-// server PORT （业务端口）
-export const server_port = 5000;
-
-//  YJS PORT (yjs-quill协同的ws服务端口) Luckysheet PORT （luckysheet 协同 ws 服务端口）
-export const ws_port = 9000;
-
-端口已经给大家封装好了，如果需要修改某一个端口信息，请修改两个文件，因为vue打包后，无法在node中引入，会造成端口异常。
+地址已经给大家封装好了，直接修改上面的地址即可。
 ~~~
 
 
@@ -77,7 +68,7 @@ export const ws_port = 9000;
 >       ```javascript
 >       1. npm run startServer y-webrtc
 >       (了解rtc的都知道,外网是需要stun服务器做转发的,本应用不支持,推荐使用 y-websocket的协同方式)
->
+>       
 >       2. 正常启动 node 即可支持 y-websocket 协同服务,但是本应用没有关联文件（更多个性化需要大家自行实现）**推荐使用此方式**
 >       ```
 >

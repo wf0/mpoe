@@ -1,7 +1,7 @@
 // vite.config.js
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import { server_port } from "./src/default.config";
+import { http_server_url } from "./default.config";
 const path = require("path");
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
     // 生产不需要开启代理
     proxy: {
       "/baseURL": {
-        target: `http://localhost:${server_port}/`,
+        target: http_server_url,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/baseURL/, ""),
       },
