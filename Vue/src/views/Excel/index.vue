@@ -12,6 +12,32 @@
         style="display: none"
       />
     </div>
+
+    <!-- 抽屉实现单元格历史溯源 -->
+    <el-drawer v-model="showDrawer" :title="`${cellName} 编辑历史`">
+      <el-timeline>
+        <el-timeline-item
+          v-for="(item, index) in historyList"
+          :key="index"
+          :timestamp="item.time"
+          placement="top"
+        >
+          <el-card>
+            <h4>用户{{ item.editor }} 修改了单元格</h4>
+            <p>xxx可描述</p>
+            <el-button
+              type="primary"
+              @click="cellBack(item.hid)"
+              text
+              bg
+              title="回退到该版本"
+            >
+              回退
+            </el-button>
+          </el-card>
+        </el-timeline-item>
+      </el-timeline>
+    </el-drawer>
   </div>
 </template>
 
@@ -25,6 +51,18 @@ import { exportFile_API } from "@/api/file";
 import { exportExcel } from "@/util/downloadFile";
 import { ElMessage } from "element-plus";
 import { ws_server_url } from "/default.config.js";
+import { RefreshLeft } from "@element-plus/icons-vue";
+// 引入单元格溯源 hook
+import { useCellHistory } from "@/hooks/useCellHistory";
+const {
+  showDrawer,
+  getCellName,
+  cellName,
+  historyList,
+  cellBack,
+  findCellHistory,
+} = useCellHistory();
+
 const importFileRef = ref(null);
 
 // 文件导入
@@ -76,6 +114,19 @@ onMounted(async () => {
     allowUpdate: true,
     loadUrl: `${env ? "/baseURL" : ""}/excel?fileid=${fileid}`,
     updateUrl: `${ws_server_url}?type=luckysheet&fileid=${fileid}`, // 实现传参,
+    cellRightClickConfig: {
+      customs: [
+        {
+          title: "查看单元格历史",
+          onClick: async (clickEvent, event, { columnIndex, rowIndex }) => {
+            // 需要执行查询操作
+            await findCellHistory();
+            cellName.value = getCellName(columnIndex, rowIndex);
+            showDrawer.value = true;
+          },
+        },
+      ],
+    },
     hook: {
       sheetActivate(index) {
         // 将点击的这个事件发送给服务端
@@ -118,5 +169,19 @@ onMounted(async () => {
 /deep/.luckysheet_info_detail_update,
 /deep/.luckysheet_info_detail_back {
   display: none;
+}
+/deep/.el-card__body {
+  position: relative;
+  .el-button {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+    color: #fff;
+  }
+  &:hover .el-button {
+    display: block;
+  }
 }
 </style>

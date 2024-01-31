@@ -110,6 +110,7 @@ export const socket_server_url = "http://localhost:5000";
 4. 打包后，public 下的libs目录会一起打包到 dist 中，luckysheet 如果没有复制到node中，则引的是当前目录下的 libs 即可
 ```
 
+## 其他说明
 
 
 ## 项目地址

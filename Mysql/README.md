@@ -99,3 +99,17 @@
     - type 配置类型 【merge单元格合并、rowlen表格行高、columnlen表格列宽、rowhidden隐藏行、colhidden隐藏列、borderInfo边框、】
     - key merge key 【merge 专用字段】
     - value merge value 【merge 专用字段】
+
+## 历史信息记录表 historys（支持多种状态的历史记录 cell、 config、 data...）【未开发】
+
+    - hid 表主键
+    - type 历史类型 【cell、config、data等想要记录的历史类型】
+    - editor 编辑者
+    - v 
+    - ctfa
+    - ctt
+    - bg
+    - desc 编辑内容说明
+    - columnIndex 列号
+    - rowIndex 行号
+    - times 时间
