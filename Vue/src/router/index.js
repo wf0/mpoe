@@ -58,9 +58,16 @@ const routes = [
   {
     path: "/excel/:fileid",
     meta: {
-      title: "编辑",
+      title: "excel",
     },
     component: () => import("@views/Excel/index.vue"),
+  },
+  {
+    path: "/word/:fileid",
+    meta: {
+      title: "word",
+    },
+    component: () => import("@views/Word/index.vue"),
   },
   {
     path: "/login",
