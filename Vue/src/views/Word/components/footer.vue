@@ -74,7 +74,7 @@ let fullScreen = ref(false);
 
 // 点击缩小放大按钮
 function pageScale(index) {
-  let instance = Reflect.get(window, "instance");
+  let instance = Reflect.get(window, "__instance__");
   if (index) {
     pageSize.value += 10;
     instance && instance.command.executePageScaleAdd();
@@ -86,7 +86,7 @@ function pageScale(index) {
 
 // 滑块事件
 function inputHandle(value) {
-  let instance = Reflect.get(window, "instance");
+  let instance = Reflect.get(window, "__instance__");
   if (!instance) return;
   instance.command.executePageScale(value / 100); // 入参是比例值，需要做转换
 }

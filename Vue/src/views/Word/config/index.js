@@ -19,8 +19,8 @@ export const menuTextList = [
 
 export const active1 = [
   { icon: "icon-geshishua", title: "格式刷" },
-  { icon: "icon-niantie", title: "粘贴" },
   { icon: "icon-fuzhi", title: "复制" },
+  { icon: "icon-niantie", title: "粘贴" },
   { icon: "icon-jianqie", title: "剪切" },
   { icon: "icon-cachu", title: "清除" },
   { icon: "icon-anjianfengexian", title: "" },

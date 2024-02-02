@@ -2,7 +2,7 @@
   <div class="word">
     <!-- 菜单栏 -->
     <div class="word-menu">
-      <menuVue @iconClick="(data) => iconClickHandle.call(instance, data)" />
+      <menuVue @iconClick="iconClickHandle" />
     </div>
     <el-scrollbar class="word-editor">
       <!-- 目录 -->
@@ -13,10 +13,7 @@
       <div class="word-editor-sidebar"><sidebarVue /></div>
     </el-scrollbar>
     <div class="word-footer">
-      <footerVue
-        :footerInfo="footerInfo"
-        @pageSizeChange="(data) => pageSizeChange.call(instance, data)"
-      />
+      <footerVue :footerInfo="footerInfo" />
     </div>
   </div>
 </template>
@@ -29,8 +26,7 @@ import footerVue from "./components/footer.vue";
 import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
 
-var { instance, options, websocket, iconClickHandle, pageSizeChange } =
-  useEditor();
+var { instance, data, options, websocket, iconClickHandle } = useEditor();
 
 // 需要传递多个信息
 let footerInfo = reactive({
@@ -39,21 +35,23 @@ let footerInfo = reactive({
 });
 
 onMounted(async () => {
+  // 请求 data 开启协同
   // 初始化 canvas-editor
-  instance = new Editor(
+  instance = new CanvasEditor(
     document.querySelector(".word-editor-dom"),
+    data,
     options,
     websocket
   );
+
+  // 供全局拿取instance
+  Reflect.set(window, "__instance__", instance);
   Reflect.set(window, "instance", instance);
 
   // 监听页面缩放变化
   instance.listener.pageScaleChange = (payload) => {
     footerInfo.pageScaleNumber = payload;
   };
-
-  // 测试用
-  window.instance = instance;
 });
 </script>
 

@@ -14,8 +14,16 @@
     "installSheet": "cd Luckysheet && npm install",
     "startServer": "cd vue/node_modules/y-webrtc/bin && node server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "协同编辑",
+    "Excel在线编辑",
+    "lucky sheet",
+    "CRDT",
+    "Quill",
+    "Canvas-Editor"
+  ],
+  "author": "WF",
+  "email": "1982392655@qq.com",
   "license": "ISC",
   "dependencies": {}
 }

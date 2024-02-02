@@ -1,10 +1,54 @@
 // canvas-editor 相关API
 import { ref, reactive } from "vue";
+import { ws_server_url } from "/default.config";
+
+// 协同相关配置
+const websocket = {
+  url: ws_server_url,
+  username: JSON.parse(sessionStorage.getItem("user")).username,
+  userid: JSON.parse(sessionStorage.getItem("user")).userid,
+  roomname: window.location.hash.split("word/")[1], // 当前文件的fileid
+};
+
+// 实现 icon 与 instance 的操作映射
+function _iconClickHandle({ icon, value }) {
+  let instance = Reflect.get(window, "__instance__");
+  if (!instance) return;
+
+  console.log(icon, value);
+
+  const iconHandleMap = {
+    // 保存
+    "icon-baocun": () => {},
+    "icon-dayin": () => instance.command.executePrint(),
+    // 历史记录
+    "icon-lishi": () => {},
+    "icon-chexiao": () => instance.command.executeUndo(),
+    "icon-zhongzuo": () => instance.command.executeRedo(),
+    // 格式刷
+    "icon-geshishua": () => {},
+    "icon-fuzhi": () => instance.command.executeCopy(),
+    "icon-niantie": () => instance.command.executePaste(),
+    "icon-jianqie": () => instance.command.executeCut(),
+    "icon-zihaojia": () => instance.command.executeSizeAdd(),
+    "icon-zihaojian": () => instance.command.executeSizeMinus(),
+    "icon-cuti": () => instance.command.executeBold(),
+    "icon-italic": () => instance.command.executeItalic(),
+    "icon-zitixiahuaxian": () => instance.command.executeUnderline(),
+    "icon-strikethrough": () => instance.command.executeStrikeout(),
+    // 高亮
+    "icon-icon_tuchuxianshi": () => {},
+    // 字体颜色
+    "icon-zitiyanse": () => {},
+  };
+  iconHandleMap[icon] && iconHandleMap[icon]();
+}
 
 export const useEditor = () => {
   var instance = reactive(null);
 
-  let options = reactive({
+  // 初始化数据源
+  let data = reactive({
     header: [
       {
         value: "第一人民医院",
@@ -529,15 +573,28 @@ export const useEditor = () => {
     ],
   });
 
-  function iconClickHandle({ icon, value }) {
-    // this 指向 instance
-    this.command.executeColor("red");
-  }
+  // 配置项
+  const options = reactive({
+    margins: [100, 120, 100, 120], // 调整四个三角的页边距
+    // 水印
+    watermark: {
+      data: "CANVAS-EDITOR",
+      size: 120,
+    },
 
-  function pageSizeChange(data) {
-    console.log(data);
-    this.command.executePageScaleAdd();
-  }
+    // canvas-editor 页脚分页显示格式
+    pageNumber: {
+      format: "第{pageNo}页/共{pageCount}页",
+    },
+    placeholder: {
+      data: "请输入正文",
+    },
 
-  return { instance, options, iconClickHandle, pageSizeChange };
+    maskMargin: [60, 0, 30, 0], // 菜单栏高度60，底部工具栏30为遮盖层
+  });
+
+  // 菜单栏点击事件
+  const iconClickHandle = (data) => _iconClickHandle(data);
+
+  return { instance, data, options, websocket, iconClickHandle };
 };

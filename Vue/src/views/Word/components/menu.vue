@@ -7,13 +7,18 @@
         <i class="iconfont icon-santiaoxian" /> 文件
         <i class="iconfont icon-xiangxiazhankai" />
         <!-- 文件下拉框 -->
-        <div class="fileSelete" v-if="showFileSelect">123</div>
+        <div class="fileSelete" v-if="showFileSelect">新建保存打开退出等</div>
       </span>
       <!-- 分割线 -->
       <span><i class="iconfont icon-anjianfengexian"></i></span>
 
       <!-- 保存、打印、撤销、重做 -->
-      <span v-for="item in menuIconList" :key="item.icon" :title="item.title">
+      <span
+        v-for="item in menuIconList"
+        :key="item.icon"
+        @click="emit('iconClick', { icon: item.icon })"
+        :title="item.title"
+      >
         <i class="iconfont" :class="item.icon"></i>
       </span>
 
@@ -45,6 +50,7 @@
         <i
           v-for="i in active1.slice(0, 6)"
           :key="i.icon"
+          @click="emit('iconClick', { icon: i.icon })"
           :title="i.title"
           class="iconfont"
           :class="i.icon"
@@ -185,6 +191,7 @@ watch(fontSizeValue, (value) =>
   }
   &-top {
     .fileSelete {
+      z-index: 9;
       background-color: #fff;
       position: absolute;
       border-radius: 5px;
