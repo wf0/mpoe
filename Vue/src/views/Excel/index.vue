@@ -52,6 +52,8 @@ import { exportExcel } from "@/util/downloadFile";
 import { ElMessage } from "element-plus";
 import { ws_server_url } from "/default.config.js";
 import { RefreshLeft } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
+
 // 引入单元格溯源 hook
 import { useCellHistory } from "@/hooks/useCellHistory";
 const {
@@ -97,6 +99,14 @@ const back = () => {
   luckysheet.wsclose();
   router.back();
 };
+
+// 监听页面跳转事件
+useRouter().beforeEach((to, from, next) => {
+  // 跳转页面前，一定是先关闭 luckysheet 连接，不然会导致页面显示异常
+  luckysheet.wsclose();
+  next();
+  // 其他自定义操作...
+});
 
 onMounted(async () => {
   window.lc = luckysheet;
