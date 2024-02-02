@@ -116,7 +116,7 @@ watch(
 
 // 文档类型动态颜色
 const getFileIconColor = (suffix, type) => {
-  if (suffix === "word") return "#0f90e3";
+  if (suffix === "docx") return "#0f90e3";
   if (suffix === "xlsx") return "#01a408";
   if (suffix === "pdf") return "#ea5454";
   if (suffix === "txt") return "rgba(0, 0, 0, 0.6)";
@@ -132,26 +132,39 @@ const renameHandle = (index) => {
 
 // 双击前往编辑页，需要传参
 const gotoEdit = (i, item) => {
-  if (item.type === "folder") {
-    // 处理面包屑
-    pagelistbreadHandle(item);
+  const { type } = item;
 
+  switch (type) {
     // 双击进入文件夹查看文件
-    return router.replace({
-      query: {
-        folderid: item.folderid,
-        fromPath: router.currentRoute.value.query.folderid,
-      },
-    });
+    case "folder":
+      // 处理面包屑
+      pagelistbreadHandle(item);
+      router.replace({
+        query: {
+          folderid: item.folderid,
+          fromPath: router.currentRoute.value.query.folderid,
+        },
+      });
+      break;
+
+    // Word 编辑
+    case "word":
+      router.push(`/word/${item.fileid}`);
+      break;
+
+    // excel 编辑
+    case "excel":
+      router.push(`/excel/${item.fileid}`);
+      break;
+
+    // Word 编辑
+    case "markdown":
+      router.push({ path: `/edit/${item.fileid}`, query: item });
+      break;
+
+    default:
+      break;
   }
-  // 如果是 excel 则跳转到 excel 页面
-  router.push({
-    path:
-      item.filesuffix === "xlsx"
-        ? `/excel/${item.fileid}`
-        : `/edit/${item.fileid}`,
-    query: item,
-  });
 };
 
 const pagelistbreadHandle = (item) => {
@@ -252,6 +265,7 @@ const createHandle = ({ name, id, type, suffix }) => {
     md: "icon-file-markdown1",
     txt: "icon-wenben1",
     xlsx: "icon-excel",
+    docx: "icon-Word",
   };
 
   // 添加文件类型
@@ -291,6 +305,11 @@ const getFileTypeAndIcon = (i) => {
   if (i.filesuffix === "xlsx") {
     i.type = "excel";
     i.icon = "icon-excel";
+  }
+
+  if (i.filesuffix === "docx") {
+    i.type = "word";
+    i.icon = "icon-Word";
   }
 
   i.suffix = i.filesuffix;

@@ -90,20 +90,31 @@ const colorMap = {
 
 const handleSelectionChange = () => {};
 const toEdit = (item) => {
-  if (item.filesuffix === "xlsx")
-    return router.push({
-      path: `/excel/${item.fileid}`,
-      query: item,
-    });
-  router.push({
-    path: `/edit/${item.fileid}`,
-    query: item,
-  });
+  const { filesuffix } = item;
+  console.log(filesuffix);
+  switch (filesuffix) {
+    case "md":
+      router.push({
+        path: `/edit/${item.fileid}`,
+        query: item,
+      });
+      break;
+
+    case "xlsx":
+      router.push(`/excel/${item.fileid}`);
+      break;
+
+    case "docx":
+      router.push(`/word/${item.fileid}`);
+      break;
+
+    default:
+      break;
+  }
 };
 
 const shear = (item) => {
   let { username } = JSON.parse(sessionStorage.getItem("user"));
-  //  username, fileid, filename
   let url = createShearUrl(
     username,
     item.fileid,

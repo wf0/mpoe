@@ -93,13 +93,18 @@ function contentmenuClick(command) {
 
     // 新建在线文档
     case "word":
+      createDialog.type = command;
+      createDialog.show = true;
+      createDialog.title = "新建 Word";
+      createDialog.warning = "文件名称不能为空";
+      createDialog.placeholder = "请输入文件名称";
       break;
 
     // 新建在线表格
     case "excel":
       createDialog.type = command;
       createDialog.show = true;
-      createDialog.title = "新建Excel";
+      createDialog.title = "新建 Excel";
       createDialog.warning = "文件名称不能为空";
       createDialog.placeholder = "请输入文件名称";
       break;
@@ -202,7 +207,7 @@ async function dialogConfirm() {
     let suffixMap = {
       txt: "txt",
       markdown: "md",
-      word: "dox",
+      word: "docx",
       excel: "xlsx",
     };
     let filesuffix = suffixMap[createDialog.type];
