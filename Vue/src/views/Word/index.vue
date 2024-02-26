@@ -2,7 +2,7 @@
   <div class="word">
     <!-- 菜单栏 -->
     <div class="word-menu">
-      <menuVue @iconClick="iconClickHandle" />
+      <menuVue @iconClick="iconClickHandle" @show_sap="showsap = true" />
     </div>
     <el-scrollbar class="word-editor">
       <!-- 目录 -->
@@ -15,18 +15,33 @@
     <div class="word-footer">
       <footerVue :footerInfo="footerInfo" />
     </div>
+    <!-- 查找替换 -->
+    <div class="word-search" v-if="showsap">
+      <searchVue
+        ref="searchRef"
+        @iconClick="iconClickHandle"
+        @close="showsap = false"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { nextTick, onMounted, reactive, ref } from "vue";
 import { useEditor } from "@/hooks/useEditor";
 import menuVue from "./components/menu.vue";
 import footerVue from "./components/footer.vue";
 import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
+import searchVue from "./components/search.vue";
 
 var { instance, data, options, websocket, iconClickHandle } = useEditor();
+
+// 搜索组件 Ref
+let searchRef = ref(null);
+
+// 是否显示查找替换 由menu决定
+let showsap = ref(false);
 
 // 需要传递多个信息
 let footerInfo = reactive({
@@ -35,7 +50,6 @@ let footerInfo = reactive({
 });
 
 onMounted(async () => {
-  // 请求 data 开启协同
   // 初始化 canvas-editor
   instance = new CanvasEditor(
     document.querySelector(".word-editor-dom"),
@@ -52,6 +66,24 @@ onMounted(async () => {
   instance.listener.pageScaleChange = (payload) => {
     footerInfo.pageScaleNumber = payload;
   };
+
+  // 注册快捷键
+  instance.register.shortcutList([
+    {
+      key: "f", // ctrl + F
+      mod: true,
+      isGlobal: true,
+      callback: async (command) => {
+        // 显示搜索框
+        showsap.value = true;
+        await nextTick();
+        // 获取当前用户输入
+        const text = command.getRangeText();
+        //  调用组件方法
+        searchRef.value.shortcutCtrlF(text);
+      },
+    },
+  ]);
 });
 </script>
 
@@ -99,6 +131,16 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     border-top: solid #ccc 1px;
+  }
+
+  &-search {
+    z-index: 9999;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    position: absolute;
+    right: 50px;
+    top: 90px;
   }
 }
 </style>

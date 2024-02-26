@@ -11,7 +11,7 @@ const websocket = {
 };
 
 // 实现 icon 与 instance 的操作映射
-function _iconClickHandle({ icon, value }) {
+function _iconClickHandle({ icon, value, reword }) {
   let instance = Reflect.get(window, "__instance__");
   if (!instance) return;
 
@@ -40,6 +40,16 @@ function _iconClickHandle({ icon, value }) {
     "icon-icon_tuchuxianshi": () => {},
     // 字体颜色
     "icon-zitiyanse": () => {},
+    // 主动搜索-输入框
+    "icon-search": () => instance.command.executeSearch(value),
+    // 查找上一处
+    "icon-presearch": () => instance.command.executeSearchNavigatePre(),
+    // 查找下一处
+    "icon-nextsearch": () => instance.command.executeSearchNavigateNext(),
+    // 替换
+    "icon-replace": () => instance.command.executeReplace(reword),
+    // 关闭查找
+    "icon-search-close": () => instance.command.executeSearch(""),
   };
   iconHandleMap[icon] && iconHandleMap[icon]();
 }

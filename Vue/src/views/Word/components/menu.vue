@@ -42,6 +42,7 @@
       <span class="rightIcon">
         <i class="iconfont icon-yunfuwu" title="云服务"></i>
         <el-button type="primary" size="small">分享</el-button>
+        <el-button size="small" @click="router.go(-1)">返回</el-button>
       </span>
     </div>
     <div class="menu-icon">
@@ -102,10 +103,10 @@
         />
 
         <!-- 行间距 -->
-        <i class="iconfont icon-hangjianju"> </i>
+        <i class="iconfont icon-hangjianju" />
 
         <!-- 查找替换 -->
-        <i class="iconfont icon-sousuotihuan"></i>
+        <i class="iconfont icon-sousuotihuan" @click="emit('show_sap')" />
 
         <!-- 标题 -->
         <el-select
@@ -134,7 +135,8 @@
 </template>
 
 <script setup>
-import { ref, defineProps, watch } from "vue";
+import { ref, watch } from "vue";
+import router from "../../../router";
 import {
   menuIconList,
   menuTextList,
@@ -145,7 +147,7 @@ import {
 } from "../config";
 
 // 所有的icon 都需要经过instance.command.xxx API 调用，因此，应该回传参数 实现对应功能
-const emit = defineEmits(["iconClick"]);
+const emit = defineEmits(["iconClick", "show_sap"]);
 
 // 是否显示文件下拉框
 let showFileSelect = ref(false);
