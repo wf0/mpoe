@@ -34,8 +34,9 @@ import footerVue from "./components/footer.vue";
 import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
 import searchVue from "./components/search.vue";
+import { ws_server_url as url } from "/default.config";
 
-var { instance, data, options, websocket, iconClickHandle } = useEditor();
+var { instance, data, options, iconClickHandle } = useEditor();
 
 // 搜索组件 Ref
 let searchRef = ref(null);
@@ -50,16 +51,21 @@ let footerInfo = reactive({
 });
 
 onMounted(async () => {
+  // 协同相关配置 解决初始加载会报错问题
+  let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
+  let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
+
   // 初始化 canvas-editor
   instance = new CanvasEditor(
     document.querySelector(".word-editor-dom"),
     data,
     options,
-    websocket
+    { url, username, userid, roomname }
   );
 
   // 供全局拿取instance
   Reflect.set(window, "__instance__", instance);
+  // 这个是配合 canvas-editor 的API调用，后续可以删除
   Reflect.set(window, "instance", instance);
 
   // 监听页面缩放变化
@@ -67,7 +73,7 @@ onMounted(async () => {
     footerInfo.pageScaleNumber = payload;
   };
 
-  // 注册快捷键
+  // 注册快捷键[Ctrl+F Ctrl+P]
   instance.register.shortcutList([
     {
       key: "f", // ctrl + F
@@ -81,6 +87,14 @@ onMounted(async () => {
         const text = command.getRangeText();
         //  调用组件方法
         searchRef.value.shortcutCtrlF(text);
+      },
+    },
+    {
+      key: "p", // ctrl + P
+      mod: true,
+      isGlobal: true,
+      callback: async (command) => {
+        command.executePrint();
       },
     },
   ]);
