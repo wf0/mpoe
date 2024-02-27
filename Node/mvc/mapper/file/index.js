@@ -11,6 +11,12 @@ exports.findFilesMap = async (userid, folderid, state = 1) =>
         `SELECT * FROM files WHERE OWNER ='${userid}' AND ISNULL(fileownerfolderid) AND state='${state}'`
       );
 
+// 查找指定的fileid 文件
+exports.findFileByIdMap = async (userid, fileid) =>
+  await query(
+    `SELECT * FROM files WHERE fileid='${fileid}' AND OWNER ='${userid}'`
+  );
+
 exports.createFileMap = async (
   userid,
   fileid,

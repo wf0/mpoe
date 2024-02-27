@@ -4,6 +4,9 @@ const { fileMap } = require("../../mapper");
 exports.findFilesImpl = async (userid, folderid, state) =>
   await fileMap.findFilesMap(userid, folderid, state);
 
+exports.findFileByIdImpl = async (userid, fileid) =>
+  await fileMap.findFileByIdMap(userid, fileid);
+
 exports.createFileImpl = async (
   userid,
   fileid,

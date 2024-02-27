@@ -105,6 +105,20 @@ exports.findFiles = async (req, res, next) => {
   next();
 };
 
+// 根据指定ID查找文件
+exports.findFileById = async (req, res, next) => {
+  let { userid, fileid } = req.body;
+  if (!userid || !fileid) return httpCode(res); // 参数缺失
+  let result = {};
+  // 查找文件
+  let fileRes = await fileImpl.findFileByIdImpl(userid, fileid);
+  let _res = JSON.parse(JSON.stringify(fileRes));
+  _res.forEach((i) => delete i.index);
+  result = _res.map((i) => i)[0];
+  // 返回数据
+  return httpCode(res, 200, "文件查找成功", result);
+};
+
 // 上传文件
 exports.uploadFile = async (req, res, next) => {
   if (req.files === null)

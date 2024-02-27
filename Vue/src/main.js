@@ -9,6 +9,7 @@ import store from "./store";
 import VueSocketIO from "vue-socket.io";
 import { socket_server_url } from "/default.config";
 setTheme("bjl");
+window.router = router;
 
 /* SocketIOClient.Socket, */
 const socket = new VueSocketIO({

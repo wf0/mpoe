@@ -8,6 +8,14 @@ export const getAllFiles_API = (data) => {
   });
 };
 
+export const getFilesByFileId_API = (data) => {
+  return fetch({
+    url: "/file/findFileByFileId",
+    method: "post",
+    data,
+  });
+};
+
 // 创建文件
 export const createFile_API = (data) => {
   return fetch({
