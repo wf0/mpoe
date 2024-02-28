@@ -38,4 +38,8 @@ export default defineConfig({
       },
     ],
   },
+  // 修改打包输出路径
+  build: {
+    outDir: "../Node/public/dist",
+  },
 });
