@@ -1,9 +1,15 @@
 <template>
   <div
+    id="pages"
     class="pages"
     @click="hiddenContentMenu"
     @contextmenu.prevent.stop="contextmenuHandle"
+    @mousedown="mouseDownHandle"
+    @mouseup="mouseUpHandle"
+    @mousemove="mouseMoveHandle"
   >
+    <!-- 绘制选区 -->
+    <div class="mask"></div>
     <!-- 右键菜单 -->
     <contentmenu
       v-if="showContentMenuInCurrent"
@@ -44,6 +50,7 @@
               (i.filename || i.foldername).includes(searchKeyWord)
           )"
           :key="index"
+          :id="item.fileid || item.folderid"
         >
           <!-- 通过 data- 自定义属性实现底层元素拿到数据 -->
           <i
@@ -87,6 +94,8 @@ import { inject, nextTick, onMounted, reactive, ref, watch } from "vue";
 import store from "@/store";
 import { ElMessage } from "element-plus";
 import { ArrowLeftBold } from "@element-plus/icons-vue";
+import { useMouseChoose } from "../../hooks/useMouseChoose";
+const { mouseDownHandle, mouseUpHandle, mouseMoveHandle } = useMouseChoose();
 // 文档列表
 var pagelist = reactive([]);
 // 修改文件名输入框Ref
@@ -355,6 +364,7 @@ onMounted(() => {
 .pages {
   position: relative;
   overflow: hidden;
+  user-select: none;
   &-list {
     height: 100%; // 加这个属性是为了右键菜单能够获取 e.target 的位置坐标与 page 一致
     &-filesbread {
@@ -405,5 +415,20 @@ onMounted(() => {
       }
     }
   }
+}
+.mask {
+  display: none;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgb(79, 130, 232);
+  width: 0;
+  height: 0;
+  opacity: 0.3;
+  z-index: 999;
+}
+.ischoosed {
+  background-color: rgba(79, 130, 232, 0.3) !important;
 }
 </style>
