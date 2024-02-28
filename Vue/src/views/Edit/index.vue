@@ -65,6 +65,8 @@ let message = reactive([]);
 // 定义消息未读
 let unread = ref(0);
 
+let fileid = ref("");
+
 let sockets = {
   // 用户加入编辑：处理用户列表
   join: (userlist) => {
@@ -86,7 +88,6 @@ let sockets = {
 
 // 发送消息
 let send = () => {
-  let { fileid } = router.currentRoute.value.query;
   let { userimg, userid, username } = JSON.parse(
     sessionStorage.getItem("user")
   );
@@ -97,7 +98,7 @@ let send = () => {
     time: dayjs().unix(),
     content: input.value,
   };
-  socket.io.emit("send", { fileid, content });
+  socket.io.emit("send", { fileid: fileid.value, content });
   input.value = "";
 };
 
@@ -108,10 +109,11 @@ const initSocketServer = (fileid, user) => {
 };
 
 onMounted(() => {
-  let { fileid } = router.currentRoute.value.query;
+  fileid.value = window.location.hash.split("edit/")[1]; // 当前文件的fileid
+
   let user = JSON.parse(sessionStorage.getItem("user"));
   // 获取 proxy sockets
-  initSocketServer(fileid, user);
+  initSocketServer(fileid.value, user);
 
   registerSockets(sockets, proxy, socket);
 });

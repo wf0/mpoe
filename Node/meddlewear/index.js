@@ -17,11 +17,11 @@ module.exports = {
     app.use(express.static(path.resolve(__dirname, "../public/dist")));
     app.use(express.static(path.resolve(__dirname, "../public/dist/assets")));
 
+    // logger
+    app.use(initLogger);
+
     // JWT 中间件
     app.use(jwt.initJWT);
-
-    // logger
-    // app.use(initLogger);
 
     // File upload middleware
     app.use(fileupload());

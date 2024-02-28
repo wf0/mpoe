@@ -75,6 +75,8 @@ import { onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import userListVue from "./userList.vue";
 import { userListConf } from "./config";
+import { getFilesByFileId_API } from "@/api/file";
+
 import router from "@/router";
 import store from "@/store";
 
@@ -121,9 +123,14 @@ const toBack = () => {
   router.push("/home/pages");
 };
 
-onMounted(() => {
-  let file = router.currentRoute.value.query;
-  filename.value = `${file.filename}.${file.suffix || file.filesuffix}`;
+onMounted(async () => {
+  // 请求文件
+  let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
+  let fileid = window.location.hash.split("edit/")[1]; // 当前文件的fileid
+  // 通过fileid 请求文件信息
+  let { data } = await getFilesByFileId_API({ userid, fileid });
+
+  filename.value = `${data.filename}.${data.suffix || data.filesuffix}`;
 
   let { userimg } = JSON.parse(sessionStorage.getItem("user"));
   userimg.toString().includes("<svg")

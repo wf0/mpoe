@@ -159,7 +159,7 @@ const gotoEdit = (i, item) => {
 
     // Word 编辑
     case "markdown":
-      router.push({ path: `/edit/${item.fileid}`, query: item });
+      router.push(`/edit/${item.fileid}`);
       break;
 
     default:
