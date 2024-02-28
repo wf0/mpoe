@@ -13,7 +13,7 @@
     />
     <div class="search-input">
       <div class="topdiv">
-        <el-input size="small" v-model="keyword">
+        <el-input size="small" v-model="keyword" ref="keywordRef">
           <template #suffix>{{ index }}/{{ total }} </template>
         </el-input>
 
@@ -49,6 +49,9 @@ const emit = defineEmits(["iconClick", "close"]);
 
 // 获取全局对象
 let instance = ref(null);
+
+// 输入框组件 ref
+let keywordRef = ref(null);
 
 // 是否展开
 let zhankai = ref(false);
@@ -94,6 +97,8 @@ function countIndexAndTotal() {
 
 // 主动暴露方法，供 ctrl F 调用
 function shortcutCtrlF(text) {
+  // 自动聚焦
+  keywordRef.value.focus();
   keyword.value = text;
 }
 
