@@ -49,7 +49,7 @@ import { onMounted, reactive, ref } from "vue";
 import { getShearFile_API } from "@/api/file";
 import { ElMessage } from "element-plus";
 import router from "@/router";
-import { createShearUrl } from "@/util/shear";
+import { createShearUrl } from "@/util/share";
 import { favorOrTopFile_API } from "@/api/file";
 
 let shearFileArr = reactive([]);

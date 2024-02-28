@@ -37,7 +37,7 @@ export const editUploadFile_API = (data) => {
 
 export const getShearFile_API = (userid) => {
   return fetch({
-    url: "/file/shearFile",
+    url: "/file/shareFile",
     method: "post",
     data: { userid },
   });

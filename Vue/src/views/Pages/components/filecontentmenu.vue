@@ -26,7 +26,7 @@
 <script setup>
 import { reactive, defineExpose, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { createShearUrl } from "@/util/shear";
+import { createShearUrl } from "@/util/share";
 import { execcontent } from "@/util/execcontent";
 import { putFileToRecycle_API } from "@/api/file";
 

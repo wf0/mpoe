@@ -50,7 +50,7 @@
 
       <!-- 分享 -->
       <div class="header-right-shear" title="分享">
-        <el-button type="primary" size="small">分享</el-button>
+        <el-button type="primary" size="small" @click="share">分享</el-button>
       </div>
 
       <!-- 我的头像 -->
@@ -74,7 +74,8 @@
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import userListVue from "./userList.vue";
-import { userListConf } from "./config";
+import { execcontent } from "@/util/execcontent";
+import { createShearUrl } from "@/util/share";
 import { getFilesByFileId_API } from "@/api/file";
 
 import router from "@/router";
@@ -107,6 +108,18 @@ const editType = ref("text"); // 标记编辑器类型 text 或者 markdown
 const commandhandle = (command) => {
   // console.log("点击了", command);
 };
+async function share() {
+  // 创建分享链接
+  // 获取当前文件的信息  username, fileid, filename
+  let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
+  let fileid = window.location.hash.split("edit/")[1]; // 当前文件的fileid
+  // 通过fileid 请求文件信息
+  let { data } = await getFilesByFileId_API({ userid, fileid });
+  let { filename, filesuffix } = data;
+  let url = createShearUrl(username, fileid, filename + "." + filesuffix);
+  execcontent(url);
+  ElMessage.success("分享链接已复制到粘贴板");
+}
 
 // 收藏点击
 const favorClick = () => {

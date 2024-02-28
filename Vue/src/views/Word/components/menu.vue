@@ -41,7 +41,7 @@
       <!-- 云、分享 -->
       <span class="rightIcon">
         <i class="iconfont icon-yunfuwu" title="云服务"></i>
-        <el-button type="primary" size="small" @click="shear">分享</el-button>
+        <el-button type="primary" size="small" @click="share">分享</el-button>
         <el-button size="small" @click="router.go(-1)">返回</el-button>
       </span>
     </div>
@@ -137,7 +137,7 @@
 <script setup>
 import { getFilesByFileId_API } from "@/api/file";
 import { execcontent } from "@/util/execcontent";
-import { createShearUrl } from "@/util/shear";
+import { createShearUrl } from "@/util/share";
 import { ElMessage } from "element-plus";
 import router from "../../../router";
 import { ref, watch } from "vue";
@@ -170,7 +170,7 @@ let fontSizeValue = ref(14);
 let titleLevelValue = ref("none");
 
 // 分享按钮
-async function shear() {
+async function share() {
   // 获取当前文件的信息  username, fileid, filename
   let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
   let fileid = window.location.hash.split("word/")[1]; // 当前文件的fileid

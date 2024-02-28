@@ -21,7 +21,7 @@ router.post("/findFileByFileId", fileCtrl.findFileById);
 router.post("/uploadFile", fileCtrl.uploadFile);
 
 // 获取与我共享的文件
-router.post("/shearFile", fileCtrl.shearFile);
+router.post("/shareFile", fileCtrl.shearFile);
 
 // 加入文件编辑
 router.post("/joinFile", fileCtrl.joinFile);

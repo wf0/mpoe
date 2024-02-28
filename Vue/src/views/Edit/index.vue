@@ -110,7 +110,6 @@ const initSocketServer = (fileid, user) => {
 
 onMounted(() => {
   fileid.value = window.location.hash.split("edit/")[1]; // 当前文件的fileid
-
   let user = JSON.parse(sessionStorage.getItem("user"));
   // 获取 proxy sockets
   initSocketServer(fileid.value, user);
