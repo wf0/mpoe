@@ -12,10 +12,13 @@ export const useMouseChoose = () => {
     mode: "inside", // 采用什么模式决定被选中 ：【'inside','all'】 inside:只要有角被选中    all 所有角都要被选中
   });
 
+  // 计算选中的元素列表
   let choosedDomID = reactive([]);
 
   // 鼠标按下时
   function mouseDownHandle(e) {
+    // 取消右键点击时，清空选中列表
+    if (e.button === 2) return;
     // 标记正在拖拽
     maskinfo.isDragging = true;
 
@@ -55,6 +58,7 @@ export const useMouseChoose = () => {
   }
 
   async function mouseUpHandle(e) {
+    if (e.button === 2) return;
     // 获取选中了那些元素
     let { x, y } = computedPosition(e);
     maskinfo.endX = x;

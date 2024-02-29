@@ -285,29 +285,21 @@ const putFileToRecycleHandle = (fileid) => {
 };
 
 const getFileTypeAndIcon = (i) => {
-  if (i.folderid) {
-    // 添加文件夹属性
-    i.type = "folder";
-    i.icon = "icon-24gf-folderOpen";
-  }
-  if (i.filesuffix === "md") {
-    i.type = "markdown";
-    i.icon = "icon-file-markdown1";
-  }
-  if (i.filesuffix === "txt") {
-    i.type = "txt";
-    i.icon = "icon-wenben1";
+  const typeIconMap = {
+    md: { type: "markdown", icon: "icon-file-markdown1" },
+    txt: { type: "txt", icon: "icon-wenben1" },
+    xlsx: { type: "excel", icon: "icon-excel" },
+    docx: { type: "word", icon: "icon-Word" },
+    folder: { type: "folder", icon: "icon-24gf-folderOpen" },
+  };
+
+  function setTypeAndIcon(filetype) {
+    if (!filetype) return;
+    i.type = typeIconMap[filetype].type;
+    i.icon = typeIconMap[filetype].icon;
   }
 
-  if (i.filesuffix === "xlsx") {
-    i.type = "excel";
-    i.icon = "icon-excel";
-  }
-
-  if (i.filesuffix === "docx") {
-    i.type = "word";
-    i.icon = "icon-Word";
-  }
+  i.folderid ? setTypeAndIcon("folder") : setTypeAndIcon(i.filesuffix);
 
   i.suffix = i.filesuffix;
 };
