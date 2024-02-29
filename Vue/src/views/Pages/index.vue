@@ -8,7 +8,7 @@
     @mouseup="mouseUpHandle"
     @mousemove="mouseMoveHandle"
   >
-    <!-- 绘制选区 -->
+    <!-- 绘制选框选区 -->
     <div class="mask"></div>
     <!-- 右键菜单 -->
     <contentmenu
@@ -125,13 +125,16 @@ watch(
 
 // 文档类型动态颜色
 const getFileIconColor = (suffix, type) => {
-  if (suffix === "docx") return "#0f90e3";
-  if (suffix === "xlsx") return "#01a408";
-  if (suffix === "pdf") return "#ea5454";
-  if (suffix === "txt") return "rgba(0, 0, 0, 0.6)";
-  if (suffix === "md") return "#5A96DB";
   if (type === "folder") return "#ffd153";
-  return "";
+
+  let colorMap = {
+    docx: "#0f90e3",
+    xlsx: "#01a408",
+    pdf: "#ea5454",
+    txt: "rgba(0, 0, 0, 0.6)",
+    md: "#5A96DB",
+  };
+  return colorMap[suffix] ? colorMap[suffix] : "";
 };
 
 // 文件重命名
@@ -143,9 +146,8 @@ const renameHandle = (index) => {
 const gotoEdit = (i, item) => {
   const { type } = item;
 
-  switch (type) {
-    // 双击进入文件夹查看文件
-    case "folder":
+  const eventMap = {
+    folder: () => {
       // 处理面包屑
       pagelistbreadHandle(item);
       router.replace({
@@ -154,26 +156,12 @@ const gotoEdit = (i, item) => {
           fromPath: router.currentRoute.value.query.folderid,
         },
       });
-      break;
-
-    // Word 编辑
-    case "word":
-      router.push(`/word/${item.fileid}`);
-      break;
-
-    // excel 编辑
-    case "excel":
-      router.push(`/excel/${item.fileid}`);
-      break;
-
-    // Word 编辑
-    case "markdown":
-      router.push(`/edit/${item.fileid}`);
-      break;
-
-    default:
-      break;
-  }
+    },
+    word: () => router.push(`/word/${item.fileid}`),
+    excel: () => router.push(`/excel/${item.fileid}`),
+    markdown: () => router.push(`/edit/${item.fileid}`),
+  };
+  eventMap[type] && eventMap[type]();
 };
 
 const pagelistbreadHandle = (item) => {
@@ -241,7 +229,7 @@ const contextmenuHandle = async (e) => {
   filecontentmenuRef.value.hiddenContentMenu();
 };
 
-// 官博右键菜单
+// 关闭右键菜单
 const close = () => {
   showContentMenuInCurrent.value = false;
 };
