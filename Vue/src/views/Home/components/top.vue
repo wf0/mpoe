@@ -187,14 +187,27 @@ const elMessageConfirmHandle = async (file) => {
   let filename = file.name.split(".")[0];
   // filesuffix filetype fileownerfolderid
   let filesuffix = file.name.split(".")[1];
-  let filetype = filesuffix === "md" ? "markdown" : "excel";
+  /**
+   * filetype 支持 txt、word、excel、pdf、markdown
+   * 因此 需要建立一个文件类型表，方便后续查询
+   */
+  const fileSuffixMap = {
+    md: "markdown",
+    txt: "txt",
+    doc: "word",
+    docx: "word",
+    xls: "excel",
+    xlsx: "excel",
+  };
+
+  let filetype = fileSuffixMap[filesuffix];
   // 根据当前路由参数获取 fileownerfolderid
   let fileownerfolderid = router.currentRoute.value.query.folderid;
   let demoname = Math.random().toString().split(".")[1].slice(0, 3); // 测试用
   let createRes = await createFile_API({
     userid,
-    // filename,
-    filename: demoname, // 测试用
+    filename,
+    // filename: demoname, // 测试用 // 测试用 // 测试用 // 测试用 // 测试用
     filesuffix,
     filetype,
     fileownerfolderid,
