@@ -8,9 +8,8 @@ import { ElMessage } from "element-plus";
  * 通过vite的环境变量处理该问题
  */
 
-import.meta.env.MODE === "development"
-  ? (axios.defaults.baseURL = "/baseURL")
-  : (axios.defaults.baseURL = "");
+const dev_env = import.meta.env.MODE === "development";
+axios.defaults.baseURL = dev_env ? "/baseURL" : "";
 
 export const fetch = (options) => {
   return axios({

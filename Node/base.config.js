@@ -10,7 +10,7 @@ const ws_port = 9000;
 // mysql
 const sql_config = {
   port: 3306,
-  host: "localhost",
+  host: "127.0.0.1",
   database: "mpoe",
   user: "root",
   password: "root",

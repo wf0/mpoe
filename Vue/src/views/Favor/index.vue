@@ -1,5 +1,5 @@
 <template>
-  <div class="file">
+  <div>
     <el-table
       :data="shearFileArr.filter((i) => i.favor)"
       @selection-change="handleSelectionChange"

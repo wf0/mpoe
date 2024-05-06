@@ -44,7 +44,7 @@ let pageList = reactive([]);
 
 // 文档类型动态颜色
 function getFileIconColor(suffix, type) {
-  if (suffix === "word") return "#0f90e3";
+  if (suffix === "docx") return "#0f90e3";
   if (suffix === "xlsx") return "#01a408";
   if (suffix === "pdf") return "#ea5454";
   if (suffix === "txt") return "rgba(0, 0, 0, 0.6)";
@@ -71,6 +71,10 @@ const getFileTypeAndIcon = (i) => {
   if (i.filesuffix === "xlsx") {
     i.type = "excel";
     i.icon = "icon-excel";
+  }
+  if (i.filesuffix === "docx") {
+    i.type = "word";
+    i.icon = "icon-Word";
   }
 
   i.suffix = i.filesuffix;

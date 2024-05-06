@@ -1,5 +1,5 @@
 <template>
-  <div class="file">
+  <div>
     <div class="file-menu">
       <el-button-group>
         <el-button size="small" :disabled="true"> 删除 </el-button>
