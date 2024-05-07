@@ -13,19 +13,19 @@
     - fileid 文件id（系统自动生成） - nanoid生成
     - filename 文件名
     - filetype 文件类型 【txt、word、excel、pdf、markdown】
-    - filesuffix 文件后缀
-    - owner 拥有者
-    - fileownerfolderid 文件所属文件夹id
+    - filesuffix 文件后缀【txt、docx、xlsx、pdf、md】
+    - owner 拥有者 ==> 指向用户表【userid】
+    - fileownerfolderid 文件所属文件夹id ==> 指向文件夹表【folderid】
     - state  文件状态 【1：正常、2：回收站、3：作废，回收站可以恢复，作废的可以通过vip恢复，提供云端文件功能】
-    - currenthead 当前指针【通过指针指向文件版本历史记录】
+    - currenthead 当前指针【通过指针指向文件版本历史记录】 ==> 指向版本历史记录表【vid】
     - createtime 创建时间
 
 ## 文件夹 folders
 
     - folderid 文件夹id 【表主键】
     - foldername 文件夹名称
-    - parentfolderid 父级文件夹【通过该字段，可以构成树结构】
-    - owner 拥有者（文件夹创建者）
+    - parentfolderid 父级文件夹【通过该字段，可以构成树结构】 ==> 指向文件夹表【folderid】
+    - owner 拥有者（文件夹创建者）  ==> 指向用户表【userid】
     - state  文件状态 【1：正常、2：回收站、3：作废，回收站可以恢复，作废的可以通过vip恢复，提供云端文件功能】
     - createtime 创建时间
 
