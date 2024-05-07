@@ -9,17 +9,12 @@ import store from "./store";
 import VueSocketIO from "vue-socket.io";
 import { socket_server_url } from "/default.config";
 setTheme("bjl");
-window.router = router;
 
 /* SocketIOClient.Socket, */
 const socket = new VueSocketIO({
   debug: false, // debug调试，生产建议关闭
   connection: socket_server_url,
-  //   关闭自动连接
-  options: {
-    autoConnect: false,
-    //autoConnect 通常与 this.$socket.connect()结合使用，表示手动连接socket服务器
-  },
+  options: { autoConnect: false },
 });
 createApp(App)
   .use(ElementPlus)
