@@ -27,6 +27,7 @@
 </template>
 
 <script setup>
+// ################
 import { nextTick, onMounted, reactive, ref } from "vue";
 import { useEditor } from "@/hooks/useEditor";
 import menuVue from "./components/menu.vue";
@@ -35,6 +36,7 @@ import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
 import searchVue from "./components/search.vue";
 import { ws_server_url as url } from "/default.config";
+import { Editor } from "../../../public/libs/canvas-editor/canvas-editor.es";
 
 var { instance, data, options, iconClickHandle } = useEditor();
 
@@ -56,11 +58,11 @@ onMounted(async () => {
   let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
 
   // 初始化 canvas-editor
-  instance = new CanvasEditor(
+  instance = new Editor(
     document.querySelector(".word-editor-dom"),
-    data,
+    [],
     options,
-    { url, username, userid, roomname }
+    { url, username, userid, roomname } // 协同的关键
   );
 
   // 供全局拿取instance
@@ -93,7 +95,7 @@ onMounted(async () => {
       key: "p", // ctrl + P
       mod: true,
       isGlobal: true,
-      callback: async (command) => {
+      callback: (command) => {
         command.executePrint();
       },
     },

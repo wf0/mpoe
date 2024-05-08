@@ -33,6 +33,9 @@ module.exports = () => {
 
         case "luckysheet":
           return luckysheetHandle(wss, conn, req);
+
+        case "canvas-editor":
+          return canvasEditorHandle(wss, conn, req);
         default:
           break;
       }
