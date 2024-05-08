@@ -8,6 +8,7 @@ const { logger, unzip } = require("../util");
 const { WebSocketServer } = require("ws");
 const { yjsHandle } = require("./yjs");
 const { luckysheetHandle } = require("./luckysheet");
+const { canvasEditorHandle } = require("./canvas-editor");
 
 module.exports = () => {
   const wss = new WebSocketServer({ port: ws_port }); // ws server
@@ -21,6 +22,7 @@ module.exports = () => {
       let type = req.url.split("?")[1];
       // yjs/4pNsgurcA4KkcLEOq0Acu
       // type=luckysheet&fileid=BCd_smxyZ_OB3DgXAjU34&t=111&g=Z0JWO6f-kpimERR1m9BBz
+      // canvas-editor/canvas-demo
       type = type.toString().includes("/")
         ? type.split("/")[0]
         : type.split("&")[0].split("=")[1];
@@ -29,13 +31,13 @@ module.exports = () => {
 
       switch (type) {
         case "yjs":
-          return yjsHandle(wss, conn, req);
+          return yjsHandle(wss, conn, req); // 当前未关联 文件！！
 
         case "luckysheet":
           return luckysheetHandle(wss, conn, req);
 
         case "canvas-editor":
-          return canvasEditorHandle(wss, conn, req);
+          return canvasEditorHandle(wss, conn, req); // 当前未关联 文件！！
         default:
           break;
       }
