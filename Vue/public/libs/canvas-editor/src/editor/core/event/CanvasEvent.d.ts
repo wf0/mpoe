@@ -2,6 +2,7 @@ import { IElement, IElementPosition } from '../../interface/Element';
 import { ICurrentPosition } from '../../interface/Position';
 import { Draw } from '../draw/Draw';
 import { IRange } from '../../interface/Range';
+import Editor from '../..';
 export interface ICompositionInfo {
     elementList: IElement[];
     startIndex: number;
@@ -23,7 +24,8 @@ export declare class CanvasEvent {
     private pageList;
     private range;
     private position;
-    constructor(draw: Draw);
+    private editor;
+    constructor(draw: Draw, editor: Editor);
     getDraw(): Draw;
     register(): void;
     setIsAllowSelection(payload: boolean): void;

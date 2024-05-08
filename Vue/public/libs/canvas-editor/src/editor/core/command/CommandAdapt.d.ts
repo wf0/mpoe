@@ -18,6 +18,7 @@ import { Draw } from '../draw/Draw';
 import { INavigateInfo } from '../draw/interactive/Search';
 import { IRange } from '../../interface/Range';
 import { IKeydown, IRangeStyle } from '../../interface/Websocket';
+import Editor from '../..';
 export declare class CommandAdapt {
     private draw;
     private lastRange;
@@ -31,7 +32,8 @@ export declare class CommandAdapt {
     private workerManager;
     private searchManager;
     private i18n;
-    constructor(draw: Draw);
+    private editor;
+    constructor(draw: Draw, editor: Editor);
     rangeStyleChange(payload: IRangeStyle): void;
     broadcastRangeStyle(payload: IRangeStyle): void;
     setUserRange(data: {

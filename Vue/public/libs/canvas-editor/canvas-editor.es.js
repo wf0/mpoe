@@ -5255,7 +5255,7 @@ function mousemove(evt, host) {
     isCompute: false
   });
 }
-function keydown(evt, host) {
+function keydown(evt, host, editor) {
   var _a, _b, _c, _d;
   if (host.isComposing)
     return;
@@ -5304,7 +5304,7 @@ function keydown(evt, host) {
     }
     rangeManager.setRange(curIndex, curIndex);
     draw.render({ curIndex });
-    broadcastKeydown(host, { type: "Backspace", startIndex, endIndex });
+    broadcastKeydown(host, { type: "Backspace", startIndex, endIndex }, editor);
   } else if (evt.key === KeyMap.Delete) {
     if (isReadonly || isPartRangeInControlOutside)
       return;
@@ -5323,7 +5323,7 @@ function keydown(evt, host) {
     }
     rangeManager.setRange(curIndex, curIndex);
     draw.render({ curIndex });
-    broadcastKeydown(host, { type: "Delete", startIndex, endIndex });
+    broadcastKeydown(host, { type: "Delete", startIndex, endIndex }, editor);
   } else if (evt.key === KeyMap.Enter) {
     if (isReadonly || isPartRangeInControlOutside)
       return;
@@ -5354,7 +5354,7 @@ function keydown(evt, host) {
       draw.render({ curIndex });
     }
     evt.preventDefault();
-    broadcastKeydown(host, { type: "Enter", startIndex, endIndex });
+    broadcastKeydown(host, { type: "Enter", startIndex, endIndex }, editor);
   } else if (evt.key === KeyMap.Left) {
     if (isReadonly)
       return;
@@ -5591,11 +5591,11 @@ function keydown(evt, host) {
     evt.preventDefault();
   }
 }
-function broadcastKeydown(host, { startIndex, endIndex, type }) {
+function broadcastKeydown(host, { startIndex, endIndex, type }, editor) {
   if (host.isComposing)
     return;
   const draw = host.getDraw();
-  const ydoc = Reflect.get(window, "ydoc");
+  const ydoc = editor.getDoc();
   if (!ydoc || !ydoc.connect)
     return;
   const { data: data2 } = draw.getValue();
@@ -5962,7 +5962,8 @@ var drag = {
   dragover
 };
 class CanvasEvent {
-  constructor(draw) {
+  constructor(draw, editor) {
+    this.editor = editor;
     this.draw = draw;
     this.pageContainer = draw.getPageContainer();
     this.pageList = draw.getPageList();
@@ -6055,7 +6056,7 @@ class CanvasEvent {
     mouseleave(evt, this);
   }
   keydown(evt) {
-    keydown(evt, this);
+    keydown(evt, this, this.editor);
   }
   dblclick(evt) {
     click.dblclick(this, evt);
@@ -6658,7 +6659,8 @@ class Position {
   }
 }
 class RangeManager {
-  constructor(draw) {
+  constructor(draw, editor) {
+    this.editor = editor;
     this.draw = draw;
     this.options = draw.getOptions();
     this.listener = draw.getListener();
@@ -6878,7 +6880,7 @@ class RangeManager {
     this.setRange(range.startIndex, range.endIndex, range.tableId, range.startTdIndex, range.endTdIndex, range.startTrIndex, range.endTrIndex);
   }
   synchronousUserRange(startIndex, endIndex, isCrossRowCol) {
-    const ydoc = Reflect.get(window, "ydoc");
+    const ydoc = this.editor.getDoc();
     if (!ydoc || !ydoc.connect)
       return;
     ydoc.setUserRange({
@@ -11145,7 +11147,8 @@ class Group {
   }
 }
 class Draw {
-  constructor(rootContainer, options, data2, listener, eventBus, override) {
+  constructor(rootContainer, options, data2, listener, eventBus, override, editor) {
+    this.editor = editor;
     this.container = this._wrapContainer(rootContainer);
     this.pageList = [];
     this.ctxList = [];
@@ -11164,7 +11167,7 @@ class Draw {
     this.historyManager = new HistoryManager(this);
     this.position = new Position(this);
     this.zone = new Zone(this);
-    this.range = new RangeManager(this);
+    this.range = new RangeManager(this, editor);
     this.margin = new Margin(this);
     this.background = new Background(this);
     this.search = new Search(this);
@@ -11196,7 +11199,7 @@ class Draw {
     this.scrollObserver = new ScrollObserver(this);
     this.selectionObserver = new SelectionObserver(this);
     this.imageObserver = new ImageObserver();
-    this.canvasEvent = new CanvasEvent(this);
+    this.canvasEvent = new CanvasEvent(this, editor);
     this.cursor = new Cursor(this, this.canvasEvent);
     this.canvasEvent.register();
     this.globalEvent = new GlobalEvent(this, this.canvasEvent);
@@ -12542,7 +12545,7 @@ class Draw {
       if ((isSubmitHistory || isSourceHistory) && !isInit) {
         const { input: input2, startIndex } = payload || {};
         if (input2 && startIndex) {
-          const ydoc = Reflect.get(window, "ydoc");
+          const ydoc = this.editor.getDoc();
           if (ydoc && ydoc.connect) {
             ydoc.collectUserInput(this.getValue().data);
             console.group("\u6536\u96C6\u7528\u6237\u8F93\u5165");
@@ -12722,7 +12725,8 @@ function printImageBase64(base64List, width, height) {
   });
 }
 class CommandAdapt {
-  constructor(draw) {
+  constructor(draw, editor) {
+    this.editor = editor;
     this.draw = draw;
     this.range = draw.getRange();
     this.position = draw.getPosition();
@@ -12795,7 +12799,7 @@ class CommandAdapt {
     const { startIndex, endIndex } = this.range.getRange();
     if (!startIndex || !endIndex)
       return;
-    const ydoc = Reflect.get(window, "ydoc");
+    const ydoc = this.editor.getDoc();
     if (!ydoc || !ydoc.connect)
       return;
     ydoc.rangeStyleChange({ startIndex, endIndex, ...payload });
@@ -21743,7 +21747,7 @@ class Ydoc extends EventBus {
   constructor(url, roomname, userid, command, color) {
     super();
     this.color = color;
-    this.url = url;
+    this.url = url + "?canvas-editor";
     this.roomname = roomname;
     this.connect = false;
     this.command = command;
@@ -21832,7 +21836,8 @@ class Ydoc extends EventBus {
   }
 }
 class Editor {
-  constructor(container, data2, options = {}, ydocInfo) {
+  constructor(payload) {
+    const { container, data: data2, options, socketinfo } = payload;
     const headerOptions = {
       ...defaultHeaderOption,
       ...options.header
@@ -21958,8 +21963,8 @@ class Editor {
       header: headerElementList,
       main: mainElementList,
       footer: footerElementList
-    }, this.listener, this.eventBus, this.override);
-    this.command = new Command(new CommandAdapt(draw));
+    }, this.listener, this.eventBus, this.override, this);
+    this.command = new Command(new CommandAdapt(draw, this));
     const contextMenu = new ContextMenu(draw, this.command);
     const shortcut = new Shortcut(draw, this.command);
     this.register = new Register({
@@ -21968,13 +21973,11 @@ class Editor {
       i18n: draw.getI18n()
     });
     let ydoc = null;
-    if (ydocInfo) {
-      const { url, roomname, userid, username, color } = ydocInfo;
+    if (socketinfo) {
+      const { url, roomname, userid, username, color } = socketinfo;
       if (!url || !roomname || !userid || !username)
         throw Error("\u53C2\u6570\u9519\u8BEF\uFF0Curl\u3001roomname\u3001userid\u3001username\u5FC5\u4F20\uFF01");
       ydoc = new Ydoc(url, roomname, userid, this.command, color);
-      Reflect.set(window, "ydoc", ydoc);
-      Reflect.set(window, "ydoc_userid", userid);
       console.log(`\u7528\u6237${username}\u521D\u59CB\u5316`);
       ydoc.userInitEditor(`\u7528\u6237${username}`, userid);
     }
@@ -21984,6 +21987,7 @@ class Editor {
       contextMenu.removeEvent();
       ydoc == null ? void 0 : ydoc.canvasDestroy();
     };
+    this.getDoc = () => ydoc;
     const plugin = new Plugin(this);
     this.use = plugin.use.bind(plugin);
   }

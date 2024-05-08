@@ -27,7 +27,6 @@
 </template>
 
 <script setup>
-// ################
 import { nextTick, onMounted, reactive, ref } from "vue";
 import { useEditor } from "@/hooks/useEditor";
 import menuVue from "./components/menu.vue";
@@ -58,12 +57,12 @@ onMounted(async () => {
   let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
 
   // 初始化 canvas-editor
-  instance = new Editor(
-    document.querySelector(".word-editor-dom"),
-    [],
+  instance = new Editor({
+    container: document.querySelector(".word-editor-dom"),
+    data: [],
     options,
-    { url, username, userid, roomname } // 协同的关键
-  );
+    socketinfo: { url, username, userid, roomname }, // 协同的关键
+  });
 
   // 供全局拿取instance
   Reflect.set(window, "__instance__", instance);

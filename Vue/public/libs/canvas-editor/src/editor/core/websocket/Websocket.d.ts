@@ -8,7 +8,7 @@ export declare class Ydoc extends EventBus<EventBusMap> {
     private ydoc;
     private ymap;
     private provider;
-    private connect;
+    connect: boolean | undefined;
     private url;
     private roomname;
     private command;

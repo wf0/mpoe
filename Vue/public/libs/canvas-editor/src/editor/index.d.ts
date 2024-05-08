@@ -29,6 +29,13 @@ import { IRangeStyle } from './interface/Listener';
 import { Override } from './core/override/Override';
 import { LETTER_CLASS } from './dataset/constant/Common';
 import { IYdoc, IYdocInfo } from './interface/Websocket';
+import { Ydoc } from './core/websocket/Websocket';
+type IEditor = {
+    container: HTMLDivElement;
+    data: IEditorData | IElement[];
+    options: IEditorOption;
+    socketinfo?: IYdocInfo;
+};
 export default class Editor {
     command: Command;
     listener: Listener;
@@ -38,7 +45,8 @@ export default class Editor {
     destroy: () => void;
     use: UsePlugin;
     ydoc: IYdoc | undefined;
-    constructor(container: HTMLDivElement, data: IEditorData | IElement[], options?: IEditorOption, ydocInfo?: IYdocInfo);
+    getDoc: () => Ydoc | null;
+    constructor(payload: IEditor);
 }
 export { EDITOR_COMPONENT, LETTER_CLASS, Editor, RowFlex, VerticalAlign, EditorZone, EditorMode, ElementType, ControlType, EditorComponent, PageMode, ImageDisplay, Command, KeyMap, BlockType, PaperDirection, TableBorder, TdBorder, MaxHeightRatio, NumberType, TitleLevel, ListType, ListStyle, WordBreak };
 export type { IElement, IEditorData, IEditorOption, IEditorResult, IContextMenuContext, IRegisterContextMenu, IWatermark, INavigateInfo, IBlock, ILang, ICatalog, ICatalogItem, IRangeStyle };

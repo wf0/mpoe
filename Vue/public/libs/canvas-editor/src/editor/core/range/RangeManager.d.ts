@@ -1,3 +1,4 @@
+import Editor from '../..';
 import { IElement } from '../../interface/Element';
 import { IRange, RangeRowArray, RangeRowMap } from '../../interface/Range';
 import { Draw } from '../draw/Draw';
@@ -9,7 +10,8 @@ export declare class RangeManager {
     private eventBus;
     private position;
     private historyManager;
-    constructor(draw: Draw);
+    private editor;
+    constructor(draw: Draw, editor: Editor);
     getRange(): IRange;
     clearRange(): void;
     getIsCollapsed(): boolean;

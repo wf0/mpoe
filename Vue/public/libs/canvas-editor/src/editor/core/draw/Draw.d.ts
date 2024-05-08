@@ -30,6 +30,7 @@ import { EventBus } from '../event/eventbus/EventBus';
 import { EventBusMap } from '../../interface/EventBus';
 import { Group } from './interactive/Group';
 import { Override } from '../override/Override';
+import Editor from '../..';
 export declare class Draw {
     private container;
     private pageContainer;
@@ -93,7 +94,8 @@ export declare class Draw {
     private intersectionPageNo;
     private lazyRenderIntersectionObserver;
     private printModeData;
-    constructor(rootContainer: HTMLElement, options: DeepRequired<IEditorOption>, data: IEditorData, listener: Listener, eventBus: EventBus<EventBusMap>, override: Override);
+    private editor;
+    constructor(rootContainer: HTMLElement, options: DeepRequired<IEditorOption>, data: IEditorData, listener: Listener, eventBus: EventBus<EventBusMap>, override: Override, editor: Editor);
     getLetterReg(): RegExp;
     getMode(): EditorMode;
     setMode(payload: EditorMode): void;
