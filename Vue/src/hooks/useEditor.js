@@ -1,10 +1,15 @@
 // canvas-editor 相关API
-import { ref, reactive } from "vue";
+import { reactive } from "vue";
+import { ws_server_url as url } from "/default.config";
+// 协同相关配置 解决初始加载会报错问题
+let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
+let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
 
 // 实现 icon 与 instance 的操作映射
-function _iconClickHandle({ icon, value, reword }) {
-  let instance = Reflect.get(window, "__instance__");
-  if (!instance) return;
+function _iconClickHandle(payload, instance) {
+  if (!payload || !instance || !payload.icon) return;
+
+  const { icon, value, reword } = payload;
 
   console.log(icon, value);
 
@@ -41,12 +46,15 @@ function _iconClickHandle({ icon, value, reword }) {
     "icon-replace": () => instance.command.executeReplace(reword),
     // 关闭查找
     "icon-search-close": () => instance.command.executeSearch(""),
+    pageScaleAdd: () => instance.command.executePageScaleAdd(),
+    pageScaleMinus: () => instance.command.executePageScaleMinus(),
+    pageScale: () => instance.command.executePageScale(value),
   };
   iconHandleMap[icon] && iconHandleMap[icon]();
 }
 
 export const useEditor = () => {
-  var instance = reactive(null);
+  let instance = reactive({});
 
   // 初始化数据源
   let data = reactive({
@@ -594,8 +602,12 @@ export const useEditor = () => {
     maskMargin: [60, 0, 30, 0], // 菜单栏高度60，底部工具栏30为遮盖层
   });
 
-  // 菜单栏点击事件
-  const iconClickHandle = (data) => _iconClickHandle(data);
+  const setInsance = (ins) => (instance = ins);
 
-  return { instance, data, options, iconClickHandle };
+  const socketinfo = { url, username, userid, roomname };
+
+  // 菜单栏点击事件
+  const iconClickHandle = (data) => _iconClickHandle(data, instance);
+
+  return { data, options, socketinfo, iconClickHandle, setInsance };
 };

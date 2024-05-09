@@ -103,15 +103,6 @@ export const useMouseChoose = () => {
       let x = [Math.min(sx, ex), Math.max(sx, ex)];
       let y = [Math.min(sy, ey), Math.max(sy, ey)];
 
-      console.group("拖拽结束，选区范围为：");
-      console.log("startX => ", startX);
-      console.log("startY => ", startY);
-      console.log("endX => ", endX);
-      console.log("endY => ", endY);
-      console.log("x 范围 => ", x);
-      console.log("y 范围 => ", y);
-      console.groupEnd();
-
       // 定义被选中的元素数组
       let ischoosed = [];
       document.querySelectorAll(".pages-list-files-item").forEach((dom) => {

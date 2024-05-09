@@ -102,5 +102,6 @@ export declare class Command {
     executeContentChange: CommandAdapt['contentChangeHandle'];
     executeRangeStyle: CommandAdapt['rangeStyleChange'];
     getLastRange: CommandAdapt['getLastRange'];
+    executePageScale: CommandAdapt['executePageScale'];
     constructor(adapt: CommandAdapt);
 }

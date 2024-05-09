@@ -4,6 +4,8 @@
     <div class="word-menu">
       <menuVue @iconClick="iconClickHandle" @show_sap="showsap = true" />
     </div>
+
+    <!-- editor-content -->
     <el-scrollbar class="word-editor">
       <!-- 目录 -->
       <div class="word-editor-directory"><directoryVue /></div>
@@ -12,9 +14,12 @@
       <!-- 侧边栏 支持批注 聊天 -->
       <div class="word-editor-sidebar"><sidebarVue /></div>
     </el-scrollbar>
+
+    <!-- Footer -->
     <div class="word-footer">
-      <footerVue :footerInfo="footerInfo" />
+      <footerVue :footerInfo="footerInfo" @iconClick="iconClickHandle" />
     </div>
+
     <!-- 查找替换 -->
     <div class="word-search" v-if="showsap">
       <searchVue
@@ -34,10 +39,9 @@ import footerVue from "./components/footer.vue";
 import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
 import searchVue from "./components/search.vue";
-import { ws_server_url as url } from "/default.config";
 import { Editor } from "../../../public/libs/canvas-editor/canvas-editor.es";
 
-var { instance, options, iconClickHandle } = useEditor();
+var { options, iconClickHandle, setInsance, socketinfo } = useEditor();
 
 // 搜索组件 Ref
 let searchRef = ref(null);
@@ -53,24 +57,18 @@ let footerInfo = reactive({
   wordCount: 0, // 总字数
 });
 
-// 页面卸载前，关闭 webbsocket 链接
-onBeforeUnmount(() => instance.closeWebsocket());
-
 onMounted(() => {
-  // 协同相关配置 解决初始加载会报错问题
-  let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
-  let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
-
   // 初始化 canvas-editor
-  instance = new Editor({
+  let instance = new Editor({
     container: document.querySelector(".word-editor-dom"),
     data: [],
     options,
-    socketinfo: { url, username, userid, roomname }, // 协同的关键
+    socketinfo, // 协同的关键
   });
 
-  // 供全局拿取instance
-  Reflect.set(window, "__mpoe_instance__", instance);
+  // 实现数据传递
+  setInsance(instance);
+
   // // 这个是配合 canvas-editor 的API调用，后续可以删除
   // Reflect.set(window, "instance", instance);
 
@@ -119,6 +117,8 @@ onMounted(() => {
     },
   ]);
 });
+
+onBeforeUnmount(() => instance.closeWebsocket()); // 页面卸载前，关闭 webbsocket 链接
 </script>
 
 <style lang="less" scoped>

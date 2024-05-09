@@ -12574,6 +12574,7 @@ class Command {
     this.executeKeydown = adapt.keydwnHandle.bind(adapt);
     this.executeContentChange = adapt.contentChangeHandle.bind(adapt);
     this.getLastRange = adapt.getLastRange.bind(adapt);
+    this.executePageScale = adapt.executePageScale.bind(adapt);
     this.executeMode = adapt.mode.bind(adapt);
     this.executeCut = adapt.cut.bind(adapt);
     this.executeCopy = adapt.copy.bind(adapt);
@@ -14487,6 +14488,14 @@ class CommandAdapt {
     const { scale } = this.options;
     if (scale !== 1) {
       this.draw.setPageScale(1);
+    }
+  }
+  executePageScale(scale) {
+    if (!scale)
+      return;
+    const nextScale = scale * 10 - 1;
+    if (nextScale >= 5 && nextScale <= 30) {
+      this.draw.setPageScale(nextScale / 10);
     }
   }
   pageScaleMinus() {

@@ -58,12 +58,19 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { exitFullScreen } from "@utils/fullScreen";
 
 let { footerInfo } = defineProps({
   footerInfo: { type: Object, default: () => ({}) },
 });
 
-const emit = defineEmits(["pageSizeChange"]);
+/**
+ *  "pageScaleAdd",
+ *  "pageScaleMinus",
+ *  "pageScale",
+ */
+const emit = defineEmits(["iconClick"]);
+
 // 页面缩放比例
 let pageSize = ref(100);
 
@@ -72,48 +79,30 @@ let fullScreen = ref(false);
 
 // 点击缩小放大按钮
 function pageScale(index) {
-  let instance = Reflect.get(window, "__mpoe_instance__");
-  if (index) {
-    pageSize.value += 10;
-    instance && instance.command.executePageScaleAdd();
-  } else {
-    pageSize.value -= 10;
-    instance && instance.command.executePageScaleMinus();
-  }
+  index
+    ? ((pageSize.value += 10), emit("iconClick", { icon: "pageScaleAdd" }))
+    : ((pageSize.value -= 10), emit("iconClick", { icon: "pageScaleMinus" }));
 }
 
 // 滑块事件
-function inputHandle(value) {
-  let instance = Reflect.get(window, "__mpoe_instance__");
-  if (!instance) return;
-  instance.command.executePageScale(value / 100); // 入参是比例值，需要做转换
+function inputHandle(val) {
+  emit("iconClick", { icon: "pageScale", value: val / 100 }); // 入参是比例值，需要做转换
 }
 
 // 全屏与取消事件
 function fullScreenHandle() {
-  let dom = document.querySelector(".word");
-  if (!fullScreen.value) dom.requestFullscreen();
-  else {
-    if (document.exitFullscreen) {
-      // W3C标准的退出全屏方法
-      document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      // Firefox特定的退出全屏方法
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      // Chrome、Safari及Opera特定的退出全屏方法
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      // IE/Edge特定的退出全屏方法
-      document.msExitFullscreen();
-    }
-  }
+  // 如果未处于全屏状态，则进入全屏，不然则取消全屏
+  fullScreen.value
+    ? exitFullScreen()
+    : document.querySelector(".word").requestFullscreen();
+
+  // 同步修改全屏状态
   fullScreen.value = !fullScreen.value;
 }
 
 // 监听父组件传递的所有参数 页面、页码、字数、缩放比例
 watch(
-  footerInfo,
+  () => footerInfo,
   () => {
     pageSize.value = Math.floor(100 * footerInfo.pageScaleNumber);
   },

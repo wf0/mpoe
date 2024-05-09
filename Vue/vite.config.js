@@ -40,6 +40,10 @@ export default defineConfig({
         find: "@el",
         replacement: path.resolve(__dirname, "src/el-components"),
       },
+      {
+        find: "@utils",
+        replacement: path.resolve(__dirname, "src/util"),
+      },
     ],
   },
 
