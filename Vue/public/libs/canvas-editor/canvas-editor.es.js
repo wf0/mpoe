@@ -12548,10 +12548,6 @@ class Draw {
           const ydoc = this.editor.getDoc();
           if (ydoc && ydoc.connect) {
             ydoc.collectUserInput(this.getValue().data);
-            console.group("\u6536\u96C6\u7528\u6237\u8F93\u5165");
-            console.log("startIndex", startIndex);
-            console.log("input", input2);
-            console.groupEnd();
           }
         }
         if (this.listener.contentChange) {
@@ -21988,6 +21984,11 @@ class Editor {
       ydoc == null ? void 0 : ydoc.canvasDestroy();
     };
     this.getDoc = () => ydoc;
+    this.closeWebsocket = () => {
+      if (!ydoc || !ydoc.connect)
+        return;
+      ydoc.provider.disconnect();
+    };
     const plugin = new Plugin(this);
     this.use = plugin.use.bind(plugin);
   }

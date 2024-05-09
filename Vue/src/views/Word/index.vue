@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, reactive, ref } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useEditor } from "@/hooks/useEditor";
 import menuVue from "./components/menu.vue";
 import footerVue from "./components/footer.vue";
@@ -37,7 +37,7 @@ import searchVue from "./components/search.vue";
 import { ws_server_url as url } from "/default.config";
 import { Editor } from "../../../public/libs/canvas-editor/canvas-editor.es";
 
-var { instance, data, options, iconClickHandle } = useEditor();
+var { instance, options, iconClickHandle } = useEditor();
 
 // 搜索组件 Ref
 let searchRef = ref(null);
@@ -53,7 +53,10 @@ let footerInfo = reactive({
   wordCount: 0, // 总字数
 });
 
-onMounted(async () => {
+// 页面卸载前，关闭 webbsocket 链接
+onBeforeUnmount(() => instance.closeWebsocket());
+
+onMounted(() => {
   // 协同相关配置 解决初始加载会报错问题
   let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
   let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
@@ -67,9 +70,9 @@ onMounted(async () => {
   });
 
   // 供全局拿取instance
-  Reflect.set(window, "__instance__", instance);
-  // 这个是配合 canvas-editor 的API调用，后续可以删除
-  Reflect.set(window, "instance", instance);
+  Reflect.set(window, "__mpoe_instance__", instance);
+  // // 这个是配合 canvas-editor 的API调用，后续可以删除
+  // Reflect.set(window, "instance", instance);
 
   // 监听页面缩放变化
   instance.listener.pageScaleChange = (payload) => {

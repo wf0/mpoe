@@ -108,7 +108,7 @@ watch(keyword, () => {
 });
 
 // ommounted
-onMounted(() => (instance.value = Reflect.get(window, "__instance__")));
+onMounted(() => (instance.value = Reflect.get(window, "__mpoe_instance__")));
 
 // setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量
 defineExpose({ shortcutCtrlF });

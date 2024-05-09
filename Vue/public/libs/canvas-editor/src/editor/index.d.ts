@@ -46,6 +46,7 @@ export default class Editor {
     use: UsePlugin;
     ydoc: IYdoc | undefined;
     getDoc: () => Ydoc | null;
+    closeWebsocket: () => void;
     constructor(payload: IEditor);
 }
 export { EDITOR_COMPONENT, LETTER_CLASS, Editor, RowFlex, VerticalAlign, EditorZone, EditorMode, ElementType, ControlType, EditorComponent, PageMode, ImageDisplay, Command, KeyMap, BlockType, PaperDirection, TableBorder, TdBorder, MaxHeightRatio, NumberType, TitleLevel, ListType, ListStyle, WordBreak };

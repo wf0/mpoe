@@ -7,7 +7,7 @@ import { IEditorData } from '../../interface/Editor';
 export declare class Ydoc extends EventBus<EventBusMap> {
     private ydoc;
     private ymap;
-    private provider;
+    provider: any | undefined;
     connect: boolean | undefined;
     private url;
     private roomname;
