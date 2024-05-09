@@ -4,9 +4,9 @@
       <span>
         <i class="iconfont"></i>
       </span>
-      <span>页码：1</span>
-      <span>页面：1/3</span>
-      <span>字数：{{ total }}</span>
+      <!-- <span>页码：1</span> -->
+      <!-- <span>页面：</span> -->
+      <span>字数：{{ footerInfo.wordCount }}</span>
     </div>
     <div class="footer-right">
       <i
@@ -66,8 +66,6 @@ let { footerInfo } = defineProps({
 const emit = defineEmits(["pageSizeChange"]);
 // 页面缩放比例
 let pageSize = ref(100);
-// 字体数量
-let total = ref(0);
 
 // 全屏状态
 let fullScreen = ref(false);
@@ -118,7 +116,6 @@ watch(
   footerInfo,
   () => {
     pageSize.value = Math.floor(100 * footerInfo.pageScaleNumber);
-    // total.value = footerInfo.total;
   },
   { deep: true, immediate: true }
 );

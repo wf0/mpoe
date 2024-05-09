@@ -47,8 +47,10 @@ let showsap = ref(false);
 
 // 需要传递多个信息
 let footerInfo = reactive({
-  pageScaleNumber: 1,
-  total: 0,
+  pageScaleNumber: 1, // 缩放比例
+  totalPage: 0, // 总页数
+  currentPage: 0, // 当前页码
+  wordCount: 0, // 总字数
 });
 
 onMounted(async () => {
@@ -72,6 +74,20 @@ onMounted(async () => {
   // 监听页面缩放变化
   instance.listener.pageScaleChange = (payload) => {
     footerInfo.pageScaleNumber = payload;
+  };
+
+  // 当前页数发生改变
+  instance.listener.pageSizeChange = (payload) =>
+    (footerInfo.totalPage = payload);
+
+  // 当前页发生改变
+  instance.listener.intersectionPageNoChange = (payload) =>
+    (footerInfo.currentPage = payload + 1);
+
+  // 当前内容发生改变
+  instance.listener.contentChange = async () => {
+    const wordCount = await instance.command.getWordCount();
+    footerInfo.wordCount = wordCount;
   };
 
   // 注册快捷键[Ctrl+F Ctrl+P]
