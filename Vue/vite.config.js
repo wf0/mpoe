@@ -6,6 +6,8 @@ const path = require("path");
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+
+  // 服务器配置
   server: {
     host: "0.0.0.0",
     port: 3000,
@@ -18,6 +20,8 @@ export default defineConfig({
       },
     },
   },
+
+  // 配置路径别名
   resolve: {
     alias: [
       {
@@ -38,6 +42,7 @@ export default defineConfig({
       },
     ],
   },
+
   // 修改打包输出路径
   build: {
     outDir: "../Node/public/dist",
