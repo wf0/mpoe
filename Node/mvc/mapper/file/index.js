@@ -5,10 +5,10 @@ const { query } = require("../../../mysql");
 exports.findFilesMap = async (userid, folderid, state = 1) =>
   folderid
     ? await query(
-        `SELECT * FROM files WHERE OWNER ='${userid}' AND fileownerfolderid='${folderid}' AND state='${state}'`
+        `SELECT * FROM files WHERE OWNER ='${userid}' AND fileownerfolderid='${folderid}' AND state='${state} ORDER BY filetype'`
       )
     : await query(
-        `SELECT * FROM files WHERE OWNER ='${userid}' AND ISNULL(fileownerfolderid) AND state='${state}'`
+        `SELECT * FROM files WHERE OWNER ='${userid}' AND ISNULL(fileownerfolderid) AND state='${state} ORDER BY filetype'`
       );
 
 // 查找指定的fileid 文件
