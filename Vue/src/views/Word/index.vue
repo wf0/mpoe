@@ -2,7 +2,11 @@
   <div class="word">
     <!-- 菜单栏 -->
     <div class="word-menu">
-      <menuVue @iconClick="iconClickHandle" @show_sap="showsap = true" />
+      <menuVue
+        :menuStatus="menuStatus"
+        @iconClick="ICH"
+        @show_sap="showsap = true"
+      />
     </div>
 
     <!-- editor-content -->
@@ -17,14 +21,15 @@
 
     <!-- Footer -->
     <div class="word-footer">
-      <footerVue :footerInfo="footerInfo" @iconClick="iconClickHandle" />
+      <footerVue :footerInfo="footerInfo" @iconClick="ICH" />
     </div>
 
     <!-- 查找替换 -->
     <div class="word-search" v-if="showsap">
       <searchVue
         ref="searchRef"
-        @iconClick="iconClickHandle"
+        :instance="instance"
+        @iconClick="ICH"
         @close="showsap = false"
       />
     </div>
@@ -32,17 +37,19 @@
 </template>
 
 <script setup>
+import { Editor } from "/public/libs/canvas-editor/canvas-editor.es";
 import { nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
-import { useEditor } from "@/hooks/useEditor";
+import { useEditor } from "../../hooks/useEditor";
 import menuVue from "./components/menu.vue";
 import footerVue from "./components/footer.vue";
 import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
 import searchVue from "./components/search.vue";
 import { ws_server_url as url } from "/default.config";
-import { Editor } from "../../../public/libs/canvas-editor/canvas-editor.es";
+import { options, mockdata } from "./config";
+var { iconClickHandle } = useEditor();
 
-var { options, iconClickHandle, setInsance } = useEditor();
+let instance = reactive({});
 
 // 搜索组件 Ref
 let searchRef = ref(null);
@@ -58,6 +65,12 @@ let footerInfo = reactive({
   wordCount: 0, // 总字数
 });
 
+// 标记菜单栏状态
+let menuStatus = reactive({});
+
+// 做参数转换
+const ICH = (p) => iconClickHandle(p, instance);
+
 onMounted(() => {
   // 协同相关配置 解决初始加载会报错问题
   let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
@@ -65,18 +78,14 @@ onMounted(() => {
   const socketinfo = { url, username, userid, roomname };
 
   // 初始化 canvas-editor
-  let instance = new Editor({
-    container: document.querySelector(".word-editor-dom"),
-    data: [],
-    options,
-    socketinfo,
-  });
-
-  // 实现数据传递
-  setInsance(instance);
-
-  // // 这个是配合 canvas-editor 的API调用，后续可以删除
-  // Reflect.set(window, "instance", instance);
+  instance = reactive(
+    new Editor({
+      container: document.querySelector(".word-editor-dom"),
+      data: [],
+      options,
+      socketinfo,
+    })
+  );
 
   // 监听页面缩放变化
   instance.listener.pageScaleChange = (payload) => {
@@ -96,6 +105,10 @@ onMounted(() => {
     const wordCount = await instance.command.getWordCount();
     footerInfo.wordCount = wordCount;
   };
+
+  // 选区样式发生改变 - 解析字体、字号、标题、加粗等，反馈给菜单栏，做标记
+  instance.listener.rangeStyleChange = (payload) =>
+    Object.assign(menuStatus, payload);
 
   // 注册快捷键[Ctrl+F Ctrl+P]
   instance.register.shortcutList([
@@ -124,7 +137,7 @@ onMounted(() => {
   ]);
 });
 
-onBeforeUnmount(() => iconClickHandle({ icon: "closeWebSocket" })); // 页面卸载前，关闭 webbsocket 链接
+onBeforeUnmount(() => iconClickHandle({ icon: "closeWebSocket" }, instance)); // 页面卸载前，关闭 webbsocket 链接
 </script>
 
 <style lang="less" scoped>

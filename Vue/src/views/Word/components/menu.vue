@@ -151,6 +151,12 @@ import {
   titleLevel,
 } from "../config";
 
+const { menuStatus } = defineProps({
+  menuStatus: {
+    type: Object,
+  },
+});
+
 // 所有的icon 都需要经过instance.command.xxx API 调用，因此，应该回传参数 实现对应功能
 const emit = defineEmits(["iconClick", "show_sap"]);
 
@@ -187,6 +193,15 @@ watch(fontFamilyValue, (value) =>
 );
 watch(fontSizeValue, (value) =>
   emit("iconClick", { icon: "font-size", value })
+);
+watch(titleLevelValue, (value) =>
+  emit("iconClick", { icon: "title-level", value })
+);
+
+watch(
+  () => menuStatus,
+  () => {},
+  { deep: true }
 );
 </script>
 

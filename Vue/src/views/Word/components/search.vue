@@ -47,8 +47,11 @@ import { ref, defineEmits, watch, defineExpose, onMounted } from "vue";
 
 const emit = defineEmits(["iconClick", "close"]);
 
-// 获取全局对象
-let instance = ref(null);
+const { instance } = defineProps({
+  instance: {
+    type: Object,
+  },
+});
 
 // 输入框组件 ref
 let keywordRef = ref(null);
@@ -85,7 +88,7 @@ function nextword() {
 // 计算index 及 total
 function countIndexAndTotal() {
   //   获取搜索结果
-  const result = instance.value.command.getSearchNavigateInfo();
+  const result = instance.command.getSearchNavigateInfo();
   if (result) {
     total.value = result.count;
     index.value = result.index;
@@ -106,9 +109,6 @@ watch(keyword, () => {
   emit("iconClick", { icon: "icon-search", value: keyword.value });
   countIndexAndTotal();
 });
-
-// ommounted
-onMounted(() => (instance.value = Reflect.get(window, "__mpoe_instance__")));
 
 // setup 默认是私有域，因此，需要通过 defineExpose 显示导出具体的方法和变量
 defineExpose({ shortcutCtrlF });
