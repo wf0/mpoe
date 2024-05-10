@@ -1,9 +1,5 @@
 // canvas-editor 相关API
 import { reactive } from "vue";
-import { ws_server_url as url } from "/default.config";
-// 协同相关配置 解决初始加载会报错问题
-let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
-let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
 
 // 实现 icon 与 instance 的操作映射
 function _iconClickHandle(payload, instance) {
@@ -49,6 +45,7 @@ function _iconClickHandle(payload, instance) {
     pageScaleAdd: () => instance.command.executePageScaleAdd(),
     pageScaleMinus: () => instance.command.executePageScaleMinus(),
     pageScale: () => instance.command.executePageScale(value),
+    closeWebSocket: () => instance.command.closeWebSocket(),
   };
   iconHandleMap[icon] && iconHandleMap[icon]();
 }
@@ -604,10 +601,8 @@ export const useEditor = () => {
 
   const setInsance = (ins) => (instance = ins);
 
-  const socketinfo = { url, username, userid, roomname };
-
   // 菜单栏点击事件
   const iconClickHandle = (data) => _iconClickHandle(data, instance);
 
-  return { data, options, socketinfo, iconClickHandle, setInsance };
+  return { data, options, iconClickHandle, setInsance };
 };

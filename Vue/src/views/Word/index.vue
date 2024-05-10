@@ -39,9 +39,10 @@ import footerVue from "./components/footer.vue";
 import sidebarVue from "./components/sidebar.vue";
 import directoryVue from "./components/directory.vue";
 import searchVue from "./components/search.vue";
+import { ws_server_url as url } from "/default.config";
 import { Editor } from "../../../public/libs/canvas-editor/canvas-editor.es";
 
-var { options, iconClickHandle, setInsance, socketinfo } = useEditor();
+var { options, iconClickHandle, setInsance } = useEditor();
 
 // 搜索组件 Ref
 let searchRef = ref(null);
@@ -58,12 +59,17 @@ let footerInfo = reactive({
 });
 
 onMounted(() => {
+  // 协同相关配置 解决初始加载会报错问题
+  let { username, userid } = JSON.parse(sessionStorage.getItem("user"));
+  let roomname = window.location.hash.split("word/")[1]; // 当前文件的fileid
+  const socketinfo = { url, username, userid, roomname };
+
   // 初始化 canvas-editor
   let instance = new Editor({
     container: document.querySelector(".word-editor-dom"),
     data: [],
     options,
-    socketinfo, // 协同的关键
+    socketinfo,
   });
 
   // 实现数据传递
@@ -118,7 +124,7 @@ onMounted(() => {
   ]);
 });
 
-onBeforeUnmount(() => instance.closeWebsocket()); // 页面卸载前，关闭 webbsocket 链接
+onBeforeUnmount(() => iconClickHandle({ icon: "closeWebSocket" })); // 页面卸载前，关闭 webbsocket 链接
 </script>
 
 <style lang="less" scoped>

@@ -5595,7 +5595,7 @@ function broadcastKeydown(host, { startIndex, endIndex, type }, editor) {
   if (host.isComposing)
     return;
   const draw = host.getDraw();
-  const ydoc = editor.getDoc();
+  const ydoc = editor.getYDoc();
   if (!ydoc || !ydoc.connect)
     return;
   const { data: data2 } = draw.getValue();
@@ -6880,7 +6880,7 @@ class RangeManager {
     this.setRange(range.startIndex, range.endIndex, range.tableId, range.startTdIndex, range.endTdIndex, range.startTrIndex, range.endTrIndex);
   }
   synchronousUserRange(startIndex, endIndex, isCrossRowCol) {
-    const ydoc = this.editor.getDoc();
+    const ydoc = this.editor.getYDoc();
     if (!ydoc || !ydoc.connect)
       return;
     ydoc.setUserRange({
@@ -12545,7 +12545,7 @@ class Draw {
       if ((isSubmitHistory || isSourceHistory) && !isInit) {
         const { input: input2, startIndex } = payload || {};
         if (input2 && startIndex) {
-          const ydoc = this.editor.getDoc();
+          const ydoc = this.editor.getYDoc();
           if (ydoc && ydoc.connect) {
             ydoc.collectUserInput(this.getValue().data);
           }
@@ -12575,6 +12575,7 @@ class Command {
     this.executeContentChange = adapt.contentChangeHandle.bind(adapt);
     this.getLastRange = adapt.getLastRange.bind(adapt);
     this.executePageScale = adapt.executePageScale.bind(adapt);
+    this.closeWebSocket = adapt.closeWebSocket.bind(adapt);
     this.executeMode = adapt.mode.bind(adapt);
     this.executeCut = adapt.cut.bind(adapt);
     this.executeCopy = adapt.copy.bind(adapt);
@@ -12796,7 +12797,7 @@ class CommandAdapt {
     const { startIndex, endIndex } = this.range.getRange();
     if (!startIndex || !endIndex)
       return;
-    const ydoc = this.editor.getDoc();
+    const ydoc = this.editor.getYDoc();
     if (!ydoc || !ydoc.connect)
       return;
     ydoc.rangeStyleChange({ startIndex, endIndex, ...payload });
@@ -14489,6 +14490,12 @@ class CommandAdapt {
     if (scale !== 1) {
       this.draw.setPageScale(1);
     }
+  }
+  closeWebSocket() {
+    const ydoc = this.editor.getYDoc();
+    if (!ydoc || !ydoc.connect)
+      return;
+    ydoc.provider.disconnect();
   }
   executePageScale(scale) {
     if (!scale)
@@ -21992,7 +21999,7 @@ class Editor {
       contextMenu.removeEvent();
       ydoc == null ? void 0 : ydoc.canvasDestroy();
     };
-    this.getDoc = () => ydoc;
+    this.getYDoc = () => ydoc;
     this.closeWebsocket = () => {
       if (!ydoc || !ydoc.connect)
         return;

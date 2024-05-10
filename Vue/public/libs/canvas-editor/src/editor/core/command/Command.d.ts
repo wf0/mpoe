@@ -103,5 +103,6 @@ export declare class Command {
     executeRangeStyle: CommandAdapt['rangeStyleChange'];
     getLastRange: CommandAdapt['getLastRange'];
     executePageScale: CommandAdapt['executePageScale'];
+    closeWebSocket: CommandAdapt['closeWebSocket'];
     constructor(adapt: CommandAdapt);
 }
