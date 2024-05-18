@@ -27,7 +27,7 @@ const server_port = 5000;
 // ws 统一端口
 const ws_port = 9000;
 
-/** vue项目地址说明 */
+/** Vue/default.config.js */
 // ws 协同服务地址
 export const ws_server_url = "ws://localhost:9000";
 
@@ -66,10 +66,11 @@ export const socket_server_url = "http://localhost:5000";
 >    1. 协同服务：
 >
 >       ```javascript
->       1. npm run startServer y-webrtc
->       (了解rtc的都知道,外网是需要stun服务器做转发的,本应用不支持,推荐使用 y-websocket的协同方式)
+>       1. ~~(npm run startServer ==> y-webrtc)已废弃~~
+>           (了解rtc的都知道,外网是需要stun服务器做转发的,本应用不支持,推荐使用 y-websocket的协同方式)
 >       
->       2. 正常启动 node 即可支持 y-websocket 协同服务,但是本应用没有关联文件（更多个性化需要大家自行实现）**推荐使用此方式**
+>       2. **推荐使用 Websocket 的协同方式**
+>           正常启动 node 即可支持 y-websocket 协同服务,但是本应用没有关联文件（更多个性化需要大家自行实现）
 >       ```
 >
 >    2. （方式一）npm run node
@@ -79,7 +80,7 @@ export const socket_server_url = "http://localhost:5000";
 >    3. （方式二）npm run dev
 >
 >       1. 上述启动的是vue的开发环境，也可以使用
->       2. 调试后，请重新打包放在 node服务上
+>       2. 调试后，请重新打包放在 node服务上(打包的dist输出目录已经自动设置到node/public下)
 >
 >    4. 几个注意事项：
 >
@@ -100,17 +101,15 @@ export const socket_server_url = "http://localhost:5000";
 1. 打包命令
     npm run build
     
-2. 生成 dist 目录，放置到 node/public 下
+2. 生成 dist 目录，将自动放置到 node/public 下
 
 3. 检查并调整script引用地址为node结构下的luckysheet地址
-    <!-- 引入 luck Sheet（下列两个地址需要重新定位，确保文件引入正确） -->
+    <!-- 引入 luckySheet（下列两个地址需要重新定位，确保文件引入正确） -->
     <script src="../libs/luckysheet/plugins/js/plugin.js"></script>
     <script src="../libs/luckysheet/luckysheet.umd.js"></script>
 
 4. 打包后，public 下的libs目录会一起打包到 dist 中，luckysheet 如果没有复制到node中，则引的是当前目录下的 libs 即可
 ```
-
-## 其他说明
 
 
 ## 项目地址
