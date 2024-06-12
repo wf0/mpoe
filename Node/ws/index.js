@@ -39,6 +39,7 @@ module.exports = () => {
         case "canvas-editor":
           return canvasEditorHandle(wss, conn, req); // 当前未关联 文件！！
         default:
+          logger.error("未解析到Type类型");
           break;
       }
     } catch (error) {

@@ -109,7 +109,6 @@ useRouter().beforeEach((to, from, next) => {
 });
 
 onMounted(async () => {
-  window.lc = luckysheet;
   let fileid = router.currentRoute.value.params.fileid;
   let env = import.meta.env.MODE === "development";
 
