@@ -64,6 +64,12 @@ exports.deleteCellDataMap = async (data) =>
     `DELETE FROM celldatas WHERE celldatas.index='${data.v.index}' AND celldatas.cdid='${data.v.cdid}'`
   );
 
+// 删除单元格 - 通过 cr
+exports.deleteCellDataByCRMap = async (data) =>
+  await query(
+    `DELETE FROM celldatas WHERE celldatas.index='${data.i}' AND celldatas.r=${data.r} AND celldatas.c=${data.c}`
+  );
+
 // 查询所有的merge配置
 exports.findAllMergeConfigMap = async (index) =>
   await query(

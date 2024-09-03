@@ -30,6 +30,10 @@ exports.insertCellDataImpl = async (data, cdid) =>
 exports.deleteCellDataImpl = async (data) =>
   await univerMap.deleteCellDataMap(data);
 
+// 删除单元格 - CR
+exports.deleteCellDataByCRImpl = async (data) =>
+  await univerMap.deleteCellDataByCRMap(data);
+
 // 查询所有的merge 配置
 exports.findAllMergeConfigImpl = async (index) =>
   await univerMap.findAllMergeConfigMap(index);

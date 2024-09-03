@@ -29,12 +29,23 @@ exports.dataBaseHandle = (opts, fileid) => (
   _vmap[that.t] && _vmap[that.t]()
 );
 
-// * v 单个单元格刷新
+/**
+ * v 单个单元格刷新
+ *  特殊的：如果执行 Ctrl X 剪切命令，会导致原来的单元格内容为 null
+ * @returns
+ */
 async function v() {
   console.log("v", this);
 
+  // 修复 Ctrl X 原单元格 为 null 的BUG
+  if (!this.v) {
+    // 这里为 null 是直接剪切了单元格，因此识别单元格唯一标识 i 及 行列号，直接删除单元格记录即可
+    await univerImpl.deleteCellDataByCRImpl(this);
+    return;
+  }
   // 1. 需要识别当前操作是否为删除单元格内容
   let { v, m, f } = this.v;
+
   if (!v && !m && !f) return univerImpl.deleteCellDataImpl(this);
 
   // 获取cdid

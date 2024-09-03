@@ -20,7 +20,8 @@ exports.luckysheetHandle = (wss, ws, req) => {
 
   ws.fileid = fileid; // 标记 fileid
 
-  ws.wname = "user_" + id;
+  // 如果真正想实现 xxx 真实的系统的用户名，需要在前端初始化 upload URL 中携带参数过来，进行解析，类似 fileid
+  ws.wname = "user_" + id; 
 
   logger.info("luckysheet 用户连接");
 
