@@ -124,6 +124,8 @@ export declare class CommandAdapt {
     getRangeParagraph(): IElement[] | null;
     pageMode(payload: PageMode): void;
     pageScaleRecovery(): void;
+    closeWebSocket(): void;
+    executePageScale(scale: number): void;
     pageScaleMinus(): void;
     pageScaleAdd(): void;
     paperSize(width: number, height: number): void;

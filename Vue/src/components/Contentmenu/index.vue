@@ -1,7 +1,11 @@
 <template>
-  <div class="box" @click.stop.self="hiddenContentMenu">
+  <div
+    class="box"
+    @click.stop.self="hiddenContentMenu"
+    @contextmenu="(e) => e.preventDefault()"
+  >
     <div
-      @contextmenu.stop
+      @contextmenu="(e) => e.preventDefault()"
       class="contentmenu"
       :style="{
         left: position.x + 'px',
@@ -258,10 +262,11 @@ defineExpose({ showContentMenu, hiddenContentMenu });
   backdrop-filter: blur(2px);
 }
 .contentmenu {
+  border-radius: 4px;
+  padding: 4px 0;
   z-index: 99;
   background-color: #fff;
   width: 150px;
-  height: 200px;
   position: absolute;
   display: none;
   box-shadow: 0px 0px 20px 0px #ccc;
@@ -272,7 +277,7 @@ defineExpose({ showContentMenu, hiddenContentMenu });
     display: flex;
     align-items: center;
     font-size: 14px;
-
+    transition: all 0.3s;
     &:hover {
       background-color: #f3f5f6;
     }

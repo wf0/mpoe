@@ -45,7 +45,7 @@ export default class Editor {
     destroy: () => void;
     use: UsePlugin;
     ydoc: IYdoc | undefined;
-    getDoc: () => Ydoc | null;
+    getYDoc: () => Ydoc | null;
     closeWebsocket: () => void;
     constructor(payload: IEditor);
 }

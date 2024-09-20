@@ -60,9 +60,11 @@ exports.insertCellDataMap = async (data, cdid) =>
 
 // 删除单元格
 exports.deleteCellDataMap = async (data) =>
-  await query(
-    `DELETE FROM celldatas WHERE celldatas.index='${data.v.index}' AND celldatas.cdid='${data.v.cdid}'`
-  );
+  data.v.cdid
+    ? await query(
+        `DELETE FROM celldatas WHERE celldatas.index='${data.v.index}' AND celldatas.cdid='${data.v.cdid}'`
+      )
+    : await query(`DELETE FROM celldatas WHERE celldatas.index='${data.i}' And r=${data.r} AND c=${data.c}`);
 
 // 删除单元格 - 通过 cr
 exports.deleteCellDataByCRMap = async (data) =>

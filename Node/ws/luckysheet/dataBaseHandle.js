@@ -1,5 +1,6 @@
 // 协同数据存储
 const { univerImpl, fileImpl } = require("../../mvc/serviceImpl");
+const { logger } = require("../../util");
 const { getNanoid } = require("../../util/nanoid");
 
 /**
@@ -35,18 +36,39 @@ exports.dataBaseHandle = (opts, fileid) => (
  * @returns
  */
 async function v() {
-  console.log("v", this);
+  /**
+   * 解决删除单元格内容时，数据格式不一致问题 ==> this.v
+   *  1. 新增内容 { v: '2', ct: { fa: 'General', t: 'n' }, m: '2' }
+   *  2. delete {cdid,index,r,c} / { ct: { fa: 'General', t: 'g' } }
+   *  3. backspace {cdid,index,r,c} { ct: { fa: 'General', t: 'g' } }
+   *  4. Ctrl X 剪切 null 新的单元格 {cdid,index,r,c}
+   */
 
   // 修复 Ctrl X 原单元格 为 null 的BUG
   if (!this.v) {
     // 这里为 null 是直接剪切了单元格，因此识别单元格唯一标识 i 及 行列号，直接删除单元格记录即可
-    await univerImpl.deleteCellDataByCRImpl(this);
-    return;
+    return univerImpl.deleteCellDataByCRImpl(this);
   }
+
   // 1. 需要识别当前操作是否为删除单元格内容
+  // 【非正常数据格式】
+  // {
+  //   t: 'v',
+  //   i: 'qVfW--2RwXpesOhI0dUU9',
+  //   v: { ct: { fa: 'General', t: 'n' } },
+  //   r: 7,
+  //   c: 4
+  // }
+
   let { v, m, f } = this.v;
 
-  if (!v && !m && !f) return univerImpl.deleteCellDataImpl(this);
+  if (!v && !m && !f) {
+    console.log("\n执行删除命令-----\n");
+    // 删除单元格 会有两种数据格式，需要进行识别
+    // 判断 v 中是否有cdid index 即可，如果没有这两个字段，只能通过 this.i this.r this.c 来删除了 少了个 cdid 唯一标识
+    // 已在 SQL 中进行兼容
+    return univerImpl.deleteCellDataImpl(this);
+  }
 
   // 获取cdid
   let cdid = await getNanoid();
@@ -123,7 +145,6 @@ async function all() {
   });
 
   // 3. 有了则删除 result ，最后执行删除剩余result
-  console.log("deleteArr", result);
   if (!result.length) return;
 
   // 执行删除操作
