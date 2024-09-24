@@ -1,19 +1,20 @@
 # 多人协同编辑器项目说明
 
+## 免责声明
+
+本项目仅作为学习项目，仅供学习交流，目前还没达到应用生产的能力；
+
+markdown 协同中，Delta 数据结构存储仍采用 JSON.stringify 存储全量数据；luchysheet 中仍有部分方法未实现，例如 新建sheet 页、删除 sheet 页等；而 canvas-editor 数据存储部分未开发；
+
+项目为本人一人开发，在架构设计、代码可阅读性、可维护性上可能存在缺陷，功能上存在不完整部分；个人精力确实有限，望大家谅解；后续项目的维护会持续跟进 issues 问题，帮忙解决大家的疑惑。（也可加V：18276861941）
+
+如果大家数据库导入失败，可以看看 [#IAKJJI: sql有外键依赖，可以按照这个顺序，原mysql中的顺序直接执行会有错误](https://gitee.com/wfeng0/mpoe/issues/IAKJJI)
+
 ## 项目目录结构
 
-> + Mysql
->   + 数据库 database.sql
->   + README.md 数据库表结构说明
-> + Node
->   + 后台服务应用
-> + Vue
->   + 前端应用
-> + .gitignore
-> + LICENSE
-> + package-lock.json
-> + package.json
-> + README.md
+<p align="center">
+    <img src='./public/catalog.png'/>
+</p>
 
 
 
@@ -66,11 +67,8 @@ export const socket_server_url = "http://localhost:5000";
 >    1. 协同服务：
 >
 >       ```javascript
->       1. ~~(npm run startServer ==> y-webrtc)已废弃~~
->           (了解rtc的都知道,外网是需要stun服务器做转发的,本应用不支持,推荐使用 y-websocket的协同方式)
->       
->       2. **推荐使用 Websocket 的协同方式**
->           正常启动 node 即可支持 y-websocket 协同服务,但是本应用没有关联文件（更多个性化需要大家自行实现）
+>       1. **推荐使用 Websocket 的协同方式**
+>           正常启动 node 即可支持 y-websocket 协同服务
 >       ```
 >
 >    2. （方式一）npm run node
@@ -84,7 +82,7 @@ export const socket_server_url = "http://localhost:5000";
 >
 >    4. 几个注意事项：
 >
->       1. 请确保数据库服务正常开启，在Mysql文价夹下，有当前文件的数据库表说明文件：README.md 以及项目数据库文件 mysql.sql
+>       1. 请确保数据库服务正常开启，在Mysql文价夹下，有当前文件的数据库表说明文件：README.md 以及项目数据库文件 mysql.sql,如果对项目数据结构有疑问，请先查看相关数据结构说明文档哈
 >
 >       2. 文件上传的路径问题，mvc -> controller -> file -> uploadFile 中有一个mv()方法，传入的是当前执行命令的根路径，如果在协同编辑中文件上传出现问题，可以看看这里；
 >
@@ -92,6 +90,22 @@ export const socket_server_url = "http://localhost:5000";
 >
 >       4. 重新打包后（vue项目包、luckysheet二开包），luckysheet 文件的处理：
 >       5. 将luckysheet的dist放到node项目下，确保 index.html 引用正确的 luckysheet 即可。
+>       6. socket.io 在服务端有一个跨域的配置，在 Node/socket/index.js 中，这是聊天用的，大家根据实际情况配置即可。
+```js
+  const io = socketIO(http, {
+    allowEIO3: true,
+    cors: {
+      origin: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+      ],
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
+  });
+```
 
 
 
