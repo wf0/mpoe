@@ -7,7 +7,11 @@
     label-width="0px"
   >
     <el-form-item prop="userid">
-      <el-input placeholder="请输入账号" v-model="loginForm.userid">
+      <el-input
+        placeholder="请输入账号"
+        v-model="loginForm.userid"
+        :disabled="loginForm.loading"
+      >
         <template #prefix>
           <el-icon><User /></el-icon>
         </template>
@@ -20,6 +24,7 @@
         type="password"
         show-password
         v-model="loginForm.password"
+        :disabled="loginForm.loading"
       >
         <template #prefix>
           <el-icon><Lock /></el-icon>
@@ -33,6 +38,7 @@
         type="password"
         show-password
         v-model="loginForm.checkpass"
+        :disabled="loginForm.loading"
       >
         <template #prefix>
           <el-icon><Lock /></el-icon>
@@ -54,6 +60,7 @@
         type="primary"
         style="width: 100%"
         @click="submitForm(loginFormRef)"
+        :loading="loginForm.loading"
       >
         登录
       </el-button>
@@ -79,15 +86,16 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
-import { User, Lock } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
 import router from "@/router";
 import { login_API } from "@/api/user";
+import { ElMessage } from "element-plus";
+import { onMounted, reactive, ref } from "vue";
+import { User, Lock } from "@element-plus/icons-vue";
 
 const emit = defineEmits(["toRegister"]);
 
 const loginForm = reactive({
+  loading: false, // 是否处于加载中
   userid: "", // 账号
   password: "", // 密码
   checkpass: "", // 密码
@@ -130,33 +138,48 @@ const submitForm = async (loginFormRef) => {
 
 // 登录事件
 const loginHandle = async () => {
-  let res = await login_API({
-    userid: loginForm.userid,
-    password: loginForm.password,
-  });
-  if (res.code !== 200) return ElMessage.error(res.msg);
-  // 登录成功
-  ElMessage.success(res.msg);
-  // 处理token
-  let user = JSON.parse(JSON.stringify(res.data));
-  let { token } = user;
-  delete user.token;
+  // 进入 loading
+  loginForm.loading = true;
 
-  sessionStorage.setItem("token", token);
-  sessionStorage.setItem("user", JSON.stringify(user));
-  if (loginForm.remember) {
-    // 目前还有其他逻辑未实现
-    // localStorage.setItem("token", token);
-    // localStorage.setItem("user", JSON.stringify(user));
-  }
-  if (router.currentRoute.value.query.fileid) {
-    let { fileid, filename, username } = router.currentRoute.value.query;
-    return router.push({
-      path: `/invited/${fileid}`,
-      query: { filename, username },
+  try {
+    let res = await login_API({
+      userid: loginForm.userid,
+      password: loginForm.password,
     });
+    // 经过网络后，都需要重置 loading 状态
+    loginForm.loading = false;
+
+    if (res.code !== 200) return ElMessage.error(res.msg);
+
+    // 登录成功
+    ElMessage.success(res.msg);
+    // 处理token
+    let user = JSON.parse(JSON.stringify(res.data));
+    let { token } = user;
+    delete user.token;
+
+    sessionStorage.setItem("token", token);
+    sessionStorage.setItem("user", JSON.stringify(user));
+
+    if (loginForm.remember) {
+      // 目前还有其他逻辑未实现
+      // localStorage.setItem("token", token);
+      // localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    // 判断是否为链接文件分享进入的登录页，是则需要进入文件分享页面
+    if (router.currentRoute.value.query.fileid) {
+      let { fileid, filename, username } = router.currentRoute.value.query;
+      const path = `/invited/${fileid}`;
+      const query = { filename, username };
+      return router.push({ path, query });
+    }
+    // 正常登录则走首页
+    router.push("/home");
+  } catch (error) {
+    loginForm.loading = false;
+    ElMessage.error("服务器异常，请检查！");
   }
-  router.push("/home");
 };
 
 const toRegister = (loginFormRef) => (
